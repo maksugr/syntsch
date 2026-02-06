@@ -15,7 +15,7 @@ export function getAllEssaysWithEvents(): EssayWithEvent[] {
     const rows = db
       .prepare(
         `SELECT
-          e.id, e.event_id, e.title, e.lead, e.body, e.language,
+          e.id, e.event_id, e.title, e.slug, e.lead, e.body, e.language,
           e.word_count, e.model_used, e.written_at,
           ev.id as ev_id, ev.name, ev.start_date, ev.end_date,
           ev.venue, ev.city, ev.category, ev.description,
@@ -32,22 +32,22 @@ export function getAllEssaysWithEvents(): EssayWithEvent[] {
   }
 }
 
-export function getEssayWithEvent(id: number): EssayWithEvent | null {
+export function getEssayBySlug(slug: string): EssayWithEvent | null {
   const db = getDb();
   try {
     const row = db
       .prepare(
         `SELECT
-          e.id, e.event_id, e.title, e.lead, e.body, e.language,
+          e.id, e.event_id, e.title, e.slug, e.lead, e.body, e.language,
           e.word_count, e.model_used, e.written_at,
           ev.id as ev_id, ev.name, ev.start_date, ev.end_date,
           ev.venue, ev.city, ev.category, ev.description,
           ev.source_url, ev.event_url, ev.scouted_at
         FROM essays e
         JOIN events ev ON ev.id = e.event_id
-        WHERE e.id = ?`
+        WHERE e.slug = ?`
       )
-      .get(id) as Record<string, unknown> | undefined;
+      .get(slug) as Record<string, unknown> | undefined;
 
     return row ? mapRow(row) : null;
   } finally {
@@ -55,13 +55,13 @@ export function getEssayWithEvent(id: number): EssayWithEvent | null {
   }
 }
 
-export function getAllEssayIds(): number[] {
+export function getAllEssaySlugs(): string[] {
   const db = getDb();
   try {
     const rows = db
-      .prepare("SELECT id FROM essays")
-      .all() as { id: number }[];
-    return rows.map((r) => r.id);
+      .prepare("SELECT slug FROM essays")
+      .all() as { slug: string }[];
+    return rows.map((r) => r.slug);
   } finally {
     db.close();
   }
@@ -69,9 +69,10 @@ export function getAllEssayIds(): number[] {
 
 function mapRow(row: Record<string, unknown>): EssayWithEvent {
   return {
-    id: row.id as number,
-    event_id: row.event_id as number,
+    id: row.id as string,
+    event_id: row.event_id as string,
     title: row.title as string,
+    slug: row.slug as string,
     lead: row.lead as string,
     body: row.body as string,
     language: row.language as string,
@@ -79,7 +80,7 @@ function mapRow(row: Record<string, unknown>): EssayWithEvent {
     model_used: row.model_used as string | null,
     written_at: row.written_at as string,
     event: {
-      id: row.ev_id as number,
+      id: row.ev_id as string,
       name: row.name as string,
       start_date: row.start_date as string | null,
       end_date: row.end_date as string | null,

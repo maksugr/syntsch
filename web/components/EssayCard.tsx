@@ -14,7 +14,7 @@ export default function EssayCard({ essay }: { essay: EssayWithEvent }) {
 
   return (
     <Link
-      href={`/article/${essay.id}`}
+      href={`/article/${essay.slug}`}
       className="essay-card block no-underline p-6 md:p-8 -ml-6 md:-ml-8"
       style={{ '--cat-color': color } as React.CSSProperties}
     >

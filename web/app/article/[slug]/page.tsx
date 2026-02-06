@@ -1,20 +1,20 @@
 import { notFound } from "next/navigation";
-import { getAllEssayIds, getEssayWithEvent } from "@/lib/db";
+import { getAllEssaySlugs, getEssayBySlug } from "@/lib/db";
 import EssayBody from "@/components/EssayBody";
 import EventSidebar from "@/components/EventSidebar";
 
 export function generateStaticParams() {
-  const ids = getAllEssayIds();
-  return ids.map((id) => ({ id: String(id) }));
+  const slugs = getAllEssaySlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export default async function ArticlePage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }) {
-  const { id } = await params;
-  const article = getEssayWithEvent(Number(id));
+  const { slug } = await params;
+  const article = getEssayBySlug(slug);
 
   if (!article) {
     notFound();

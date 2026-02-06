@@ -1,5 +1,5 @@
 export interface Event {
-  id: number;
+  id: string;
   name: string;
   start_date: string | null;
   end_date: string | null;
@@ -13,9 +13,10 @@ export interface Event {
 }
 
 export interface Essay {
-  id: number;
-  event_id: number;
+  id: string;
+  event_id: string;
   title: string;
+  slug: string;
   lead: string;
   body: string;
   language: string;

@@ -68,8 +68,8 @@ python cli.py curate
 # let curator pick, then write essay
 python cli.py author --from-curator
 
-# write essay for a specific event ID from DB
-python cli.py author --event-id 3
+# write essay for a specific event UUID from DB
+python cli.py author --event-id 9a3f1c7e-...
 
 # write essay from a JSON file (also saves event to DB)
 python cli.py author --event examples/sample_event.json
@@ -137,7 +137,7 @@ ptytsch2/
 │   ├── author_system.md   — author system prompt
 │   └── critic_system.md   — self-critique prompt
 ├── web/                   — Next.js 16 static site
-│   ├── app/               — pages (home feed, article/[id])
+│   ├── app/               — pages (home feed, article/[slug])
 │   ├── components/        — Header, LanguageSelector, LanguageProvider,
 │   │                        EssayCard, EssayFeed, CategoryTag, EventSidebar
 │   └── lib/               — db.ts, types.ts, translations.ts

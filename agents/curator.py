@@ -37,7 +37,7 @@ beats the latest blockbuster premiere.
 
 Return your choice as JSON:
 {{
-    "chosen_event_id": <the id number of your chosen event>,
+    "chosen_event_id": "<the id string of your chosen event>",
     "why_chosen": "2-3 sentences explaining why this is the best pick for today's essay. Be specific."
 }}
 

@@ -21,7 +21,7 @@ class ScoutResult(BaseModel):
 
 
 class CuratorResult(BaseModel):
-    chosen_event_id: int
+    chosen_event_id: str
     why_chosen: str
     curated_at: datetime
 

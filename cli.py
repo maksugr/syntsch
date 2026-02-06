@@ -235,7 +235,7 @@ def main():
     source.add_argument(
         "--from-curator", action="store_true", help="Let curator pick from DB"
     )
-    source.add_argument("--event-id", type=int, help="Event ID from DB")
+    source.add_argument("--event-id", help="Event ID from DB")
     source.add_argument("--event", type=str, help="Path to event JSON file")
     p_author.add_argument(
         "--language", default=config.ESSAY_LANGUAGE, choices=["en", "de", "ru"]
