@@ -1,3 +1,4 @@
+import random
 from datetime import datetime, timedelta
 
 from tavily import AsyncTavilyClient
@@ -15,13 +16,42 @@ class TavilyEventSource(EventSource):
         end_date = tomorrow + timedelta(days=days_ahead)
         date_range = f"{tomorrow.strftime('%B %d')} to {end_date.strftime('%B %d %Y')}"
 
-        queries = [
+        core_queries = [
             f"{city} cultural events {date_range} concerts exhibitions theater",
             f"{city} what to do this week art music cinema",
             f"{city} upcoming events {tomorrow.strftime('%B %Y')} gallery performance lecture",
-            f"{city} Veranstaltungen Konzerte Ausstellung Theater {tomorrow.strftime('%B %Y')}",
-            f"{city} underground alternative events {date_range} club night festival",
         ]
+
+        extra_queries = [
+            # german-language
+            f"{city} Veranstaltungen Konzerte Ausstellung Theater {tomorrow.strftime('%B %Y')}",
+            f"{city} Kulturprogramm Lesung Performance Clubnacht {date_range}",
+            # subculture / underground
+            f"{city} underground alternative events {date_range} club night festival",
+            f"{city} DIY punk queer party warehouse rave {date_range}",
+            f"{city} experimental noise ambient drone live {date_range}",
+            # visual arts
+            f"{city} new gallery openings performances {date_range}",
+            f"{city} art exhibition opening reception {tomorrow.strftime('%B %Y')}",
+            f"{city} contemporary art installation vernissage {date_range}",
+            f"{city} photography exhibition museum show {tomorrow.strftime('%B %Y')}",
+            # music
+            f"{city} live music DJ sets club events {date_range}",
+            f"{city} jazz electronic techno concert {date_range}",
+            f"{city} indie band tour gig venue {tomorrow.strftime('%B %Y')}",
+            # cinema / theater / performance
+            f"{city} independent film screening premiere cinema {date_range}",
+            f"{city} theater dance performance spoken word {date_range}",
+            f"{city} documentary film festival short film {tomorrow.strftime('%B %Y')}",
+            # niche / cross-disciplinary
+            f"{city} fashion pop-up design market {date_range}",
+            f"{city} book launch reading poetry zine fair {date_range}",
+            f"{city} sound art media art digital culture {tomorrow.strftime('%B %Y')}",
+            # russian-language (for RU audience reach)
+            f"{city} события культура концерты выставки {tomorrow.strftime('%B %Y')}",
+        ]
+
+        queries = core_queries + random.sample(extra_queries, min(4, len(extra_queries)))
 
         raw_results = []
         for query in queries:

@@ -47,7 +47,7 @@ IMPORTANT:
 - If an entry is clearly not a cultural event (news article, restaurant listing), skip it.
 - If you can find fewer than 5 worthy events, return fewer. Never pad with weak picks.
 - Do NOT include events that are clearly duplicates of each other.
-
+{existing_pool_block}
 Respond in JSON format:
 {{
     "events": [
@@ -88,10 +88,21 @@ async def scout_event(
     filtered = [
         c for c in candidates
         if not storage.is_already_covered(c.name, c.venue, c.start_date)
+        and not storage.event_exists(c.name)
     ]
 
     if not filtered:
         filtered = candidates
+
+    existing_names = storage.get_all_event_names()
+    if existing_names:
+        names_list = "\n".join(f"- {n}" for n in existing_names)
+        existing_pool_block = (
+            f"\nThese events are already in our pool — do NOT pick them again. "
+            f"Find DIFFERENT events:\n{names_list}\n"
+        )
+    else:
+        existing_pool_block = ""
 
     events_json = json.dumps(
         [c.model_dump() for c in filtered],
@@ -102,6 +113,7 @@ async def scout_event(
     prompt = SCOUT_PROMPT.format(
         city=city,
         events_json=events_json,
+        existing_pool_block=existing_pool_block,
     )
 
     client = anthropic.Anthropic()

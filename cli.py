@@ -33,19 +33,24 @@ async def cmd_scout(args):
 
     storage = _get_storage()
 
+    new_count = 0
     event_ids = []
     for event in result.events:
+        existed = storage.find_existing_event(event.name, event.venue, event.start_date)
         eid = storage.save_event(event)
-        event_ids.append(eid)
+        event_ids.append((eid, existed is not None))
+        if existed is None:
+            new_count += 1
 
-    print(f"\nFound {len(result.events)} events:")
+    print(f"\nFound {len(result.events)} events ({new_count} new, {len(result.events) - new_count} already in pool):")
 
-    for eid, event in zip(event_ids, result.events):
+    for (eid, was_existing), event in zip(event_ids, result.events):
+        tag = " (existing)" if was_existing else ""
         print(
-            f"  #{eid} [{event.category}] {event.name} @ {event.venue} ({event.start_date})"
+            f"  [{event.category}] {event.name} @ {event.venue} ({event.start_date}){tag}"
         )
 
-    print(f"\nSaved {len(event_ids)} events to data/events/")
+    print(f"\nSaved {new_count} new events to data/events/")
 
 
 def cmd_curate(args):
@@ -159,12 +164,14 @@ async def cmd_pipeline(args):
         days_ahead=args.days,
     )
 
-    event_ids = []
+    new_count = 0
     for event in scout_result.events:
-        eid = storage.save_event(event)
-        event_ids.append(eid)
+        existed = storage.find_existing_event(event.name, event.venue, event.start_date)
+        storage.save_event(event)
+        if existed is None:
+            new_count += 1
 
-    print(f"Scouted {len(event_ids)} events")
+    print(f"Scouted {len(scout_result.events)} events ({new_count} new)")
 
     print(f"\n=== CURATOR: selecting best event ===")
 

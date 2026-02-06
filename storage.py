@@ -51,7 +51,34 @@ class EventStorage:
             results.append(json.loads(p.read_text(encoding="utf-8")))
         return results
 
+    def find_existing_event(self, name: str, venue: str, start_date: str) -> str | None:
+        """Return event_id of a matching event, or None."""
+        name_norm = name.strip().lower()
+        venue_norm = venue.strip().lower()
+        for ev in self._load_all_events():
+            if ev.get("name", "").strip().lower() == name_norm:
+                return ev["id"]
+            if venue_norm and start_date and ev.get("venue", "").strip().lower() == venue_norm and ev.get("start_date") == start_date:
+                return ev["id"]
+        return None
+
+    def event_exists(self, name: str) -> bool:
+        """Check if an event with this name already exists in the pool."""
+        name_norm = name.strip().lower()
+        for ev in self._load_all_events():
+            if ev.get("name", "").strip().lower() == name_norm:
+                return True
+        return False
+
+    def get_all_event_names(self) -> list[str]:
+        """Return names of all events in the pool."""
+        return [ev.get("name", "") for ev in self._load_all_events() if ev.get("name")]
+
     def save_event(self, event: EventCandidate) -> str:
+        existing_id = self.find_existing_event(event.name, event.venue, event.start_date)
+        if existing_id:
+            return existing_id
+
         event_id = str(uuid.uuid4())
         data = {
             "id": event_id,

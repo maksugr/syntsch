@@ -6,7 +6,7 @@ Autonomous cultural digest. Finds interesting events in your city, writes articl
 
 Four agents run in a chain:
 
-1. **Scout** — searches for cultural events, saves 5 candidates to `data/events/`
+1. **Scout** — searches for cultural events (with dedup and query rotation), saves new candidates to `data/events/`
 2. **Curator** — picks the best event from the pool of all non-expired, unwritten events
 3. **Author** — researches the event once, writes articles in all requested languages (default: en/de/ru) with Dazed-style tone of voice, generates a lede for each
 4. **Publisher** — formats and publishes to website + sends email to subscribers (not yet implemented)
@@ -115,14 +115,14 @@ ptytsch2/
 ├── cli.py                 — all CLI commands (scout, curate, author, pipeline)
 ├── config.py              — settings (city, models, language)
 ├── models.py              — Pydantic data models
-├── storage.py             — JSON file storage (events + articles, language-aware dedup)
+├── storage.py             — JSON file storage (events + articles, language-aware dedup, event dedup)
 ├── agents/
 │   ├── scout.py           — event discovery (finds 5 candidates)
 │   ├── curator.py         — event selection (picks best from pool, per language)
 │   └── author.py          — article generation with self-critique
 ├── sources/
 │   ├── base.py            — event source interface
-│   ├── tavily_search.py   — Tavily web search source
+│   ├── tavily_search.py   — Tavily web search source (query rotation)
 │   └── research.py        — web search for article context
 ├── prompts/
 │   ├── author_system.md   — author system prompt
