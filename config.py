@@ -4,7 +4,7 @@ BASE_DIR = Path(__file__).parent
 
 CITY = "Berlin"
 DAYS_AHEAD = 14
-ESSAY_LANGUAGE = "en"
+ARTICLE_LANGUAGE = "en"
 
 SCOUT_MODEL = "claude-sonnet-4-5-20250929"
 CURATOR_MODEL = "claude-sonnet-4-5-20250929"
@@ -23,6 +23,5 @@ CATEGORIES = [
     "club",
 ]
 
-DB_PATH = BASE_DIR / "data" / "events.db"
-OUTPUT_DIR = BASE_DIR / "output"
+DATA_DIR = BASE_DIR / "data"
 PROMPTS_DIR = BASE_DIR / "prompts"

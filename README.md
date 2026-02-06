@@ -1,14 +1,14 @@
 # Ptytsch
 
-Autonomous cultural digest. Finds interesting events in your city, writes essay-reviews in the style of i-D/Dazed, publishes daily.
+Autonomous cultural digest. Finds interesting events in your city, writes article-reviews in the style of i-D/Dazed, publishes daily.
 
 ## How it works
 
 Four agents run in a chain:
 
-1. **Scout** — searches for cultural events, saves 5 candidates to DB
-2. **Curator** — picks the best event from the pool of all non-expired, unwritten events (per language)
-3. **Author** — researches the event deeply, writes a long-form essay with Dazed-style tone of voice, generates a lede for the card preview
+1. **Scout** — searches for cultural events, saves 5 candidates to `data/events/`
+2. **Curator** — picks the best event from the pool of all non-expired, unwritten events
+3. **Author** — researches the event once, writes articles in all requested languages (default: en/de/ru) with Dazed-style tone of voice, generates a lede for each
 4. **Publisher** — formats and publishes to website + sends email to subscribers (not yet implemented)
 
 Everything is fully autonomous. No human moderation.
@@ -44,10 +44,10 @@ Edit `config.py`:
 |-----------|---------|-------------|
 | `CITY` | `"Berlin"` | City to search events in |
 | `DAYS_AHEAD` | `14` | How many days ahead to look |
-| `ESSAY_LANGUAGE` | `"en"` | Essay language: `en`, `de`, or `ru` |
+| `ARTICLE_LANGUAGE` | `"en"` | Article language: `en`, `de`, or `ru` |
 | `SCOUT_MODEL` | `claude-sonnet-4-5-20250929` | LLM for event discovery |
 | `CURATOR_MODEL` | `claude-sonnet-4-5-20250929` | LLM for event selection |
-| `AUTHOR_MODEL` | `claude-opus-4-6` | LLM for essay writing |
+| `AUTHOR_MODEL` | `claude-opus-4-6` | LLM for article writing |
 | `CRITIC_MODEL` | `claude-opus-4-6` | LLM for self-critique |
 | `LEAD_MODEL` | `claude-opus-4-6` | LLM for lede generation |
 
@@ -56,50 +56,42 @@ Edit `config.py`:
 All commands go through `cli.py`:
 
 ```bash
-# find 5 events and save to DB
+# find 5 events and save to data/events/
 python cli.py scout
 
 # custom city and time window
 python cli.py scout --city Berlin --days 14
 
-# pick the best event from the pool (preview, no essay)
+# pick the best event from the pool (preview, no article)
 python cli.py curate
 
-# let curator pick, then write essay
+# let curator pick, then write articles in all 3 languages
 python cli.py author --from-curator
 
-# write essay for a specific event UUID from DB
-python cli.py author --event-id 9a3f1c7e-...
-
-# write essay from a JSON file (also saves event to DB)
-python cli.py author --event examples/sample_event.json
-
-# write in German or Russian
-python cli.py author --from-curator --language de
+# only specific languages
+python cli.py author --from-curator --language en de
 python cli.py author --from-curator --language ru
 
-# full pipeline: scout → curate → author
+# write articles for a specific event UUID
+python cli.py author --event-id 9a3f1c7e-...
+
+# write articles from a JSON file (also saves event)
+python cli.py author --event examples/sample_event.json
+
+# full pipeline: scout → curate → author (all languages)
 python cli.py pipeline
 
 # full pipeline with options
-python cli.py pipeline --city Berlin --language en
+python cli.py pipeline --city Berlin --language en de
 ```
 
-One event can have essays in all three languages. The curator and author filter by language — so running `--language de` won't skip an event that already has an English essay.
+Curator picks one event, author writes articles for all requested languages. If an article already exists for a given event+language, it's skipped. Research runs once per event.
 
-All data is stored in SQLite (`data/events.db`). Human-readable output (`.md`, `.json`) is also saved to `output/` for convenience.
+All data is stored as JSON flat files in `data/events/` and `data/articles/`, tracked in git.
 
 ## Web app
 
 Static Next.js 16 site (Tailwind v4, brutalist design). Located in `web/`.
-
-### Features
-
-- **i18n**: language selector (en/de/ru) persisted in cookie, translates category names, sidebar labels, dates
-- **Fonts**: Bebas Neue (Latin) + Russo One (Cyrillic), switched per language via CSS variable
-- **Feed**: 2-column card grid on desktop, category filters
-- **Dates**: locale-aware formatting (en-GB, de-DE for Latin; short month names; per-language)
-- **Static export** to `web/out/`
 
 ### Run locally
 
@@ -114,7 +106,6 @@ npm run dev
 ```bash
 cd web
 npm run build
-# output in web/out/
 ```
 
 ## Project structure
@@ -124,26 +115,25 @@ ptytsch2/
 ├── cli.py                 — all CLI commands (scout, curate, author, pipeline)
 ├── config.py              — settings (city, models, language)
 ├── models.py              — Pydantic data models
-├── storage.py             — SQLite storage (events + essays, language-aware dedup)
+├── storage.py             — JSON file storage (events + articles, language-aware dedup)
 ├── agents/
 │   ├── scout.py           — event discovery (finds 5 candidates)
 │   ├── curator.py         — event selection (picks best from pool, per language)
-│   └── author.py          — essay generation with self-critique
+│   └── author.py          — article generation with self-critique
 ├── sources/
 │   ├── base.py            — event source interface
 │   ├── tavily_search.py   — Tavily web search source
-│   └── research.py        — web search for essay context
+│   └── research.py        — web search for article context
 ├── prompts/
 │   ├── author_system.md   — author system prompt
 │   └── critic_system.md   — self-critique prompt
 ├── web/                   — Next.js 16 static site
 │   ├── app/               — pages (home feed, article/[slug])
 │   ├── components/        — Header, LanguageSelector, LanguageProvider,
-│   │                        EssayCard, EssayFeed, CategoryTag, EventSidebar
+│   │                        ArticleCard, ArticleFeed, CategoryTag, EventSidebar
 │   └── lib/               — db.ts, types.ts, translations.ts
 ├── examples/              — sample event JSONs
-├── output/                — generated essays and scout results
-└── data/                  — SQLite database (gitignored)
+└── data/                  — JSON flat files (events + articles, tracked in git)
 ```
 
 ## Extending
@@ -158,4 +148,4 @@ Create a class in `sources/` that implements `EventSource.fetch_events()`. Regis
 
 ### Add a new language
 
-Set `ESSAY_LANGUAGE` in `config.py` to `"en"`, `"de"`, or `"ru"`. The author prompt adjusts automatically. To add more languages, extend the language-specific sections in `prompts/author_system.md` and add translations in `web/lib/translations.ts`.
+By default all three languages (en, de, ru) are written. Use `--language` to limit: `--language en de`. To add more languages, extend `LANGUAGE_NOTES` in `agents/author.py` and add translations in `web/lib/translations.ts`.

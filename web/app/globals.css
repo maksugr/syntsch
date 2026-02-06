@@ -33,34 +33,34 @@ aside a {
   text-decoration-thickness: 2px;
 }
 
-/* ── Essay card hover ── */
-.essay-card {
+/* ── Article card hover ── */
+.article-card {
   transition: background-color 150ms ease;
 }
 
-.essay-card .card-title,
-.essay-card .card-lead,
-.essay-card .card-meta,
-.essay-card .card-category {
+.article-card .card-title,
+.article-card .card-lead,
+.article-card .card-meta,
+.article-card .card-category {
   transition: color 150ms ease;
 }
 
-.essay-card:hover {
+.article-card:hover {
   background-color: var(--cat-color);
 }
 
-.essay-card:hover .card-title {
+.article-card:hover .card-title {
   color: #FFFFFF !important;
 }
 
-.essay-card:hover .card-category {
+.article-card:hover .card-category {
   color: #FFFFFF !important;
 }
 
-.essay-card:hover .card-lead {
+.article-card:hover .card-lead {
   color: rgba(255, 255, 255, 0.9) !important;
 }
 
-.essay-card:hover .card-meta {
+.article-card:hover .card-meta {
   color: rgba(255, 255, 255, 0.75) !important;
 }

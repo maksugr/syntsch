@@ -1,21 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import type { EssayWithEvent } from "@/lib/types";
+import type { ArticleWithEvent } from "@/lib/types";
 import { CATEGORY_COLORS } from "@/lib/types";
 import { tCategory, tUi } from "@/lib/translations";
 import { useLanguage } from "./LanguageProvider";
-import EssayCard from "./EssayCard";
+import ArticleCard from "./ArticleCard";
 
 const CATEGORIES = Object.keys(CATEGORY_COLORS);
 
-export default function EssayFeed({ essays }: { essays: EssayWithEvent[] }) {
+export default function ArticleFeed({ articles }: { articles: ArticleWithEvent[] }) {
   const { lang } = useLanguage();
   const [category, setCategory] = useState<string | null>(null);
 
-  const filtered = essays.filter((e) => {
-    if (e.language.toLowerCase() !== lang) return false;
-    if (category && e.event.category !== category) return false;
+  const filtered = articles.filter((a) => {
+    if (a.language.toLowerCase() !== lang) return false;
+    if (category && a.event.category !== category) return false;
     return true;
   });
 
@@ -64,8 +64,8 @@ export default function EssayFeed({ essays }: { essays: EssayWithEvent[] }) {
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-0 pt-8">
-          {filtered.map((essay) => (
-            <EssayCard key={essay.id} essay={essay} />
+          {filtered.map((article) => (
+            <ArticleCard key={article.id} article={article} />
           ))}
         </div>
       )}

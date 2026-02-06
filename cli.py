@@ -2,7 +2,6 @@ import argparse
 import asyncio
 import json
 import sys
-from datetime import datetime
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -10,28 +9,18 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import config
-from agents.author import write_essay
+from agents.author import write_article
 from agents.curator import curate_event
 from agents.scout import scout_event
-from models import EventCandidate
+from models import EventCandidate, ResearchContext
+from sources.research import research_event
 from storage import EventStorage
 
-
-def _save_json(path: Path, data: dict):
-    path.parent.mkdir(parents=True, exist_ok=True)
-
-    path.write_text(
-        json.dumps(data, indent=2, ensure_ascii=False, default=str),
-        encoding="utf-8",
-    )
-
-
-def _timestamp() -> str:
-    return datetime.now().strftime("%Y-%m-%d_%H%M%S")
+ALL_LANGUAGES = ["en", "de", "ru"]
 
 
 def _get_storage() -> EventStorage:
-    return EventStorage(config.DB_PATH)
+    return EventStorage(config.DATA_DIR)
 
 
 async def cmd_scout(args):
@@ -56,12 +45,7 @@ async def cmd_scout(args):
             f"  #{eid} [{event.category}] {event.name} @ {event.venue} ({event.start_date})"
         )
 
-    config.OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    out_path = config.OUTPUT_DIR / f"scout_{_timestamp()}.json"
-
-    _save_json(out_path, result.model_dump())
-
-    print(f"\nSaved {len(event_ids)} events to DB and {out_path}")
+    print(f"\nSaved {len(event_ids)} events to data/events/")
 
 
 def cmd_curate(args):
@@ -69,7 +53,7 @@ def cmd_curate(args):
 
     storage = _get_storage()
 
-    available = storage.get_available_events(language=getattr(args, "language", ""))
+    available = storage.get_available_events()
 
     print(f"Available events in pool: {len(available)}")
 
@@ -77,7 +61,7 @@ def cmd_curate(args):
         print("No available events. Run 'scout' first.", file=sys.stderr)
         sys.exit(1)
 
-    result = curate_event(city=args.city, language=getattr(args, "language", ""))
+    result = curate_event(city=args.city)
 
     row = storage.get_event(result.chosen_event_id)
 
@@ -90,75 +74,83 @@ def cmd_curate(args):
     print(f"\nWhy: {result.why_chosen}")
 
 
+async def _write_for_languages(
+    storage: EventStorage,
+    event_id: str,
+    event: EventCandidate,
+    languages: list[str],
+    skip_research: bool = False,
+):
+    """Research once, then write articles for each language that doesn't exist yet."""
+    if skip_research:
+        context = ResearchContext()
+    else:
+        print("Researching event...")
+        context = await research_event(event)
+
+    for lang in languages:
+        if storage.has_article_in_language(event_id, lang):
+            print(f"  [{lang}] Already exists, skipping")
+            continue
+
+        print(f"  [{lang}] Writing article...")
+        article = await write_article(
+            event=event,
+            language=lang,
+            context=context,
+        )
+        article_id = storage.save_article(event_id, article)
+        print(f"  [{lang}] \"{article.title}\" ({article.word_count} words) → #{article_id}")
+
+
 async def cmd_author(args):
     storage = _get_storage()
+    languages = args.language
 
     if args.from_curator:
-        available = storage.get_available_events(language=args.language)
-
-        if not available:
-            print("No available events. Run 'scout' first.", file=sys.stderr)
-            sys.exit(1)
-
-        result = curate_event(city=config.CITY, language=args.language)
+        result = curate_event(city=config.CITY, languages=languages)
 
         event_id = result.chosen_event_id
 
-        print(f"Curator chose event #{event_id}: {result.why_chosen}\n")
+        row = storage.get_event(event_id)
+        event = storage.event_to_candidate(row)
+
+        print(f"Curator chose: {event.name}")
+        print(f"Why: {result.why_chosen}")
+        print(f"Languages: {', '.join(languages)}\n")
+
+        await _write_for_languages(storage, event_id, event, languages, args.skip_research)
+
     elif args.event_id:
         event_id = args.event_id
         row = storage.get_event(event_id)
 
         if not row:
-            print(f"Event #{event_id} not found in DB.", file=sys.stderr)
+            print(f"Event #{event_id} not found.", file=sys.stderr)
             sys.exit(1)
+
+        event = storage.event_to_candidate(row)
+
+        print(f"Event: {event.name}")
+        print(f"Languages: {', '.join(languages)}\n")
+
+        await _write_for_languages(storage, event_id, event, languages, args.skip_research)
+
     else:
         data = json.loads(Path(args.event).read_text(encoding="utf-8"))
         event = EventCandidate(**data)
 
         event_id = storage.save_event(event)
 
-    row = storage.get_event(event_id)
-    event = storage.event_to_candidate(row)
+        print(f"Event: {event.name} (saved as #{event_id})")
+        print(f"Languages: {', '.join(languages)}\n")
 
-    print(f"Writing essay about (event #{event_id}): {event.name}")
-    print(f"Language: {args.language}")
-    print(f"Research: {'skipped' if args.skip_research else 'enabled'}")
-    print()
-
-    essay = await write_essay(
-        event=event,
-        language=args.language,
-        skip_research=args.skip_research,
-    )
-
-    essay_db_id = storage.save_essay(event_id, essay)
-
-    print(essay.body)
-    print(f"\n---\nTitle: {essay.title}")
-    print(f"Lead: {essay.lead}")
-    print(f"Words: {essay.word_count}")
-    print(f"Model: {essay.model_used}")
-
-    config.OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-
-    ts = _timestamp()
-    city = event.city.lower()
-    lang = args.language
-
-    essay_path = config.OUTPUT_DIR / f"essay_{city}_{lang}_{ts}.md"
-    essay_path.write_text(essay.body, encoding="utf-8")
-
-    _save_json(
-        config.OUTPUT_DIR / f"essay_{city}_{lang}_{ts}_meta.json",
-        essay.model_dump(),
-    )
-
-    print(f"\nSaved to DB (essay #{essay_db_id}) and {essay_path}")
+        await _write_for_languages(storage, event_id, event, languages, args.skip_research)
 
 
 async def cmd_pipeline(args):
     storage = _get_storage()
+    languages = args.language
 
     print(f"=== SCOUT: {args.city}, {args.days} days ===")
 
@@ -176,69 +168,44 @@ async def cmd_pipeline(args):
 
     print(f"\n=== CURATOR: selecting best event ===")
 
-    curator_result = curate_event(city=args.city, language=args.language)
+    curator_result = curate_event(city=args.city, languages=languages)
 
     event_id = curator_result.chosen_event_id
 
     row = storage.get_event(event_id)
     event = storage.event_to_candidate(row)
 
-    print(f"Chosen (event #{event_id}): {event.name} @ {event.venue}")
+    print(f"Chosen: {event.name} @ {event.venue}")
     print(f"Why: {curator_result.why_chosen}")
 
-    config.OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    print(f"\n=== AUTHOR: writing in {', '.join(languages)} ===")
 
-    _save_json(
-        config.OUTPUT_DIR / f"scout_{_timestamp()}.json",
-        scout_result.model_dump(),
-    )
+    await _write_for_languages(storage, event_id, event, languages)
 
-    print(f"\n=== AUTHOR: writing essay in {args.language} ===")
-
-    essay = await write_essay(event=event, language=args.language)
-
-    essay_db_id = storage.save_essay(event_id, essay)
-
-    print(f"\n{essay.body}")
-    print(f"\n---")
-    print(f"Title: {essay.title}")
-    print(f"Lead: {essay.lead}")
-    print(f"Words: {essay.word_count}")
-
-    ts = _timestamp()
-    city = args.city.lower()
-    lang = args.language
-    essay_path = config.OUTPUT_DIR / f"essay_{city}_{lang}_{ts}.md"
-    essay_path.write_text(essay.body, encoding="utf-8")
-
-    _save_json(
-        config.OUTPUT_DIR / f"essay_{city}_{lang}_{ts}_meta.json",
-        essay.model_dump(),
-    )
-
-    print(f"\nSaved to DB (event #{event_id}, essay #{essay_db_id}) and {essay_path}")
+    print(f"\nDone.")
 
 
 def main():
     parser = argparse.ArgumentParser(description="ptytsch — autonomous cultural digest")
     sub = parser.add_subparsers(dest="command", required=True)
 
-    p_scout = sub.add_parser("scout", help="Find cultural events and save to DB")
+    p_scout = sub.add_parser("scout", help="Find cultural events")
     p_scout.add_argument("--city", default=config.CITY)
     p_scout.add_argument("--days", type=int, default=config.DAYS_AHEAD)
 
     p_curate = sub.add_parser("curate", help="Pick the best event from the pool")
     p_curate.add_argument("--city", default=config.CITY)
 
-    p_author = sub.add_parser("author", help="Write an essay about an event")
+    p_author = sub.add_parser("author", help="Write articles about an event")
     source = p_author.add_mutually_exclusive_group(required=True)
     source.add_argument(
-        "--from-curator", action="store_true", help="Let curator pick from DB"
+        "--from-curator", action="store_true", help="Let curator pick from pool"
     )
-    source.add_argument("--event-id", help="Event ID from DB")
+    source.add_argument("--event-id", help="Event ID")
     source.add_argument("--event", type=str, help="Path to event JSON file")
     p_author.add_argument(
-        "--language", default=config.ESSAY_LANGUAGE, choices=["en", "de", "ru"]
+        "--language", nargs="+", default=ALL_LANGUAGES, choices=ALL_LANGUAGES,
+        help="Languages to write (default: all)",
     )
     p_author.add_argument("--skip-research", action="store_true")
 
@@ -248,7 +215,8 @@ def main():
     p_pipeline.add_argument("--city", default=config.CITY)
     p_pipeline.add_argument("--days", type=int, default=config.DAYS_AHEAD)
     p_pipeline.add_argument(
-        "--language", default=config.ESSAY_LANGUAGE, choices=["en", "de", "ru"]
+        "--language", nargs="+", default=ALL_LANGUAGES, choices=ALL_LANGUAGES,
+        help="Languages to write (default: all)",
     )
 
     args = parser.parse_args()

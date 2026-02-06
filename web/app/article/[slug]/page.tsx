@@ -1,10 +1,10 @@
 import { notFound } from "next/navigation";
-import { getAllEssaySlugs, getEssayBySlug } from "@/lib/db";
-import EssayBody from "@/components/EssayBody";
+import { getAllArticleSlugs, getArticleBySlug } from "@/lib/db";
+import ArticleBody from "@/components/ArticleBody";
 import EventSidebar from "@/components/EventSidebar";
 
 export function generateStaticParams() {
-  const slugs = getAllEssaySlugs();
+  const slugs = getAllArticleSlugs();
   return slugs.map((slug) => ({ slug }));
 }
 
@@ -14,7 +14,7 @@ export default async function ArticlePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const article = getEssayBySlug(slug);
+  const article = getArticleBySlug(slug);
 
   if (!article) {
     notFound();
@@ -39,7 +39,7 @@ export default async function ArticlePage({
           </p>
         )}
 
-        <EssayBody body={article.body} />
+        <ArticleBody body={article.body} />
 
       </article>
 

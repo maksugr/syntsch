@@ -1,0 +1,63 @@
+name: Author Articles & Deploy
+
+on:
+  schedule:
+    - cron: "0 8,11,14,17,20 * * *" # 09-21 CET every 3h
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  author:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: pip install .
+
+      - name: Write articles (en/de/ru)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+        run: python cli.py author --from-curator
+
+      - name: Commit new articles
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/articles/
+          git diff --staged --quiet || git commit -m "author: add new articles" && git push
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Build web
+        working-directory: web
+        run: |
+          npm install
+          npm run build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/out
+
+  deploy:
+    needs: author
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

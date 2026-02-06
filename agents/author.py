@@ -4,7 +4,7 @@ from datetime import datetime
 import anthropic
 
 import config
-from models import EventCandidate, EssayOutput, ResearchContext
+from models import EventCandidate, ArticleOutput, ResearchContext
 from sources.research import research_event
 
 LANGUAGE_NOTES = {
@@ -16,17 +16,19 @@ LANGUAGE_NOTES = {
 FEW_SHOT_PLACEHOLDER = "No example essays provided yet. Examples will be added here to anchor the style. For now, channel your inner Dazed/i-D writer."
 
 
-async def write_essay(
+async def write_article(
     event: EventCandidate,
     language: str | None = None,
     skip_research: bool = False,
-) -> EssayOutput:
-    language = language or config.ESSAY_LANGUAGE
+    context: ResearchContext | None = None,
+) -> ArticleOutput:
+    language = language or config.ARTICLE_LANGUAGE
 
-    if skip_research:
-        context = ResearchContext()
-    else:
-        context = await research_event(event)
+    if context is None:
+        if skip_research:
+            context = ResearchContext()
+        else:
+            context = await research_event(event)
 
     system_prompt = _load_author_prompt(language)
     user_message = _build_user_message(event, context)
@@ -77,7 +79,7 @@ async def write_essay(
 
     lead = _generate_lead(client, event, title, revised_text, language)
 
-    return EssayOutput(
+    return ArticleOutput(
         title=title,
         lead=lead,
         body=revised_text,

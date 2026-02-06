@@ -1,8 +1,8 @@
-import { getAllEssaysWithEvents } from "@/lib/db";
-import EssayFeed from "@/components/EssayFeed";
+import { getAllArticlesWithEvents } from "@/lib/db";
+import ArticleFeed from "@/components/ArticleFeed";
 
 export default function Home() {
-  const essays = getAllEssaysWithEvents();
+  const articles = getAllArticlesWithEvents();
 
-  return <EssayFeed essays={essays} />;
+  return <ArticleFeed articles={articles} />;
 }

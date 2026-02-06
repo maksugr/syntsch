@@ -1,8 +1,6 @@
 .env
 __pycache__/
 *.pyc
-data/*.db
-output/
 .venv/
 *.egg-info/
 logs/

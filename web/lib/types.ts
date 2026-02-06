@@ -12,7 +12,7 @@ export interface Event {
   scouted_at: string;
 }
 
-export interface Essay {
+export interface Article {
   id: string;
   event_id: string;
   title: string;
@@ -25,7 +25,7 @@ export interface Essay {
   written_at: string;
 }
 
-export interface EssayWithEvent extends Essay {
+export interface ArticleWithEvent extends Article {
   event: Event;
 }
 

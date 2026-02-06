@@ -1,4 +1,4 @@
-export default function EssayBody({ body }: { body: string }) {
+export default function ArticleBody({ body }: { body: string }) {
   const paragraphs = body.split("\n\n").filter((p) => p.trim());
 
   return (

@@ -84,7 +84,7 @@ async def scout_event(
     if not candidates:
         raise RuntimeError(f"No events found for {city}")
 
-    storage = EventStorage(config.DB_PATH)
+    storage = EventStorage(config.DATA_DIR)
     filtered = [
         c for c in candidates
         if not storage.is_already_covered(c.name, c.venue, c.start_date)

@@ -46,13 +46,22 @@ Available events:
 """
 
 
-def curate_event(city: str | None = None, language: str = "") -> CuratorResult:
+def curate_event(city: str | None = None, languages: list[str] | None = None) -> CuratorResult:
     city = city or config.CITY
-    storage = EventStorage(config.DB_PATH)
+    storage = EventStorage(config.DATA_DIR)
 
-    available = storage.get_available_events(language=language)
+    if languages:
+        seen = set()
+        available = []
+        for lang in languages:
+            for ev in storage.get_available_events(language=lang):
+                if ev["id"] not in seen:
+                    seen.add(ev["id"])
+                    available.append(ev)
+    else:
+        available = storage.get_available_events()
     if not available:
-        raise RuntimeError("No available events in DB. Run 'scout' first.")
+        raise RuntimeError("No available events. Run 'scout' first.")
 
     recent_categories = storage.get_recent_categories(days=7)
     recent_str = ", ".join(recent_categories) if recent_categories else "none yet"

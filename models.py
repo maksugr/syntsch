@@ -34,7 +34,7 @@ class ResearchContext(BaseModel):
     raw_sources: list[str] = []
 
 
-class EssayOutput(BaseModel):
+class ArticleOutput(BaseModel):
     title: str
     lead: str = ""
     body: str

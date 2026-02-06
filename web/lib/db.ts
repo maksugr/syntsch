@@ -1,96 +1,97 @@
-import Database from "better-sqlite3";
+import fs from "fs";
 import path from "path";
-import type { EssayWithEvent } from "./types";
+import type { ArticleWithEvent } from "./types";
 
-function getDb(): Database.Database {
-  const dbPath =
-    process.env.PTYTSCH_DB_PATH ||
-    path.resolve(process.cwd(), "../data/events.db");
-  return new Database(dbPath, { readonly: true });
-}
+const DATA_DIR = path.resolve(process.cwd(), "../data");
 
-export function getAllEssaysWithEvents(): EssayWithEvent[] {
-  const db = getDb();
-  try {
-    const rows = db
-      .prepare(
-        `SELECT
-          e.id, e.event_id, e.title, e.slug, e.lead, e.body, e.language,
-          e.word_count, e.model_used, e.written_at,
-          ev.id as ev_id, ev.name, ev.start_date, ev.end_date,
-          ev.venue, ev.city, ev.category, ev.description,
-          ev.source_url, ev.event_url, ev.scouted_at
-        FROM essays e
-        JOIN events ev ON ev.id = e.event_id
-        ORDER BY e.written_at DESC`
-      )
-      .all() as Record<string, unknown>[];
+function readAllArticleFiles(): ArticleWithEvent[] {
+  const articlesDir = path.join(DATA_DIR, "articles");
+  if (!fs.existsSync(articlesDir)) return [];
 
-    return rows.map(mapRow);
-  } finally {
-    db.close();
+  const files = fs.readdirSync(articlesDir).filter((f) => f.endsWith(".json"));
+  const articles: ArticleWithEvent[] = [];
+
+  for (const file of files) {
+    const raw = fs.readFileSync(path.join(articlesDir, file), "utf-8");
+    const data = JSON.parse(raw);
+    articles.push({
+      id: data.id,
+      event_id: data.event_id,
+      title: data.title,
+      slug: data.slug,
+      lead: data.lead,
+      body: data.body,
+      language: data.language,
+      word_count: data.word_count ?? null,
+      model_used: data.model_used ?? null,
+      written_at: data.written_at,
+      event: {
+        id: data.event?.id ?? "",
+        name: data.event?.name ?? "",
+        start_date: data.event?.start_date ?? null,
+        end_date: data.event?.end_date ?? null,
+        venue: data.event?.venue ?? null,
+        city: data.event?.city ?? null,
+        category: data.event?.category ?? null,
+        description: data.event?.description ?? null,
+        source_url: data.event?.source_url ?? null,
+        event_url: data.event?.event_url ?? null,
+        scouted_at: data.event?.scouted_at ?? "",
+      },
+    });
   }
+
+  return articles;
 }
 
-export function getEssayBySlug(slug: string): EssayWithEvent | null {
-  const db = getDb();
-  try {
-    const row = db
-      .prepare(
-        `SELECT
-          e.id, e.event_id, e.title, e.slug, e.lead, e.body, e.language,
-          e.word_count, e.model_used, e.written_at,
-          ev.id as ev_id, ev.name, ev.start_date, ev.end_date,
-          ev.venue, ev.city, ev.category, ev.description,
-          ev.source_url, ev.event_url, ev.scouted_at
-        FROM essays e
-        JOIN events ev ON ev.id = e.event_id
-        WHERE e.slug = ?`
-      )
-      .get(slug) as Record<string, unknown> | undefined;
-
-    return row ? mapRow(row) : null;
-  } finally {
-    db.close();
-  }
+export function getAllArticlesWithEvents(): ArticleWithEvent[] {
+  const articles = readAllArticleFiles();
+  articles.sort(
+    (a, b) => new Date(b.written_at).getTime() - new Date(a.written_at).getTime()
+  );
+  return articles;
 }
 
-export function getAllEssaySlugs(): string[] {
-  const db = getDb();
-  try {
-    const rows = db
-      .prepare("SELECT slug FROM essays")
-      .all() as { slug: string }[];
-    return rows.map((r) => r.slug);
-  } finally {
-    db.close();
-  }
-}
+export function getArticleBySlug(slug: string): ArticleWithEvent | null {
+  const filePath = path.join(DATA_DIR, "articles", `${slug}.json`);
+  if (!fs.existsSync(filePath)) return null;
 
-function mapRow(row: Record<string, unknown>): EssayWithEvent {
+  const raw = fs.readFileSync(filePath, "utf-8");
+  const data = JSON.parse(raw);
+
   return {
-    id: row.id as string,
-    event_id: row.event_id as string,
-    title: row.title as string,
-    slug: row.slug as string,
-    lead: row.lead as string,
-    body: row.body as string,
-    language: row.language as string,
-    word_count: row.word_count as number | null,
-    model_used: row.model_used as string | null,
-    written_at: row.written_at as string,
+    id: data.id,
+    event_id: data.event_id,
+    title: data.title,
+    slug: data.slug,
+    lead: data.lead,
+    body: data.body,
+    language: data.language,
+    word_count: data.word_count ?? null,
+    model_used: data.model_used ?? null,
+    written_at: data.written_at,
     event: {
-      id: row.ev_id as string,
-      name: row.name as string,
-      start_date: row.start_date as string | null,
-      end_date: row.end_date as string | null,
-      venue: row.venue as string | null,
-      city: row.city as string | null,
-      category: row.category as string | null,
-      description: row.description as string | null,
-      source_url: row.source_url as string | null,
-      event_url: row.event_url as string | null,
-      scouted_at: row.scouted_at as string,
+      id: data.event?.id ?? "",
+      name: data.event?.name ?? "",
+      start_date: data.event?.start_date ?? null,
+      end_date: data.event?.end_date ?? null,
+      venue: data.event?.venue ?? null,
+      city: data.event?.city ?? null,
+      category: data.event?.category ?? null,
+      description: data.event?.description ?? null,
+      source_url: data.event?.source_url ?? null,
+      event_url: data.event?.event_url ?? null,
+      scouted_at: data.event?.scouted_at ?? "",
     },
   };
+}
+
+export function getAllArticleSlugs(): string[] {
+  const articlesDir = path.join(DATA_DIR, "articles");
+  if (!fs.existsSync(articlesDir)) return [];
+
+  return fs
+    .readdirSync(articlesDir)
+    .filter((f) => f.endsWith(".json"))
+    .map((f) => f.replace(/\.json$/, ""));
 }
