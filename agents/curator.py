@@ -46,11 +46,11 @@ Available events:
 """
 
 
-def curate_event(city: str | None = None) -> CuratorResult:
+def curate_event(city: str | None = None, language: str = "") -> CuratorResult:
     city = city or config.CITY
     storage = EventStorage(config.DB_PATH)
 
-    available = storage.get_available_events()
+    available = storage.get_available_events(language=language)
     if not available:
         raise RuntimeError("No available events in DB. Run 'scout' first.")
 

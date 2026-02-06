@@ -6,3 +6,5 @@ output/
 .venv/
 *.egg-info/
 logs/
+.claude/
+.DS_Store

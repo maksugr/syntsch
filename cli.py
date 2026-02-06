@@ -69,7 +69,7 @@ def cmd_curate(args):
 
     storage = _get_storage()
 
-    available = storage.get_available_events()
+    available = storage.get_available_events(language=getattr(args, "language", ""))
 
     print(f"Available events in pool: {len(available)}")
 
@@ -77,7 +77,7 @@ def cmd_curate(args):
         print("No available events. Run 'scout' first.", file=sys.stderr)
         sys.exit(1)
 
-    result = curate_event(city=args.city)
+    result = curate_event(city=args.city, language=getattr(args, "language", ""))
 
     row = storage.get_event(result.chosen_event_id)
 
@@ -94,13 +94,13 @@ async def cmd_author(args):
     storage = _get_storage()
 
     if args.from_curator:
-        available = storage.get_available_events()
+        available = storage.get_available_events(language=args.language)
 
         if not available:
             print("No available events. Run 'scout' first.", file=sys.stderr)
             sys.exit(1)
 
-        result = curate_event(city=config.CITY)
+        result = curate_event(city=config.CITY, language=args.language)
 
         event_id = result.chosen_event_id
 
@@ -176,7 +176,7 @@ async def cmd_pipeline(args):
 
     print(f"\n=== CURATOR: selecting best event ===")
 
-    curator_result = curate_event(city=args.city)
+    curator_result = curate_event(city=args.city, language=args.language)
 
     event_id = curator_result.chosen_event_id
 

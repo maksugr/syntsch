@@ -29,7 +29,7 @@ For each event, extract:
 - name: the event title
 - start_date: when it starts (YYYY-MM-DD if possible, or approximate like "mid-February 2026")
 - end_date: when it ends (same format; if it's a single-day event, same as start_date; if unknown, leave empty)
-- venue: where it takes place
+- venue: where it takes place. If the event has no single specific venue (e.g. "Various locations", "Multiple venues", city-wide), leave this field as an empty string.
 - city: "{city}"
 - category: music / cinema / theater / exhibition / lecture / festival / performance / club
 - description: clean 2-3 sentence description

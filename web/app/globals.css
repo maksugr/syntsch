@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@theme {
+  --font-body: "Georgia", "Times New Roman", "Times", serif;
+  --font-mono: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, monospace;
+
+  --color-surface: #FFFFFF;
+  --color-ink: #000000;
+  --color-muted: #666666;
+  --color-accent: #B91C1C;
+}
+
+* {
+  border-radius: 0 !important;
+}
+
+::selection {
+  background: #B91C1C;
+  color: #FFFFFF;
+}
+
+body {
+  background: #FFFFFF;
+  color: #000000;
+  font-family: var(--font-body);
+}
+
+/* Underlines only in article body and sidebar — NOT on card links */
+article a,
+aside a {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2px;
+}
+
+/* ── Essay card hover ── */
+.essay-card {
+  transition: background-color 150ms ease;
+}
+
+.essay-card .card-title,
+.essay-card .card-lead,
+.essay-card .card-meta,
+.essay-card .card-category {
+  transition: color 150ms ease;
+}
+
+.essay-card:hover {
+  background-color: var(--cat-color);
+}
+
+.essay-card:hover .card-title {
+  color: #FFFFFF !important;
+}
+
+.essay-card:hover .card-category {
+  color: #FFFFFF !important;
+}
+
+.essay-card:hover .card-lead {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.essay-card:hover .card-meta {
+  color: rgba(255, 255, 255, 0.75) !important;
+}

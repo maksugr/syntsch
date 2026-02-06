@@ -89,36 +89,71 @@ class EventStorage:
             )
             return cursor.lastrowid
 
-    def is_already_covered(self, name: str, venue: str, start_date: str) -> bool:
+    def is_already_covered(self, name: str, venue: str, start_date: str, language: str = "") -> bool:
         with self._connect() as conn:
-            row = conn.execute(
-                """
-                SELECT 1 FROM events e
-                JOIN essays a ON a.event_id = e.id
-                WHERE lower(e.name) = lower(?)
-                   OR (lower(e.venue) = lower(?) AND e.start_date = ?)
-                LIMIT 1
-                """,
-                (name, venue, start_date),
-            ).fetchone()
+            lang_clause = "AND a.language = ?" if language else ""
+            params: list = [name, venue, start_date]
+            if language:
+                params.extend([language, language])
+            else:
+                params.extend([])
+            # Build query with optional language filter
+            if language:
+                row = conn.execute(
+                    """
+                    SELECT 1 FROM events e
+                    JOIN essays a ON a.event_id = e.id
+                    WHERE (lower(e.name) = lower(?)
+                       OR (lower(e.venue) = lower(?) AND e.start_date = ?))
+                      AND a.language = ?
+                    LIMIT 1
+                    """,
+                    (name, venue, start_date, language),
+                ).fetchone()
+            else:
+                row = conn.execute(
+                    """
+                    SELECT 1 FROM events e
+                    JOIN essays a ON a.event_id = e.id
+                    WHERE lower(e.name) = lower(?)
+                       OR (lower(e.venue) = lower(?) AND e.start_date = ?)
+                    LIMIT 1
+                    """,
+                    (name, venue, start_date),
+                ).fetchone()
             return row is not None
 
-    def get_available_events(self, today: str | None = None) -> list[dict]:
+    def get_available_events(self, today: str | None = None, language: str = "") -> list[dict]:
         today = today or datetime.now().strftime("%Y-%m-%d")
         with self._connect() as conn:
-            rows = conn.execute(
-                """
-                SELECT e.* FROM events e
-                LEFT JOIN essays a ON a.event_id = e.id
-                WHERE a.id IS NULL
-                  AND (
-                    e.end_date >= ? OR e.start_date >= ?
-                    OR (e.start_date = '' AND e.end_date = '')
-                  )
-                ORDER BY e.scouted_at DESC
-                """,
-                (today, today),
-            ).fetchall()
+            if language:
+                rows = conn.execute(
+                    """
+                    SELECT e.* FROM events e
+                    LEFT JOIN essays a ON a.event_id = e.id AND a.language = ?
+                    WHERE a.id IS NULL
+                      AND (
+                        e.end_date >= ? OR e.start_date >= ?
+                        OR (e.start_date = '' AND e.end_date = '')
+                      )
+                    ORDER BY e.scouted_at DESC
+                    """,
+                    (language, today, today),
+                ).fetchall()
+            else:
+                rows = conn.execute(
+                    """
+                    SELECT e.* FROM events e
+                    LEFT JOIN essays a ON a.event_id = e.id
+                    WHERE a.id IS NULL
+                      AND (
+                        e.end_date >= ? OR e.start_date >= ?
+                        OR (e.start_date = '' AND e.end_date = '')
+                      )
+                    ORDER BY e.scouted_at DESC
+                    """,
+                    (today, today),
+                ).fetchall()
             return [dict(row) for row in rows]
 
     def get_recent_categories(self, days: int = 7) -> list[str]:

@@ -11,15 +11,15 @@ class TavilyEventSource(EventSource):
         self.client = AsyncTavilyClient(api_key=api_key)
 
     async def fetch_events(self, city: str, days_ahead: int) -> list[EventCandidate]:
-        today = datetime.now()
-        end_date = today + timedelta(days=days_ahead)
-        date_range = f"{today.strftime('%B %d')} to {end_date.strftime('%B %d %Y')}"
+        tomorrow = datetime.now() + timedelta(days=1)
+        end_date = tomorrow + timedelta(days=days_ahead)
+        date_range = f"{tomorrow.strftime('%B %d')} to {end_date.strftime('%B %d %Y')}"
 
         queries = [
             f"{city} cultural events {date_range} concerts exhibitions theater",
             f"{city} what to do this week art music cinema",
-            f"{city} upcoming events {today.strftime('%B %Y')} gallery performance lecture",
-            f"{city} Veranstaltungen Konzerte Ausstellung Theater {today.strftime('%B %Y')}",
+            f"{city} upcoming events {tomorrow.strftime('%B %Y')} gallery performance lecture",
+            f"{city} Veranstaltungen Konzerte Ausstellung Theater {tomorrow.strftime('%B %Y')}",
             f"{city} underground alternative events {date_range} club night festival",
         ]
 

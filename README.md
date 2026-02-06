@@ -7,7 +7,7 @@ Autonomous cultural digest. Finds interesting events in your city, writes essay-
 Four agents run in a chain:
 
 1. **Scout** — searches for cultural events, saves 5 candidates to DB
-2. **Curator** — picks the best event from the pool of all non-expired, unwritten events
+2. **Curator** — picks the best event from the pool of all non-expired, unwritten events (per language)
 3. **Author** — researches the event deeply, writes a long-form essay with Dazed-style tone of voice, generates a lede for the card preview
 4. **Publisher** — formats and publishes to website + sends email to subscribers (not yet implemented)
 
@@ -85,7 +85,37 @@ python cli.py pipeline
 python cli.py pipeline --city Berlin --language en
 ```
 
+One event can have essays in all three languages. The curator and author filter by language — so running `--language de` won't skip an event that already has an English essay.
+
 All data is stored in SQLite (`data/events.db`). Human-readable output (`.md`, `.json`) is also saved to `output/` for convenience.
+
+## Web app
+
+Static Next.js 16 site (Tailwind v4, brutalist design). Located in `web/`.
+
+### Features
+
+- **i18n**: language selector (en/de/ru) persisted in cookie, translates category names, sidebar labels, dates
+- **Fonts**: Bebas Neue (Latin) + Russo One (Cyrillic), switched per language via CSS variable
+- **Feed**: 2-column card grid on desktop, category filters
+- **Dates**: locale-aware formatting (en-GB, de-DE for Latin; short month names; per-language)
+- **Static export** to `web/out/`
+
+### Run locally
+
+```bash
+cd web
+npm install
+npm run dev
+```
+
+### Build
+
+```bash
+cd web
+npm run build
+# output in web/out/
+```
 
 ## Project structure
 
@@ -94,10 +124,10 @@ ptytsch2/
 ├── cli.py                 — all CLI commands (scout, curate, author, pipeline)
 ├── config.py              — settings (city, models, language)
 ├── models.py              — Pydantic data models
-├── storage.py             — SQLite storage (events + essays tables)
+├── storage.py             — SQLite storage (events + essays, language-aware dedup)
 ├── agents/
 │   ├── scout.py           — event discovery (finds 5 candidates)
-│   ├── curator.py         — event selection (picks best from pool)
+│   ├── curator.py         — event selection (picks best from pool, per language)
 │   └── author.py          — essay generation with self-critique
 ├── sources/
 │   ├── base.py            — event source interface
@@ -106,6 +136,11 @@ ptytsch2/
 ├── prompts/
 │   ├── author_system.md   — author system prompt
 │   └── critic_system.md   — self-critique prompt
+├── web/                   — Next.js 16 static site
+│   ├── app/               — pages (home feed, article/[id])
+│   ├── components/        — Header, LanguageSelector, LanguageProvider,
+│   │                        EssayCard, EssayFeed, CategoryTag, EventSidebar
+│   └── lib/               — db.ts, types.ts, translations.ts
 ├── examples/              — sample event JSONs
 ├── output/                — generated essays and scout results
 └── data/                  — SQLite database (gitignored)
@@ -123,4 +158,4 @@ Create a class in `sources/` that implements `EventSource.fetch_events()`. Regis
 
 ### Add a new language
 
-Set `ESSAY_LANGUAGE` in `config.py` to `"en"`, `"de"`, or `"ru"`. The author prompt adjusts automatically. To add more languages, extend the language-specific sections in `prompts/author_system.md`.
+Set `ESSAY_LANGUAGE` in `config.py` to `"en"`, `"de"`, or `"ru"`. The author prompt adjusts automatically. To add more languages, extend the language-specific sections in `prompts/author_system.md` and add translations in `web/lib/translations.ts`.

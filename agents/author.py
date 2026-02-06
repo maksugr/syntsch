@@ -54,6 +54,8 @@ async def write_essay(
 
     title = _extract_title(revised_text)
     revised_text = _strip_title(revised_text)
+    if title == "Untitled":
+        title = _generate_title(client, event, revised_text, language)
     word_count = len(revised_text.split())
 
     if word_count < 400:
@@ -102,10 +104,10 @@ def _generate_lead(
         max_tokens=512,
         system=(
             "You write lede lines for a cultural publication with the voice of Dazed/i-D. "
-            "A lede is a short paragraph that captures both the event and the mood of the essay. "
+            "A lede is 1-2 paragraphs that captures both the event and the mood of the essay. "
             "It goes on a card/preview, so it must hook the reader instantly.\n\n"
             "Rules:\n"
-            "- 4-6 sentences.\n"
+            "- 1-2 sentences.\n"
             "- Same language as the essay.\n"
             "- Never use: 'vibrant', 'iconic', 'legendary', 'must-see', 'unmissable', "
             "'breathtaking', 'innovative', 'thought-provoking', 'boundary-pushing', "
@@ -130,6 +132,43 @@ def _generate_lead(
         ],
     )
     return response.content[0].text.strip()
+
+
+def _generate_title(
+    client: anthropic.Anthropic,
+    event: EventCandidate,
+    body: str,
+    language: str,
+) -> str:
+    lang_names = {"en": "English", "de": "German", "ru": "Russian"}
+    lang_name = lang_names.get(language, "English")
+
+    response = client.messages.create(
+        model=config.LEAD_MODEL,
+        max_tokens=128,
+        system=(
+            "You write headlines for a cultural publication with the voice of Dazed/i-D. "
+            "Rules:\n"
+            "- One short, punchy headline. No subtitle.\n"
+            "- Same language as the essay.\n"
+            "- No quotes around the title.\n"
+            "- No period at the end.\n"
+            "- Proper nouns stay in Latin script, always.\n"
+            "- Return ONLY the title text, nothing else."
+        ),
+        messages=[
+            {
+                "role": "user",
+                "content": (
+                    f"Write a title in {lang_name} for this essay.\n\n"
+                    f"Event: {event.name} @ {event.venue}, {event.city}\n"
+                    f"Category: {event.category}\n\n"
+                    f"Essay:\n{body[:2000]}"
+                ),
+            }
+        ],
+    )
+    return response.content[0].text.strip().strip('"').strip("'")
 
 
 def _load_author_prompt(language: str) -> str:
