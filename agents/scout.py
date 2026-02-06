@@ -1,0 +1,124 @@
+import json
+import os
+from datetime import datetime
+
+import anthropic
+
+import config
+from models import EventCandidate, ScoutResult
+from sources.tavily_search import TavilyEventSource
+from storage import EventStorage
+
+SCOUT_PROMPT = """\
+You are a cultural scout for a publication with the sensibility of i-D and Dazed magazines. \
+Your audience is culturally literate, 20-35, interested in music, art, cinema, performance, \
+club culture, and the intersection of subculture and mainstream. They live in {city}.
+
+You will receive a list of raw event data scraped from the web. Your job is to:
+
+1. Parse the raw data and identify distinct cultural events.
+
+2. Select exactly 5 events that would each make a good subject for a long-form essay-review. \
+Pick events that a Dazed editor would greenlight — things that have a story behind them, \
+cultural weight, a reason to exist beyond entertainment.
+
+Each event should be independently interesting. Do NOT rank them or compare them to each other. \
+Just pick 5 solid candidates from different categories if possible.
+
+For each event, extract:
+- name: the event title
+- start_date: when it starts (YYYY-MM-DD if possible, or approximate like "mid-February 2026")
+- end_date: when it ends (same format; if it's a single-day event, same as start_date; if unknown, leave empty)
+- venue: where it takes place
+- city: "{city}"
+- category: music / cinema / theater / exhibition / lecture / festival / performance / club
+- description: clean 2-3 sentence description
+- source_url: URL of the article/listing where you found the event
+- event_url: official event page (venue website, ticketing page, gallery page) if you can find it in the snippets. If not available, leave empty.
+
+Quality bar for inclusion:
+- CULTURAL SIGNIFICANCE: Is there a real story here? A debut, a comeback, a collision of scenes, \
+a political dimension, a generational moment?
+- DEPTH POTENTIAL: Can a writer spend 1000 words on this without padding?
+- TIMELINESS: Happening within the next 1-2 weeks. Prefer events that haven't happened yet.
+- NON-OBVIOUSNESS: Skip the most predictable picks.
+
+IMPORTANT:
+- If an entry is clearly not a cultural event (news article, restaurant listing), skip it.
+- If you can find fewer than 5 worthy events, return fewer. Never pad with weak picks.
+- Do NOT include events that are clearly duplicates of each other.
+
+Respond in JSON format:
+{{
+    "events": [
+        {{
+            "name": "...",
+            "start_date": "...",
+            "end_date": "...",
+            "venue": "...",
+            "city": "{city}",
+            "category": "...",
+            "description": "...",
+            "source_url": "...",
+            "event_url": "..."
+        }}
+    ]
+}}
+
+Raw event data:
+{events_json}
+"""
+
+
+async def scout_event(
+    city: str | None = None,
+    days_ahead: int | None = None,
+) -> ScoutResult:
+    city = city or config.CITY
+    days_ahead = days_ahead or config.DAYS_AHEAD
+
+    tavily_key = os.environ.get("TAVILY_API_KEY", "")
+    source = TavilyEventSource(api_key=tavily_key)
+    candidates = await source.fetch_events(city, days_ahead)
+
+    if not candidates:
+        raise RuntimeError(f"No events found for {city}")
+
+    storage = EventStorage(config.DB_PATH)
+    filtered = [
+        c for c in candidates
+        if not storage.is_already_covered(c.name, c.venue, c.start_date)
+    ]
+
+    if not filtered:
+        filtered = candidates
+
+    events_json = json.dumps(
+        [c.model_dump() for c in filtered],
+        indent=2,
+        ensure_ascii=False,
+    )
+
+    prompt = SCOUT_PROMPT.format(
+        city=city,
+        events_json=events_json,
+    )
+
+    client = anthropic.Anthropic()
+    response = client.messages.create(
+        model=config.SCOUT_MODEL,
+        max_tokens=4096,
+        messages=[{"role": "user", "content": prompt}],
+    )
+
+    raw_text = response.content[0].text
+    start = raw_text.find("{")
+    end = raw_text.rfind("}") + 1
+    parsed = json.loads(raw_text[start:end])
+
+    events = [EventCandidate(**e) for e in parsed["events"]]
+
+    return ScoutResult(
+        events=events,
+        searched_at=datetime.now(),
+    )
