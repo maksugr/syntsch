@@ -1,4 +1,4 @@
-name: Author Articles & Deploy
+name: Author Articles
 
 on:
   schedule:
@@ -7,8 +7,6 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 jobs:
   author:
@@ -35,29 +33,3 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/articles/
           git diff --staged --quiet || git commit -m "author: add new articles" && git push
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-
-      - name: Build web
-        working-directory: web
-        run: |
-          npm install
-          npm run build
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: web/out
-
-  deploy:
-    needs: author
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
