@@ -2,7 +2,7 @@ name: Author Articles
 
 on:
   schedule:
-    - cron: "0 8,11,14,17,20 * * *" # 09-21 CET every 3h
+    - cron: "0 18 * * *" # 19:00 CET
   workflow_dispatch:
 
 permissions:

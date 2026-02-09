@@ -2,7 +2,7 @@ name: Scout Events
 
 on:
   schedule:
-    - cron: "0 7,19 * * *" # 08:00, 20:00 CET
+    - cron: "0 17 * * *" # 18:00 CET
   workflow_dispatch:
 
 permissions:
