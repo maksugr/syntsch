@@ -3,7 +3,7 @@
 import Link from "next/link";
 import type { ArticleWithEvent } from "@/lib/types";
 import { CATEGORY_COLORS } from "@/lib/types";
-import { formatDate, tCategory } from "@/lib/translations";
+import { formatDate, tCategory, isDatePast } from "@/lib/translations";
 import { useLanguage } from "./LanguageProvider";
 
 export default function ArticleCard({ article }: { article: ArticleWithEvent }) {
@@ -49,7 +49,7 @@ export default function ArticleCard({ article }: { article: ArticleWithEvent }) 
       >
         {article.event.venue && <span>{article.event.venue}</span>}
         {article.event.venue && rawDate && <span>/</span>}
-        {rawDate && <span>{date}</span>}
+        {rawDate && <span style={isDatePast(rawDate) ? { textDecoration: "line-through" } : undefined}>{date}</span>}
       </div>
     </Link>
   );

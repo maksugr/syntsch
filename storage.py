@@ -10,9 +10,21 @@ from pathlib import Path
 from models import EventCandidate, ArticleOutput
 
 
+_CYRILLIC_TRANSLIT = {
+    "а": "a", "б": "b", "в": "v", "г": "g", "д": "d", "е": "e", "ё": "yo",
+    "ж": "zh", "з": "z", "и": "i", "й": "y", "к": "k", "л": "l", "м": "m",
+    "н": "n", "о": "o", "п": "p", "р": "r", "с": "s", "т": "t", "у": "u",
+    "ф": "f", "х": "kh", "ц": "ts", "ч": "ch", "ш": "sh", "щ": "shch",
+    "ъ": "", "ы": "y", "ь": "", "э": "e", "ю": "yu", "я": "ya",
+}
+
+
 def generate_slug(text: str) -> str:
-    """Classic web slug: lowercase, ASCII Latin only, hyphens for spaces."""
-    text = unicodedata.normalize("NFKD", text.lower())
+    """Classic web slug: lowercase, ASCII Latin only, hyphens for spaces.
+    Transliterates Cyrillic before stripping to ASCII."""
+    text = text.lower()
+    text = "".join(_CYRILLIC_TRANSLIT.get(ch, ch) for ch in text)
+    text = unicodedata.normalize("NFKD", text)
     text = text.encode("ascii", "ignore").decode("ascii")
     text = re.sub(r"[^a-z0-9]+", "-", text)
     return text.strip("-")

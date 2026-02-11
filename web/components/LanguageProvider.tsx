@@ -3,14 +3,20 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 import type { Lang } from "@/lib/translations";
 
+export type ViewMode = "single" | "grid";
+
 interface LanguageContextValue {
   lang: Lang;
   setLang: (lang: Lang) => void;
+  viewMode: ViewMode;
+  setViewMode: (mode: ViewMode) => void;
 }
 
 const LanguageContext = createContext<LanguageContextValue>({
   lang: "en",
   setLang: () => {},
+  viewMode: "single",
+  setViewMode: () => {},
 });
 
 function getCookie(name: string): string | undefined {
@@ -24,14 +30,21 @@ function setCookie(name: string, value: string, maxAgeDays: number) {
 
 const VALID_LANGS: Lang[] = ["en", "de", "ru"];
 const COOKIE_NAME = "ptytsch_lang";
+const VIEW_COOKIE = "ptytsch_view";
+const VALID_VIEWS: ViewMode[] = ["single", "grid"];
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>("en");
+  const [viewMode, setViewModeState] = useState<ViewMode>("single");
 
   useEffect(() => {
-    const saved = getCookie(COOKIE_NAME);
-    if (saved && VALID_LANGS.includes(saved as Lang)) {
-      setLangState(saved as Lang);
+    const savedLang = getCookie(COOKIE_NAME);
+    if (savedLang && VALID_LANGS.includes(savedLang as Lang)) {
+      setLangState(savedLang as Lang);
+    }
+    const savedView = getCookie(VIEW_COOKIE);
+    if (savedView && VALID_VIEWS.includes(savedView as ViewMode)) {
+      setViewModeState(savedView as ViewMode);
     }
   }, []);
 
@@ -47,8 +60,13 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     setCookie(COOKIE_NAME, newLang, 365);
   };
 
+  const setViewMode = (mode: ViewMode) => {
+    setViewModeState(mode);
+    setCookie(VIEW_COOKIE, mode, 365);
+  };
+
   return (
-    <LanguageContext.Provider value={{ lang, setLang }}>
+    <LanguageContext.Provider value={{ lang, setLang, viewMode, setViewMode }}>
       {children}
     </LanguageContext.Provider>
   );

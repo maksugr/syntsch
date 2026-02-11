@@ -45,22 +45,24 @@ aside a {
   transition: color 150ms ease;
 }
 
-.article-card:hover {
-  background-color: var(--cat-color);
-}
+@media (hover: hover) {
+  .article-card:hover {
+    background-color: var(--cat-color);
+  }
 
-.article-card:hover .card-title {
-  color: #FFFFFF !important;
-}
+  .article-card:hover .card-title {
+    color: #FFFFFF !important;
+  }
 
-.article-card:hover .card-category {
-  color: #FFFFFF !important;
-}
+  .article-card:hover .card-category {
+    color: #FFFFFF !important;
+  }
 
-.article-card:hover .card-lead {
-  color: rgba(255, 255, 255, 0.9) !important;
-}
+  .article-card:hover .card-lead {
+    color: rgba(255, 255, 255, 0.9) !important;
+  }
 
-.article-card:hover .card-meta {
-  color: rgba(255, 255, 255, 0.75) !important;
+  .article-card:hover .card-meta {
+    color: rgba(255, 255, 255, 0.75) !important;
+  }
 }

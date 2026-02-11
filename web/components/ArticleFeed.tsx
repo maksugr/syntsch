@@ -1,23 +1,30 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import type { ArticleWithEvent } from "@/lib/types";
 import { CATEGORY_COLORS } from "@/lib/types";
-import { tCategory, tUi } from "@/lib/translations";
+import { tCategory, tUi, formatDate, isDatePast } from "@/lib/translations";
 import { useLanguage } from "./LanguageProvider";
 import ArticleCard from "./ArticleCard";
+import ArticleBody from "./ArticleBody";
+import CategoryTag from "./CategoryTag";
 
 const CATEGORIES = Object.keys(CATEGORY_COLORS);
 
 export default function ArticleFeed({ articles }: { articles: ArticleWithEvent[] }) {
-  const { lang } = useLanguage();
+  const { lang, viewMode } = useLanguage();
   const [category, setCategory] = useState<string | null>(null);
+  const [visible, setVisible] = useState(10);
 
   const filtered = articles.filter((a) => {
     if (a.language.toLowerCase() !== lang) return false;
     if (category && a.event.category !== category) return false;
     return true;
   });
+
+  const shown = filtered.slice(0, visible);
+  const hasMore = filtered.length > visible;
 
   return (
     <div>
@@ -29,7 +36,7 @@ export default function ArticleFeed({ articles }: { articles: ArticleWithEvent[]
             return (
               <button
                 key={c}
-                onClick={() => setCategory(active ? null : c)}
+                onClick={() => { setCategory(active ? null : c); setVisible(10); }}
                 className="pr-5 text-2xl md:text-3xl uppercase leading-none tracking-tight transition-all duration-100 cursor-pointer"
                 style={{
                   fontFamily: 'var(--font-display)',
@@ -62,13 +69,86 @@ export default function ArticleFeed({ articles }: { articles: ArticleWithEvent[]
             {tUi(lang, "nothingYet")}
           </p>
         </div>
+      ) : viewMode === "single" ? (
+        <LatestArticle article={filtered[0]} />
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-0 pt-8">
-          {filtered.map((article) => (
-            <ArticleCard key={article.id} article={article} />
-          ))}
+        <div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-0 pt-8">
+            {shown.map((article) => (
+              <ArticleCard key={article.id} article={article} />
+            ))}
+          </div>
+          {hasMore && (
+            <div className="pt-10 text-center">
+              <button
+                onClick={() => setVisible((v) => v + 10)}
+                className="text-3xl md:text-5xl uppercase tracking-tight cursor-pointer"
+                style={{
+                  fontFamily: "var(--font-display)",
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  color: "#999999",
+                }}
+              >
+                {tUi(lang, "loadMore")}
+              </button>
+            </div>
+          )}
         </div>
       )}
+    </div>
+  );
+}
+
+function LatestArticle({ article }: { article: ArticleWithEvent }) {
+  const { lang } = useLanguage();
+  const rawDate = article.event.start_date || article.written_at.split("T")[0];
+  const date = formatDate(lang, rawDate);
+  const color = CATEGORY_COLORS[article.event.category || ""] || "#666666";
+
+  return (
+    <div className="max-w-3xl mx-auto pt-8">
+      <div className="mb-6">
+        <CategoryTag category={article.event.category} />
+      </div>
+
+      <h1
+        className="text-5xl md:text-7xl lg:text-8xl leading-[0.9] mb-8"
+        style={{ fontFamily: "var(--font-display)" }}
+      >
+        {article.title}
+      </h1>
+
+      <div
+        className="flex items-center gap-3 text-xs font-mono font-bold uppercase tracking-[0.2em] mb-8"
+        style={{ color: "#999999" }}
+      >
+        {article.event.venue && <span>{article.event.venue}</span>}
+        {article.event.venue && rawDate && <span>/</span>}
+        {rawDate && <span style={isDatePast(rawDate) ? { textDecoration: "line-through" } : undefined}>{date}</span>}
+      </div>
+
+      {article.lead && (
+        <p
+          className="text-xl md:text-2xl leading-relaxed mb-10 border-l-4 border-black pl-6"
+          style={{ color: "#666666" }}
+        >
+          {article.lead}
+        </p>
+      )}
+
+      <ArticleBody body={article.body} />
+
+      <div className="mt-12 mb-8">
+        <Link
+          href={`/article/${article.slug}`}
+          className="font-mono text-sm tracking-wide no-underline transition-colors duration-100"
+          style={{ color: "#999999" }}
+        >
+          {tUi(lang, "permalink")} →
+        </Link>
+      </div>
     </div>
   );
 }
