@@ -3,7 +3,7 @@ import { Bebas_Neue, Russo_One } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { LanguageProvider } from "@/components/LanguageProvider";
-import { Analytics } from "@vercel/analytics/react";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const bebasNeue = Bebas_Neue({
