@@ -3,7 +3,7 @@
 import Link from "next/link";
 import type { ArticleWithEvent } from "@/lib/types";
 import { CATEGORY_COLORS } from "@/lib/types";
-import { formatDate, tCategory, isDatePast } from "@/lib/translations";
+import { formatDate, tCategory, isDatePast, readingTime, tUi } from "@/lib/translations";
 import { useLanguage } from "./LanguageProvider";
 
 export default function ArticleCard({ article }: { article: ArticleWithEvent }) {
@@ -44,12 +44,12 @@ export default function ArticleCard({ article }: { article: ArticleWithEvent }) 
       )}
 
       <div
-        className="card-meta flex items-center gap-3 text-xs font-mono font-bold uppercase tracking-[0.2em]"
+        className="card-meta flex flex-col gap-1 text-xs font-mono font-bold uppercase tracking-[0.2em]"
         style={{ color: '#999999' }}
       >
         {article.event.venue && <span>{article.event.venue}</span>}
-        {article.event.venue && rawDate && <span>/</span>}
         {rawDate && <span style={isDatePast(rawDate) ? { textDecoration: "line-through" } : undefined}>{date}</span>}
+        <span className="text-[8px]">{readingTime(article.word_count)} {tUi(lang, "minRead")}</span>
       </div>
     </Link>
   );

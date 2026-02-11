@@ -34,6 +34,13 @@ const translations: Record<
             aboutText3:
                 "No editors. No rewritten press releases. Just truth and emotion.",
             loadMore: "more",
+            notFound: "NOTHING HERE",
+            backHome: "back to PTYTSCH",
+            published: "Published",
+            minRead: "min read",
+            copied: "copied",
+            copyLink: "copy link",
+            weAreClose: "We are close",
         },
     },
     de: {
@@ -63,6 +70,13 @@ const translations: Record<
             aboutText3:
                 "Keine Redakteure. Keine umgeschriebenen Pressemitteilungen. Nur Wahrheit und Emotion.",
             loadMore: "mehr",
+            notFound: "HIER IST NICHTS",
+            backHome: "zurück zu PTYTSCH",
+            published: "Veröffentlicht",
+            minRead: "Min. Lesezeit",
+            copied: "kopiert",
+            copyLink: "Link kopieren",
+            weAreClose: "Wir sind nah",
         },
     },
     ru: {
@@ -92,6 +106,13 @@ const translations: Record<
             aboutText3:
                 "Никаких редакторов. Никаких переписанных пресс-релизов. Только правда и эмоция.",
             loadMore: "больше",
+            notFound: "ЗДЕСЬ НИЧЕГО",
+            backHome: "назад на PTYTSCH",
+            published: "Опубликовано",
+            minRead: "мин. чтения",
+            copied: "скопировано",
+            copyLink: "скопировать ссылку",
+            weAreClose: "Мы рядом",
         },
     },
 };
@@ -119,6 +140,11 @@ const LOCALE_MAP: Record<Lang, string> = {
     de: "de-DE",
     ru: "ru-RU",
 };
+
+export function readingTime(wordCount: number | null): number {
+    if (!wordCount || wordCount <= 0) return 1;
+    return Math.max(1, Math.round(wordCount / 200));
+}
 
 export function formatDate(lang: Lang, dateStr: string): string {
     const d = new Date(dateStr + "T00:00:00");

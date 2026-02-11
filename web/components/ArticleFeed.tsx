@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import type { ArticleWithEvent } from "@/lib/types";
 import { CATEGORY_COLORS } from "@/lib/types";
-import { tCategory, tUi, formatDate, isDatePast } from "@/lib/translations";
+import { tCategory, tUi, formatDate, isDatePast, readingTime } from "@/lib/translations";
 import { useLanguage } from "./LanguageProvider";
 import ArticleCard from "./ArticleCard";
 import ArticleBody from "./ArticleBody";
@@ -121,12 +121,12 @@ function LatestArticle({ article }: { article: ArticleWithEvent }) {
       </h1>
 
       <div
-        className="flex items-center gap-3 text-xs font-mono font-bold uppercase tracking-[0.2em] mb-8"
+        className="flex flex-col md:flex-row md:items-center md:justify-between gap-1 md:gap-3 text-xs font-mono font-bold uppercase tracking-[0.2em] mb-8"
         style={{ color: "#999999" }}
       >
         {article.event.venue && <span>{article.event.venue}</span>}
-        {article.event.venue && rawDate && <span>/</span>}
         {rawDate && <span style={isDatePast(rawDate) ? { textDecoration: "line-through" } : undefined}>{date}</span>}
+        <span className="text-[8px]">{readingTime(article.word_count)} {tUi(lang, "minRead")}</span>
       </div>
 
       {article.lead && (

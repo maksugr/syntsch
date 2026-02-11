@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getAllArticleSlugs, getArticleBySlug } from "@/lib/db";
 import ArticleBody from "@/components/ArticleBody";
+import ArticleMeta from "@/components/ArticleMeta";
+import CopyLinkButton from "@/components/CopyLinkButton";
 import EventSidebar from "@/components/EventSidebar";
 
 export function generateStaticParams() {
@@ -62,8 +64,8 @@ export default async function ArticlePage({
     description: article.lead || article.body.slice(0, 160),
     datePublished: article.written_at,
     inLanguage: article.language,
-    author: { "@type": "Organization", name: "PTYTSCH" },
-    publisher: { "@type": "Organization", name: "PTYTSCH", url: "https://ptytsch.de" },
+    author: { "@type": "Organization", name: "PTYTSCH", email: "hi@ptytsch.de" },
+    publisher: { "@type": "Organization", name: "PTYTSCH", url: "https://ptytsch.de", email: "hi@ptytsch.de" },
     mainEntityOfPage: `https://ptytsch.de/article/${slug}`,
     ...(article.event.name && {
       about: {
@@ -96,6 +98,8 @@ export default async function ArticlePage({
           {article.title}
         </h1>
 
+        <ArticleMeta writtenAt={article.written_at} wordCount={article.word_count} />
+
         {article.lead && (
           <p
             className="text-xl md:text-2xl leading-relaxed mb-10 border-l-4 border-black pl-6"
@@ -107,6 +111,9 @@ export default async function ArticlePage({
 
         <ArticleBody body={article.body} />
 
+        <div className="mt-12">
+          <CopyLinkButton />
+        </div>
       </article>
 
       <div className="lg:w-[40%]">

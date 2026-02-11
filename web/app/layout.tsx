@@ -3,6 +3,7 @@ import { Bebas_Neue, Russo_One } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { LanguageProvider } from "@/components/LanguageProvider";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 const bebasNeue = Bebas_Neue({
@@ -21,7 +22,7 @@ const russoOne = Russo_One({
 
 export const metadata: Metadata = {
   title: {
-    default: "PTYTSCH — Berlin Cultural Digest",
+    default: "PTYTSCH",
     template: "%s — PTYTSCH",
   },
   description:
@@ -38,7 +39,7 @@ export const metadata: Metadata = {
     "Kultur",
     "Berlin Veranstaltungen",
   ],
-  authors: [{ name: "PTYTSCH" }],
+  authors: [{ name: "PTYTSCH", url: "mailto:hi@ptytsch.de" }],
   creator: "PTYTSCH",
   metadataBase: new URL("https://ptytsch.de"),
   openGraph: {
@@ -46,15 +47,17 @@ export const metadata: Metadata = {
     locale: "en_GB",
     alternateLocale: ["de_DE", "ru_RU"],
     siteName: "PTYTSCH",
-    title: "PTYTSCH — Berlin Cultural Digest",
+    title: "PTYTSCH",
     description:
       "AI-powered daily essays on the most compelling upcoming cultural events in Berlin.",
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "PTYTSCH" }],
   },
   twitter: {
-    card: "summary",
-    title: "PTYTSCH — Berlin Cultural Digest",
+    card: "summary_large_image",
+    title: "PTYTSCH",
     description:
       "AI-powered daily essays on the most compelling upcoming cultural events in Berlin.",
+    images: ["/og.png"],
   },
   robots: {
     index: true,
@@ -67,6 +70,9 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: "https://ptytsch.de",
+    types: {
+      "application/rss+xml": "/feed.xml",
+    },
   },
 };
 
@@ -85,6 +91,7 @@ export default function RootLayout({
           </main>
           <Footer />
         </LanguageProvider>
+        <Analytics />
       </body>
     </html>
   );

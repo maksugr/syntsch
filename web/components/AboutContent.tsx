@@ -44,6 +44,22 @@ export default function AboutContent() {
             </div>
 
             <div className="mt-16 md:mt-24 pt-8 border-t-4 border-black">
+                <p className="font-mono text-sm mb-6" style={{ color: "#999999" }}>
+                    {tUi(lang, "weAreClose")}{" — "}
+                    <a
+                        href="mailto:hi@ptytsch.de"
+                        className="no-underline transition-colors duration-100"
+                        style={{ color: "#999999", textDecoration: "none" }}
+                        onMouseEnter={(e) =>
+                            (e.currentTarget.style.color = "#000000")
+                        }
+                        onMouseLeave={(e) =>
+                            (e.currentTarget.style.color = "#999999")
+                        }
+                    >
+                        hi@ptytsch.de
+                    </a>
+                </p>
                 <Link
                     href="/"
                     className="font-mono text-sm tracking-wide no-underline transition-colors duration-100"
