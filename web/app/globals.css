@@ -45,6 +45,13 @@ aside a {
   transition: color 150ms ease;
 }
 
+.article-card .gen-art circle,
+.article-card .gen-art line,
+.article-card .gen-art polygon,
+.article-card .gen-art path {
+  transition: stroke 150ms ease, fill 150ms ease;
+}
+
 @media (hover: hover) {
   .article-card:hover {
     background-color: var(--cat-color);
@@ -64,5 +71,13 @@ aside a {
 
   .article-card:hover .card-meta {
     color: rgba(255, 255, 255, 0.75) !important;
+  }
+
+  .article-card:hover .gen-art circle,
+  .article-card:hover .gen-art line,
+  .article-card:hover .gen-art polygon,
+  .article-card:hover .gen-art path {
+    stroke: #FFFFFF !important;
+    fill: #FFFFFF !important;
   }
 }
