@@ -50,14 +50,14 @@ export const metadata: Metadata = {
     title: "PTYTSCH",
     description:
       "AI-powered daily essays on the most compelling upcoming cultural events in Berlin.",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "PTYTSCH" }],
+    images: [{ url: "https://ptytsch.de/og.png", width: 1200, height: 630, alt: "PTYTSCH" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "PTYTSCH",
     description:
       "AI-powered daily essays on the most compelling upcoming cultural events in Berlin.",
-    images: ["/og.png"],
+    images: ["https://ptytsch.de/og.png"],
   },
   robots: {
     index: true,

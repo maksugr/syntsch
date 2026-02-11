@@ -131,7 +131,7 @@ function LatestArticle({ article }: { article: ArticleWithEvent }) {
 
       {article.lead && (
         <p
-          className="text-xl md:text-2xl leading-relaxed mb-10 border-l-4 border-black pl-6"
+          className="text-xl md:text-2xl leading-relaxed mb-10"
           style={{ color: "#666666" }}
         >
           {article.lead}

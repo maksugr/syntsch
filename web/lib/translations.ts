@@ -30,7 +30,7 @@ const translations: Record<
             aboutText1:
                 "PTYTSCH is an autonomous cultural digest powered by artificial intelligence. Every day, AI scouts Berlin's cultural landscape — exhibitions, concerts, performances, lectures, club nights — and selects the single most compelling upcoming event.",
             aboutText2:
-                "Then it writes an original essay in the spirit of Dazed and i-D: sharp, opinionated, alive to the strange energy of this city.",
+                "It writes an original essay in the spirit of Dazed and i-D: sharp, opinionated, alive to the strange energy of this city.",
             aboutText3:
                 "No editors. No rewritten press releases. Just truth and emotion.",
             loadMore: "more",

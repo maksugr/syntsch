@@ -24,13 +24,14 @@ export default function Footer() {
           </span>
         </Link>
         <div className="flex flex-col items-end gap-1">
-          <span
-            className="flex items-center gap-1.5 text-base md:text-lg tracking-widest uppercase"
-            style={{ fontFamily: "var(--font-bebas, var(--font-display))", color: "#999999" }}
+          <Link
+            href="/"
+            className="flex items-center gap-1.5 text-base md:text-lg tracking-widest uppercase no-underline"
+            style={{ fontFamily: "var(--font-bebas, var(--font-display))", color: "#999999", textDecoration: "none" }}
           >
             <PtytschIcon className="w-4 md:w-5" color="#999999" />
             PTYTSCH
-          </span>
+          </Link>
           <a
             href="mailto:hi@ptytsch.de"
             className="font-mono text-[10px] tracking-wide no-underline transition-colors duration-100"
