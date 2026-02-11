@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import type { ArticleWithEvent } from "@/lib/types";
 import { CATEGORY_COLORS } from "@/lib/types";
 import { tCategory, tUi } from "@/lib/translations";
@@ -11,11 +12,20 @@ const CATEGORIES = Object.keys(CATEGORY_COLORS);
 
 export default function ArticleFeed({ articles }: { articles: ArticleWithEvent[] }) {
   const { lang, resetKey } = useLanguage();
-  const [category, setCategory] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const categoryFromUrl = searchParams.get("cat");
+  const category = categoryFromUrl && CATEGORIES.includes(categoryFromUrl) ? categoryFromUrl : null;
   const [visible, setVisible] = useState(10);
 
+  const setCategory = useCallback((cat: string | null) => {
+    const url = cat ? `/?cat=${cat}` : "/";
+    router.push(url, { scroll: false });
+    setVisible(10);
+  }, [router]);
+
   useEffect(() => {
-    setCategory(null);
     setVisible(10);
   }, [resetKey]);
 
@@ -38,7 +48,7 @@ export default function ArticleFeed({ articles }: { articles: ArticleWithEvent[]
             return (
               <button
                 key={c}
-                onClick={() => { setCategory(active ? null : c); setVisible(10); }}
+                onClick={() => setCategory(active ? null : c)}
                 className="pr-5 text-2xl md:text-3xl uppercase leading-none tracking-tight transition-all duration-100 cursor-pointer"
                 style={{
                   fontFamily: 'var(--font-display)',

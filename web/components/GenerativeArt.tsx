@@ -149,7 +149,7 @@ export default function GenerativeArt({ seed, color }: { seed: string; color: st
     <svg
       viewBox="-20 -20 440 440"
       className="gen-art w-full h-full"
-      preserveAspectRatio="xMidYMid meet"
+      preserveAspectRatio="xMidYMin meet"
       overflow="visible"
     >
       {elements}

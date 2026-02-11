@@ -6,6 +6,8 @@ import ArticleMeta from "@/components/ArticleMeta";
 import CopyLinkButton from "@/components/CopyLinkButton";
 import EventSidebar from "@/components/EventSidebar";
 import SetAlternates from "@/components/SetAlternates";
+import ArticleHero from "@/components/ArticleHero";
+import { CATEGORY_COLORS } from "@/lib/types";
 
 export function generateStaticParams() {
   const slugs = getAllArticleSlugs();
@@ -92,15 +94,17 @@ export default async function ArticlePage({
   };
 
   const alternates = getAlternateSlugs(article.event_id);
+  const catColor = CATEGORY_COLORS[article.event.category || ""] || "#666666";
 
   return (
-    <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
+    <div className="relative flex flex-col lg:flex-row gap-12 lg:gap-16">
+      <ArticleHero seed={article.event_id + article.title} color={catColor} />
       <SetAlternates alternates={alternates} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <article className="lg:w-[60%]">
+      <article className="lg:w-[60%] relative" style={{ zIndex: 1 }}>
         <h1
           className="text-5xl md:text-7xl lg:text-8xl leading-[0.9] mb-8"
           style={{ fontFamily: 'var(--font-display)' }}
@@ -126,7 +130,7 @@ export default async function ArticlePage({
         </div>
       </article>
 
-      <div className="lg:w-[40%]">
+      <div className="lg:w-[40%] relative" style={{ zIndex: 1 }}>
         <EventSidebar event={article.event} />
       </div>
     </div>

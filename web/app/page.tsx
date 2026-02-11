@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { getAllArticlesWithEvents } from "@/lib/db";
 import ArticleFeed from "@/components/ArticleFeed";
 
@@ -9,5 +10,9 @@ export const metadata: Metadata = {
 export default function Home() {
   const articles = getAllArticlesWithEvents();
 
-  return <ArticleFeed articles={articles} />;
+  return (
+    <Suspense>
+      <ArticleFeed articles={articles} />
+    </Suspense>
+  );
 }
