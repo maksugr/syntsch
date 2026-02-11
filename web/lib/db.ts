@@ -86,6 +86,17 @@ export function getArticleBySlug(slug: string): ArticleWithEvent | null {
   };
 }
 
+export function getAlternateSlugs(eventId: string): Record<string, string> {
+  const articles = readAllArticleFiles();
+  const result: Record<string, string> = {};
+  for (const a of articles) {
+    if (a.event_id === eventId) {
+      result[a.language] = a.slug;
+    }
+  }
+  return result;
+}
+
 export function getAllArticleSlugs(): string[] {
   const articlesDir = path.join(DATA_DIR, "articles");
   if (!fs.existsSync(articlesDir)) return [];

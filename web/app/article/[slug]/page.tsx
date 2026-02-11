@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getAllArticleSlugs, getArticleBySlug } from "@/lib/db";
+import { getAllArticleSlugs, getArticleBySlug, getAlternateSlugs } from "@/lib/db";
 import ArticleBody from "@/components/ArticleBody";
 import ArticleMeta from "@/components/ArticleMeta";
 import CopyLinkButton from "@/components/CopyLinkButton";
 import EventSidebar from "@/components/EventSidebar";
+import SetAlternates from "@/components/SetAlternates";
 
 export function generateStaticParams() {
   const slugs = getAllArticleSlugs();
@@ -41,6 +42,12 @@ export async function generateMetadata({
     },
     alternates: {
       canonical: `https://ptytsch.de/article/${slug}`,
+      languages: (() => {
+        const alts = getAlternateSlugs(article.event_id);
+        const entries = Object.entries(alts).map(([lang, s]) => [lang, `https://ptytsch.de/article/${s}`]);
+        if (alts["en"]) entries.push(["x-default", `https://ptytsch.de/article/${alts["en"]}`]);
+        return Object.fromEntries(entries);
+      })(),
     },
   };
 }
@@ -84,8 +91,11 @@ export default async function ArticlePage({
     }),
   };
 
+  const alternates = getAlternateSlugs(article.event_id);
+
   return (
     <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
+      <SetAlternates alternates={alternates} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

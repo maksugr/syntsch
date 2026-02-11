@@ -10,6 +10,8 @@ interface LanguageContextValue {
   setLang: (lang: Lang) => void;
   viewMode: ViewMode;
   setViewMode: (mode: ViewMode) => void;
+  alternates: Record<string, string>;
+  setAlternates: (alts: Record<string, string>) => void;
 }
 
 const LanguageContext = createContext<LanguageContextValue>({
@@ -17,6 +19,8 @@ const LanguageContext = createContext<LanguageContextValue>({
   setLang: () => {},
   viewMode: "single",
   setViewMode: () => {},
+  alternates: {},
+  setAlternates: () => {},
 });
 
 function getCookie(name: string): string | undefined {
@@ -36,6 +40,7 @@ const VALID_VIEWS: ViewMode[] = ["single", "grid"];
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>("en");
   const [viewMode, setViewModeState] = useState<ViewMode>("single");
+  const [alternates, setAlternates] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const savedLang = getCookie(COOKIE_NAME);
@@ -66,7 +71,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <LanguageContext.Provider value={{ lang, setLang, viewMode, setViewMode }}>
+    <LanguageContext.Provider value={{ lang, setLang, viewMode, setViewMode, alternates, setAlternates }}>
       {children}
     </LanguageContext.Provider>
   );
