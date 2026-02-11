@@ -102,7 +102,7 @@ export default function ArticleFeed({ articles }: { articles: ArticleWithEvent[]
 }
 
 function LatestArticle({ article }: { article: ArticleWithEvent }) {
-  const { lang } = useLanguage();
+  const { lang, setViewMode } = useLanguage();
   const rawDate = article.event.start_date || article.written_at.split("T")[0];
   const date = formatDate(lang, rawDate);
   const color = CATEGORY_COLORS[article.event.category || ""] || "#666666";
@@ -140,7 +140,7 @@ function LatestArticle({ article }: { article: ArticleWithEvent }) {
 
       <ArticleBody body={article.body} />
 
-      <div className="mt-12 mb-8">
+      <div className="mt-12 mb-8 flex gap-6">
         <Link
           href={`/article/${article.slug}`}
           className="font-mono text-sm tracking-wide no-underline transition-colors duration-100"
@@ -148,6 +148,16 @@ function LatestArticle({ article }: { article: ArticleWithEvent }) {
         >
           {tUi(lang, "permalink")} →
         </Link>
+        <button
+          onClick={() => {
+            setViewMode("grid");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+          className="font-mono text-sm tracking-wide transition-colors duration-100 cursor-pointer"
+          style={{ color: "#999999", background: "none", border: "none", padding: 0 }}
+        >
+          {tUi(lang, "allArticles")} ↑
+        </button>
       </div>
     </div>
   );

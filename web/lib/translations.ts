@@ -33,6 +33,7 @@ const translations: Record<
                 "It writes an original essay in the spirit of Dazed and i-D: sharp, opinionated, alive to the strange energy of this city.",
             aboutText3:
                 "No editors. No rewritten press releases. Just truth, emotion, and experiments.",
+            allArticles: "all articles",
             loadMore: "more",
             notFound: "NOTHING HERE",
             backHome: "back to PTYTSCH",
@@ -69,6 +70,7 @@ const translations: Record<
                 "Dann schreibt sie ein originales Essay im Geist von Dazed und i-D: scharf, meinungsstark, lebendig gegenüber der seltsamen Energie dieser Stadt.",
             aboutText3:
                 "Keine Redakteure. Keine umgeschriebenen Pressemitteilungen. Nur Wahrheit, Emotion und Experimente.",
+            allArticles: "alle Artikel",
             loadMore: "mehr",
             notFound: "HIER IST NICHTS",
             backHome: "zurück zu PTYTSCH",
@@ -105,6 +107,7 @@ const translations: Record<
                 "Затем пишет оригинальное эссе в духе Dazed и i-D: острое, с позицией, чувствующее странную энергию этого города.",
             aboutText3:
                 "Никаких редакторов. Никаких переписанных пресс-релизов. Только правда, эмоция и эксперименты.",
+            allArticles: "все статьи",
             loadMore: "больше",
             notFound: "ЗДЕСЬ НИЧЕГО",
             backHome: "назад на PTYTSCH",
