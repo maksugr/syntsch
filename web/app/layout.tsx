@@ -22,6 +22,7 @@ const russoOne = Russo_One({
 });
 
 export const metadata: Metadata = {
+  manifest: "/manifest.json",
   title: {
     default: "PTYTSCH",
     template: "%s — PTYTSCH",
