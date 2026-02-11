@@ -1,4 +1,10 @@
+"use client";
+
+import { useLanguage } from "./LanguageProvider";
+import { typograph, type Lang } from "@/lib/translations";
+
 export default function ArticleBody({ body }: { body: string }) {
+  const { lang } = useLanguage();
   const paragraphs = body.split("\n\n").filter((p) => p.trim());
 
   return (
@@ -11,7 +17,7 @@ export default function ArticleBody({ body }: { body: string }) {
           }`}
           style={{ fontFamily: "var(--font-body)" }}
         >
-          {p}
+          {typograph(p, lang)}
         </p>
       ))}
     </div>

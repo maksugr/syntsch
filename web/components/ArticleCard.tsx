@@ -3,7 +3,7 @@
 import Link from "next/link";
 import type { ArticleWithEvent } from "@/lib/types";
 import { CATEGORY_COLORS } from "@/lib/types";
-import { formatDate, tCategory, isDatePast, readingTime, tUi } from "@/lib/translations";
+import { formatDate, tCategory, isDatePast, readingTime, tUi, typograph } from "@/lib/translations";
 import { useLanguage } from "./LanguageProvider";
 import GenerativeArt from "./GenerativeArt";
 
@@ -41,7 +41,7 @@ export default function ArticleCard({ article, featured }: { article: ArticleWit
                 className="card-lead text-lg md:text-xl leading-relaxed mb-8"
                 style={{ color: '#666666' }}
               >
-                {article.lead}
+                {typograph(article.lead, lang)}
               </p>
             )}
 
@@ -92,7 +92,7 @@ export default function ArticleCard({ article, featured }: { article: ArticleWit
           className="card-lead text-base leading-relaxed mb-5 max-w-xl"
           style={{ color: '#666666' }}
         >
-          {article.lead}
+          {typograph(article.lead, lang)}
         </p>
       )}
 

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getAllArticleSlugs, getArticleBySlug, getAlternateSlugs } from "@/lib/db";
 import ArticleBody from "@/components/ArticleBody";
+import ArticleLead from "@/components/ArticleLead";
 import ArticleMeta from "@/components/ArticleMeta";
 import CopyLinkButton from "@/components/CopyLinkButton";
 import EventSidebar from "@/components/EventSidebar";
@@ -115,12 +116,7 @@ export default async function ArticlePage({
         <ArticleMeta writtenAt={article.written_at} wordCount={article.word_count} />
 
         {article.lead && (
-          <p
-            className="text-xl md:text-2xl leading-relaxed mb-10"
-            style={{ color: '#666666' }}
-          >
-            {article.lead}
-          </p>
+          <ArticleLead text={article.lead} />
         )}
 
         <ArticleBody body={article.body} />

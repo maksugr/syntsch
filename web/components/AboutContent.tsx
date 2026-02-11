@@ -28,10 +28,7 @@ export default function AboutContent() {
                     {tUi(lang, "aboutText2")}
                 </p>
 
-                <div
-                    className="text-lg md:text-xl leading-relaxed space-y-2"
-                    style={{ color: "#666666" }}
-                >
+                <div className="text-xl md:text-2xl lg:text-3xl leading-relaxed space-y-2">
                     {tUi(lang, "aboutText3")
                         .split(". ")
                         .map((sentence, i, arr) => (
@@ -41,6 +38,10 @@ export default function AboutContent() {
                             </p>
                         ))}
                 </div>
+
+                <p className="text-xl md:text-2xl lg:text-3xl leading-relaxed">
+                    {tUi(lang, "aboutText4")}
+                </p>
             </div>
 
             <div className="mt-16 md:mt-24 pt-8 border-t-4 border-black">
