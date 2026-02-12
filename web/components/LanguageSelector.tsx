@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
+import { FaTelegram } from "react-icons/fa";
 import { useLanguage } from "./LanguageProvider";
 import type { Lang } from "@/lib/translations";
 
@@ -41,6 +42,20 @@ export default function LanguageSelector() {
           </button>
         );
       })}
+      {lang === "ru" && (
+        <>
+          <span style={{ color: "#999999" }}>·</span>
+          <a
+            href="https://t.me/ptytsch"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-colors duration-100"
+            style={{ color: "#999999", display: "flex", alignItems: "center" }}
+          >
+            <FaTelegram size={15} />
+          </a>
+        </>
+      )}
     </div>
   );
 }
