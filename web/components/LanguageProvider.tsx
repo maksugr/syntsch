@@ -40,6 +40,12 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const triggerReset = () => setResetKey((k) => k + 1);
 
   useEffect(() => {
+    const urlLang = new URLSearchParams(window.location.search).get("lang");
+    if (urlLang && VALID_LANGS.includes(urlLang as Lang)) {
+      setLangState(urlLang as Lang);
+      setCookie(COOKIE_NAME, urlLang, 365);
+      return;
+    }
     const savedLang = getCookie(COOKIE_NAME);
     if (savedLang && VALID_LANGS.includes(savedLang as Lang)) {
       setLangState(savedLang as Lang);
