@@ -14,6 +14,7 @@ from agents.curator import curate_event
 from agents.scout import scout_event
 from models import EventCandidate, ResearchContext
 from sources.research import research_event
+from notifiers.telegram import send_article_to_telegram
 from storage import EventStorage
 
 ALL_LANGUAGES = ["en", "de", "ru"]
@@ -104,8 +105,11 @@ async def _write_for_languages(
             language=lang,
             context=context,
         )
-        article_id = storage.save_article(event_id, article)
+        article_id, slug = storage.save_article(event_id, article)
         print(f"  [{lang}] \"{article.title}\" ({article.word_count} words) → #{article_id}")
+
+        if lang == "ru" and config.TELEGRAM_BOT_TOKEN:
+            await send_article_to_telegram(article.title, article.lead, slug)
 
 
 async def cmd_author(args):

@@ -13,7 +13,7 @@ dependencies = [
 
 [tool.setuptools]
 py-modules = ["cli", "config", "models", "storage"]
-packages = ["agents", "sources"]
+packages = ["agents", "sources", "notifiers"]
 
 [project.optional-dependencies]
 dev = [

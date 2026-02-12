@@ -25,6 +25,8 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python cli.py author --from-curator
 
       - name: Commit new articles
@@ -32,4 +34,4 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/articles/
-          git diff --staged --quiet || git commit -m "author: add new articles" && git push
+          git diff --staged --quiet || (git commit -m "author: add new articles" && git pull --rebase && git push)

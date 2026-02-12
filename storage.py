@@ -108,7 +108,7 @@ class EventStorage:
         self._write_json(self.events_dir / f"{event_id}.json", data)
         return event_id
 
-    def save_article(self, event_id: str, article: ArticleOutput) -> str:
+    def save_article(self, event_id: str, article: ArticleOutput) -> tuple[str, str]:
         article_id = str(uuid.uuid4())
         slug = self._unique_slug(generate_slug(article.title), article_id)
         event_data = self.get_event(event_id)
@@ -126,7 +126,7 @@ class EventStorage:
             "event": event_data,
         }
         self._write_json(self.articles_dir / f"{slug}.json", data)
-        return article_id
+        return article_id, slug
 
     def is_already_covered(self, name: str, venue: str, start_date: str, language: str = "") -> bool:
         for article in self._load_all_articles():
