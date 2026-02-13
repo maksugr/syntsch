@@ -6,6 +6,8 @@ import type { Lang } from "@/lib/translations";
 interface LanguageContextValue {
   lang: Lang;
   setLang: (lang: Lang) => void;
+  setTempLang: (lang: Lang) => void;
+  restoreLang: () => void;
   alternates: Record<string, string>;
   setAlternates: (alts: Record<string, string>) => void;
   resetKey: number;
@@ -15,6 +17,8 @@ interface LanguageContextValue {
 const LanguageContext = createContext<LanguageContextValue>({
   lang: "en",
   setLang: () => {},
+  setTempLang: () => {},
+  restoreLang: () => {},
   alternates: {},
   setAlternates: () => {},
   resetKey: 0,
@@ -35,21 +39,17 @@ const COOKIE_NAME = "ptytsch_lang";
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>("en");
+  const [hydrated, setHydrated] = useState(false);
   const [alternates, setAlternates] = useState<Record<string, string>>({});
   const [resetKey, setResetKey] = useState(0);
   const triggerReset = () => setResetKey((k) => k + 1);
 
   useEffect(() => {
-    const urlLang = new URLSearchParams(window.location.search).get("lang");
-    if (urlLang && VALID_LANGS.includes(urlLang as Lang)) {
-      setLangState(urlLang as Lang);
-      setCookie(COOKIE_NAME, urlLang, 365);
-      return;
-    }
     const savedLang = getCookie(COOKIE_NAME);
     if (savedLang && VALID_LANGS.includes(savedLang as Lang)) {
       setLangState(savedLang as Lang);
     }
+    requestAnimationFrame(() => setHydrated(true));
   }, []);
 
   useEffect(() => {
@@ -64,9 +64,22 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     setCookie(COOKIE_NAME, newLang, 365);
   };
 
+  const setTempLang = (newLang: Lang) => {
+    setLangState(newLang);
+  };
+
+  const restoreLang = () => {
+    const saved = getCookie(COOKIE_NAME);
+    if (saved && VALID_LANGS.includes(saved as Lang)) {
+      setLangState(saved as Lang);
+    }
+  };
+
   return (
-    <LanguageContext.Provider value={{ lang, setLang, alternates, setAlternates, resetKey, triggerReset }}>
-      {children}
+    <LanguageContext.Provider value={{ lang, setLang, setTempLang, restoreLang, alternates, setAlternates, resetKey, triggerReset }}>
+      <div style={{ visibility: hydrated ? "visible" : "hidden" }}>
+        {children}
+      </div>
     </LanguageContext.Provider>
   );
 }

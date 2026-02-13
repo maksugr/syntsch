@@ -100,7 +100,7 @@ export default async function ArticlePage({
   return (
     <div className="relative flex flex-col lg:flex-row gap-12 lg:gap-16">
       <ArticleHero seed={article.event_id + article.title} color={catColor} />
-      <SetAlternates alternates={alternates} />
+      <SetAlternates alternates={alternates} articleLang={article.language} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -108,7 +108,7 @@ export default async function ArticlePage({
       <article className="lg:w-[60%] relative" style={{ zIndex: 1 }}>
         <h1
           className="text-5xl md:text-7xl lg:text-8xl leading-[0.9] mb-8"
-          style={{ fontFamily: 'var(--font-display)' }}
+          style={{ fontFamily: 'var(--font-display)', overflowWrap: 'break-word' }}
         >
           {article.title}
         </h1>

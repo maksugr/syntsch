@@ -31,7 +31,7 @@ export default function ArticleCard({ article, featured }: { article: ArticleWit
 
             <h2
               className="card-title text-5xl md:text-7xl lg:text-8xl leading-[0.85] mt-4 mb-6"
-              style={{ fontFamily: 'var(--font-display)' }}
+              style={{ fontFamily: 'var(--font-display)', overflowWrap: 'break-word' }}
             >
               {article.title}
             </h2>
@@ -82,7 +82,7 @@ export default function ArticleCard({ article, featured }: { article: ArticleWit
 
       <h2
         className="card-title text-4xl md:text-5xl lg:text-6xl leading-[0.85] mb-5"
-        style={{ fontFamily: 'var(--font-display)' }}
+        style={{ fontFamily: 'var(--font-display)', overflowWrap: 'break-word' }}
       >
         {article.title}
       </h2>

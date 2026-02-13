@@ -20,7 +20,7 @@ export default function LanguageSelector() {
   };
 
   return (
-    <div className="flex items-center gap-3 font-mono text-sm mt-2">
+    <div className="flex items-center gap-3 font-mono text-sm mt-2" style={{ width: "fit-content" }} onClick={(e) => e.stopPropagation()}>
       {LANGS.map((l) => {
         const hasAlt = pathname.startsWith("/article/") && !alternates[l] && l !== lang;
         return (

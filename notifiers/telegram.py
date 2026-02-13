@@ -10,7 +10,7 @@ async def send_article_to_telegram(title: str, lead: str, slug: str):
     if not token or not chat_id:
         return
 
-    url = f"{config.SITE_URL}/article/{slug}?lang=ru"
+    url = f"{config.SITE_URL}/article/{slug}"
     text = f'<b>{title}</b>\n\n{lead}\n\n<a href="{url}">Читать →</a>'
 
     try:
@@ -21,7 +21,10 @@ async def send_article_to_telegram(title: str, lead: str, slug: str):
                     "chat_id": chat_id,
                     "text": text,
                     "parse_mode": "HTML",
-                    "disable_web_page_preview": False,
+                    "link_preview_options": {
+                        "url": url,
+                        "prefer_large_media": True,
+                    },
                 },
             )
             resp.raise_for_status()

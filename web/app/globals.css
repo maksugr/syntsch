@@ -14,6 +14,10 @@
   border-radius: 0 !important;
 }
 
+button:focus, a:focus {
+  outline: none;
+}
+
 ::selection {
   background: #B91C1C;
   color: #FFFFFF;

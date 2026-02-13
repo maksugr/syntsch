@@ -20,7 +20,7 @@ export default function Header() {
       <button
         onClick={handleLogoClick}
         className="flex items-end gap-3 md:gap-5 cursor-pointer"
-        style={{ background: "none", border: "none", padding: 0 }}
+        style={{ background: "none", border: "none", padding: 0, width: "fit-content", lineHeight: 0 }}
       >
         <h1
           className="text-[18vw] md:text-[14vw] lg:text-[12vw] leading-[0.85] tracking-tight"
