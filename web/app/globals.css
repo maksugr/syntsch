@@ -37,6 +37,13 @@ aside a {
   text-decoration-thickness: 2px;
 }
 
+@media (max-width: 767px) {
+  .card-title,
+  article h1 {
+    overflow-wrap: break-word;
+  }
+}
+
 /* ── Article card hover ── */
 .article-card {
   transition: background-color 150ms ease;

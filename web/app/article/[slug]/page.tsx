@@ -108,7 +108,7 @@ export default async function ArticlePage({
       <article className="lg:w-[60%] relative" style={{ zIndex: 1 }}>
         <h1
           className="text-5xl md:text-7xl lg:text-8xl leading-[0.9] mb-8"
-          style={{ fontFamily: 'var(--font-display)', overflowWrap: 'break-word' }}
+          style={{ fontFamily: 'var(--font-display)' }}
         >
           {article.title}
         </h1>
