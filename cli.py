@@ -1,12 +1,19 @@
 import argparse
 import asyncio
 import json
+import logging
 import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
 
 load_dotenv()
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(name)s] %(levelname)s: %(message)s",
+    datefmt="%H:%M:%S",
+)
 
 import config
 from agents.author import write_article

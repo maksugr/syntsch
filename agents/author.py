@@ -1,4 +1,4 @@
-import json
+import logging
 from datetime import datetime
 
 import anthropic
@@ -7,6 +7,8 @@ import config
 from models import EventCandidate, ArticleOutput, ResearchContext
 from sources.research import research_event
 
+logger = logging.getLogger(__name__)
+
 LANGUAGE_NOTES = {
     "en": "Write in English. Use British English spelling (colour, centre, programme). The tone should feel like a London-based publication writing about Berlin — cosmopolitan, not provincial.",
     "de": "Schreibe auf Deutsch. Nicht steif oder bürokratisch — modernes, lebendiges Deutsch. Der Ton soll sich anfühlen wie ein junges, urbanes Magazin. Keine Behördensprache, kein Feuilleton-Deutsch. Eher wie Spex oder Groove auf Steroiden. ERINNERUNG: Eigennamen (Personen, Orte, Clubs, Galerien, Alben, Filme) immer exakt wie im Original belassen. Niemals eindeutschen oder anpassen.",
@@ -14,6 +16,32 @@ LANGUAGE_NOTES = {
 }
 
 FEW_SHOT_PLACEHOLDER = "No example essays provided yet. Examples will be added here to anchor the style. For now, channel your inner Dazed/i-D writer."
+
+CRITIC_TOOL = {
+    "name": "submit_critique",
+    "description": "Submit the editorial critique and revised essay",
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "overall_assessment": {"type": "string", "description": "One sentence: publishable, needs rework, or broken?"},
+            "issues": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "type": {"type": "string", "enum": ["factual", "voice", "structure", "language", "depth"]},
+                        "severity": {"type": "string", "enum": ["minor", "major", "critical"]},
+                        "location": {"type": "string"},
+                        "fix": {"type": "string"},
+                    },
+                    "required": ["type", "severity", "location", "fix"],
+                },
+            },
+            "revised_text": {"type": "string", "description": "The full revised essay, complete and publishable"},
+        },
+        "required": ["overall_assessment", "issues", "revised_text"],
+    },
+}
 
 
 async def write_article(
@@ -33,8 +61,9 @@ async def write_article(
     system_prompt = _load_author_prompt(language)
     user_message = _build_user_message(event, context)
 
-    client = anthropic.Anthropic()
+    client = anthropic.Anthropic(max_retries=3)
 
+    logger.info("Writing draft for '%s' [%s]", event.name, language)
     draft_response = client.messages.create(
         model=config.AUTHOR_MODEL,
         max_tokens=4096,
@@ -43,16 +72,8 @@ async def write_article(
     )
     draft = draft_response.content[0].text
 
-    critic_prompt = _load_critic_prompt()
-    critique_response = client.messages.create(
-        model=config.CRITIC_MODEL,
-        max_tokens=8192,
-        system=critic_prompt,
-        messages=[{"role": "user", "content": draft}],
-    )
-
-    critique_raw = critique_response.content[0].text
-    revised_text = _extract_revised_text(critique_raw, draft)
+    logger.info("Sending to critic (draft: %d words)", len(draft.split()))
+    revised_text = _critique_and_revise(client, draft, event, context)
 
     title = _extract_title(revised_text)
     revised_text = _strip_title(revised_text)
@@ -61,6 +82,7 @@ async def write_article(
     word_count = len(revised_text.split())
 
     if word_count < 400:
+        logger.warning("Essay too short (%d words), requesting expansion", word_count)
         final_response = client.messages.create(
             model=config.AUTHOR_MODEL,
             max_tokens=4096,
@@ -79,6 +101,8 @@ async def write_article(
 
     lead = _generate_lead(client, event, title, revised_text, language)
 
+    logger.info("Article complete: '%s' (%d words)", title, word_count)
+
     return ArticleOutput(
         title=title,
         lead=lead,
@@ -89,6 +113,71 @@ async def write_article(
         model_used=config.AUTHOR_MODEL,
         generated_at=datetime.now(),
     )
+
+
+def _critique_and_revise(
+    client: anthropic.Anthropic,
+    draft: str,
+    event: EventCandidate,
+    context: ResearchContext,
+) -> str:
+    critic_prompt = _load_critic_prompt()
+    critic_message = _build_critic_message(draft, event, context)
+
+    try:
+        response = client.messages.create(
+            model=config.CRITIC_MODEL,
+            max_tokens=8192,
+            system=critic_prompt,
+            tools=[CRITIC_TOOL],
+            tool_choice={"type": "tool", "name": "submit_critique"},
+            messages=[{"role": "user", "content": critic_message}],
+        )
+
+        tool_input = _extract_tool_input(response, "submit_critique")
+
+        issues = tool_input.get("issues", [])
+        critical_count = sum(1 for i in issues if i.get("severity") == "critical")
+        logger.info(
+            "Critic: %s (%d issues, %d critical)",
+            tool_input["overall_assessment"],
+            len(issues),
+            critical_count,
+        )
+
+        revised = tool_input["revised_text"]
+        if len(revised) > 200:
+            return revised
+
+        logger.warning("Critic returned too-short revised_text (%d chars), using draft", len(revised))
+        return draft
+
+    except Exception as e:
+        logger.error("Critic failed: %s — using original draft", e)
+        return draft
+
+
+def _build_critic_message(draft: str, event: EventCandidate, context: ResearchContext) -> str:
+    parts = [
+        "## Essay draft to review\n",
+        draft,
+        "\n\n## Source material for fact-checking\n",
+        f"Event: {event.name}",
+        f"Date: {event.start_date}",
+        f"Venue: {event.venue}",
+        f"City: {event.city}",
+        f"Category: {event.category}",
+        f"Description: {event.description}",
+    ]
+
+    if context.artist_background:
+        parts.append(f"\nArtist background: {context.artist_background[:1000]}")
+    if context.venue_context:
+        parts.append(f"\nVenue context: {context.venue_context[:1000]}")
+    if context.cultural_context:
+        parts.append(f"\nCultural context: {context.cultural_context[:1000]}")
+
+    return "\n".join(parts)
 
 
 def _generate_lead(
@@ -200,16 +289,17 @@ def _build_user_message(event: EventCandidate, context: ResearchContext) -> str:
         "## Event details",
         f"Name: {event.name}",
         f"Starts: {event.start_date}",
-        (
-            f"Ends: {event.end_date}"
-            if event.end_date and event.end_date != event.start_date
-            else ""
-        ),
+    ]
+
+    if event.end_date and event.end_date != event.start_date:
+        parts.append(f"Ends: {event.end_date}")
+
+    parts.extend([
         f"Venue: {event.venue}",
         f"City: {event.city}",
         f"Category: {event.category}",
         f"Description: {event.description}",
-    ]
+    ])
 
     if any(
         [
@@ -239,18 +329,11 @@ def _build_user_message(event: EventCandidate, context: ResearchContext) -> str:
     return "\n".join(parts)
 
 
-def _extract_revised_text(critique_raw: str, fallback: str) -> str:
-    try:
-        start = critique_raw.find("{")
-        end = critique_raw.rfind("}") + 1
-        if start >= 0 and end > start:
-            parsed = json.loads(critique_raw[start:end])
-            revised = parsed.get("revised_text", "")
-            if revised and len(revised) > 200:
-                return revised
-    except (json.JSONDecodeError, KeyError):
-        pass
-    return fallback
+def _extract_tool_input(response, tool_name: str) -> dict:
+    for block in response.content:
+        if block.type == "tool_use" and block.name == tool_name:
+            return block.input
+    raise RuntimeError(f"LLM did not return expected tool call '{tool_name}'")
 
 
 def _extract_title(text: str) -> str:

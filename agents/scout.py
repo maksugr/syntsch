@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 from datetime import datetime
 
@@ -8,6 +9,8 @@ import config
 from models import EventCandidate, ScoutResult
 from sources.tavily_search import TavilyEventSource
 from storage import EventStorage
+
+logger = logging.getLogger(__name__)
 
 SCOUT_PROMPT = """\
 You are a cultural scout for a publication with the sensibility of i-D and Dazed magazines. \
@@ -25,17 +28,6 @@ cultural weight, a reason to exist beyond entertainment.
 Each event should be independently interesting. Do NOT rank them or compare them to each other. \
 Just pick 5 solid candidates from different categories if possible.
 
-For each event, extract:
-- name: the event title
-- start_date: when it starts (YYYY-MM-DD if possible, or approximate like "mid-February 2026")
-- end_date: when it ends (same format; if it's a single-day event, same as start_date; if unknown, leave empty)
-- venue: where it takes place. If the event has no single specific venue (e.g. "Various locations", "Multiple venues", city-wide), leave this field as an empty string.
-- city: "{city}"
-- category: music / cinema / theater / exhibition / lecture / festival / performance / club
-- description: clean 2-3 sentence description
-- source_url: URL of the article/listing where you found the event
-- event_url: official event page (venue website, ticketing page, gallery page) if you can find it in the snippets. If not available, leave empty.
-
 Quality bar for inclusion:
 - CULTURAL SIGNIFICANCE: Is there a real story here? A debut, a comeback, a collision of scenes, \
 a political dimension, a generational moment?
@@ -52,27 +44,45 @@ IMPORTANT:
 - If an entry is clearly not a cultural event (news article, restaurant listing), skip it.
 - If you can find fewer than 5 worthy events, return fewer. Never pad with weak picks.
 - Do NOT include events that are clearly duplicates of each other.
+- If the event has no single specific venue (e.g. "Various locations", city-wide), set venue to empty string.
 {existing_pool_block}
-Respond in JSON format:
-{{
-    "events": [
-        {{
-            "name": "...",
-            "start_date": "...",
-            "end_date": "...",
-            "venue": "...",
-            "city": "{city}",
-            "category": "...",
-            "description": "...",
-            "source_url": "...",
-            "event_url": "..."
-        }}
-    ]
-}}
+Submit your selected events using the provided tool.
 
 Raw event data:
 {events_json}
 """
+
+SCOUT_TOOL = {
+    "name": "submit_events",
+    "description": "Submit the selected cultural events",
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "events": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "name": {"type": "string"},
+                        "start_date": {"type": "string", "description": "YYYY-MM-DD or approximate"},
+                        "end_date": {"type": "string", "description": "YYYY-MM-DD, same as start for single-day, empty if unknown"},
+                        "venue": {"type": "string", "description": "Empty string if non-specific"},
+                        "city": {"type": "string"},
+                        "category": {
+                            "type": "string",
+                            "enum": ["music", "cinema", "theater", "exhibition", "lecture", "festival", "performance", "club"],
+                        },
+                        "description": {"type": "string", "description": "2-3 sentence description"},
+                        "source_url": {"type": "string"},
+                        "event_url": {"type": "string", "description": "Official event page, empty if not found"},
+                    },
+                    "required": ["name", "start_date", "venue", "city", "category", "description", "source_url"],
+                },
+            }
+        },
+        "required": ["events"],
+    },
+}
 
 
 async def scout_event(
@@ -94,6 +104,7 @@ async def scout_event(
 
     if not candidates:
         raise RuntimeError(f"No events found for {city}")
+
     filtered = [
         c for c in candidates
         if not storage.is_already_covered(c.name, c.venue, c.start_date)
@@ -101,6 +112,7 @@ async def scout_event(
     ]
 
     if not filtered:
+        logger.warning("All %d candidates already in pool, sending unfiltered", len(candidates))
         filtered = candidates
 
     existing_names = storage.get_all_event_names()
@@ -125,21 +137,30 @@ async def scout_event(
         existing_pool_block=existing_pool_block,
     )
 
-    client = anthropic.Anthropic()
+    logger.info("Sending %d candidates to scout LLM", len(filtered))
+
+    client = anthropic.Anthropic(max_retries=3)
     response = client.messages.create(
         model=config.SCOUT_MODEL,
         max_tokens=4096,
+        tools=[SCOUT_TOOL],
+        tool_choice={"type": "tool", "name": "submit_events"},
         messages=[{"role": "user", "content": prompt}],
     )
 
-    raw_text = response.content[0].text
-    start = raw_text.find("{")
-    end = raw_text.rfind("}") + 1
-    parsed = json.loads(raw_text[start:end])
+    tool_input = _extract_tool_input(response, "submit_events")
+    events = [EventCandidate(**e) for e in tool_input["events"]]
 
-    events = [EventCandidate(**e) for e in parsed["events"]]
+    logger.info("Scout selected %d events", len(events))
 
     return ScoutResult(
         events=events,
         searched_at=datetime.now(),
     )
+
+
+def _extract_tool_input(response, tool_name: str) -> dict:
+    for block in response.content:
+        if block.type == "tool_use" and block.name == tool_name:
+            return block.input
+    raise RuntimeError(f"LLM did not return expected tool call '{tool_name}'")

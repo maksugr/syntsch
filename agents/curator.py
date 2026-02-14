@@ -1,4 +1,5 @@
 import json
+import logging
 from datetime import datetime
 
 import anthropic
@@ -6,6 +7,8 @@ import anthropic
 import config
 from models import CuratorResult
 from storage import EventStorage
+
+logger = logging.getLogger(__name__)
 
 CURATOR_PROMPT = """\
 You are a cultural curator for a publication with the editorial sensibility of i-D and Dazed magazines. \
@@ -35,15 +38,24 @@ beats the latest blockbuster premiere.
 
 5. DIVERSITY: Vary the categories. If we've done music three days in a row, pick something else if the quality is comparable.
 
-Return your choice as JSON:
-{{
-    "chosen_event_id": "<the id string of your chosen event>",
-    "why_chosen": "2-3 sentences explaining why this is the best pick for today's essay. Be specific."
-}}
+Submit your choice using the provided tool. Be specific in your reasoning.
 
 Available events:
 {events_json}
 """
+
+CURATOR_TOOL = {
+    "name": "choose_event",
+    "description": "Select the best event for today's essay",
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "chosen_event_id": {"type": "string", "description": "The UUID of the chosen event"},
+            "why_chosen": {"type": "string", "description": "2-3 sentences explaining the choice"},
+        },
+        "required": ["chosen_event_id", "why_chosen"],
+    },
+}
 
 
 def curate_event(city: str | None = None, languages: list[str] | None = None) -> CuratorResult:
@@ -88,25 +100,35 @@ def curate_event(city: str | None = None, languages: list[str] | None = None) ->
         events_json=events_json,
     )
 
-    client = anthropic.Anthropic()
+    logger.info("Curating from %d available events (recent: %s)", len(available), recent_str)
+
+    client = anthropic.Anthropic(max_retries=3)
     response = client.messages.create(
         model=config.CURATOR_MODEL,
         max_tokens=1024,
+        tools=[CURATOR_TOOL],
+        tool_choice={"type": "tool", "name": "choose_event"},
         messages=[{"role": "user", "content": prompt}],
     )
 
-    raw_text = response.content[0].text
-    start = raw_text.find("{")
-    end = raw_text.rfind("}") + 1
-    parsed = json.loads(raw_text[start:end])
+    tool_input = _extract_tool_input(response, "choose_event")
 
-    chosen_id = parsed["chosen_event_id"]
+    chosen_id = tool_input["chosen_event_id"]
     row = storage.get_event(chosen_id)
     if not row:
-        raise RuntimeError(f"Curator chose event #{chosen_id} but it doesn't exist in DB")
+        raise RuntimeError(f"Curator chose event #{chosen_id} but it doesn't exist in storage")
+
+    logger.info("Curator chose: %s (%s)", row["name"], row["category"])
 
     return CuratorResult(
         chosen_event_id=chosen_id,
-        why_chosen=parsed["why_chosen"],
+        why_chosen=tool_input["why_chosen"],
         curated_at=datetime.now(),
     )
+
+
+def _extract_tool_input(response, tool_name: str) -> dict:
+    for block in response.content:
+        if block.type == "tool_use" and block.name == tool_name:
+            return block.input
+    raise RuntimeError(f"LLM did not return expected tool call '{tool_name}'")

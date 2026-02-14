@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import random
 from collections import Counter
 from datetime import datetime, timedelta
@@ -8,6 +9,8 @@ from tavily import AsyncTavilyClient
 import config
 from models import EventCandidate
 from sources.base import EventSource
+
+logger = logging.getLogger(__name__)
 
 
 def _weighted_sample(items, weights, k):
@@ -34,19 +37,28 @@ class TavilyEventSource(EventSource):
         self.client = AsyncTavilyClient(api_key=api_key)
 
     async def _search_one(self, query: str, include_domains: list[str] | None = None) -> list[dict]:
-        try:
-            kwargs = dict(
-                query=query,
-                max_results=7,
-                search_depth="advanced",
-                include_raw_content="markdown",
-            )
-            if include_domains:
-                kwargs["include_domains"] = include_domains
-            response = await self.client.search(**kwargs)
-            return response.get("results", [])
-        except Exception:
-            return []
+        kwargs = dict(
+            query=query,
+            max_results=7,
+            search_depth="advanced",
+            include_raw_content="markdown",
+        )
+        if include_domains:
+            kwargs["include_domains"] = include_domains
+
+        for attempt in range(3):
+            try:
+                response = await self.client.search(**kwargs)
+                results = response.get("results", [])
+                logger.debug("Query '%s': %d results", query[:80], len(results))
+                return results
+            except Exception as e:
+                logger.warning("Tavily attempt %d/3 failed for '%s': %s", attempt + 1, query[:80], e)
+                if attempt < 2:
+                    await asyncio.sleep(1.0 * (attempt + 1))
+
+        logger.error("All retries exhausted for query '%s'", query[:80])
+        return []
 
     async def fetch_events(
         self,
