@@ -9,6 +9,7 @@ import config
 from models import EventCandidate, ScoutResult
 from sources.tavily_search import TavilyEventSource
 from storage import EventStorage
+from utils import extract_tool_input
 
 logger = logging.getLogger(__name__)
 
@@ -148,7 +149,7 @@ async def scout_event(
         messages=[{"role": "user", "content": prompt}],
     )
 
-    tool_input = _extract_tool_input(response, "submit_events")
+    tool_input = extract_tool_input(response, "submit_events")
     events = [EventCandidate(**e) for e in tool_input["events"]]
 
     logger.info("Scout selected %d events", len(events))
@@ -159,8 +160,3 @@ async def scout_event(
     )
 
 
-def _extract_tool_input(response, tool_name: str) -> dict:
-    for block in response.content:
-        if block.type == "tool_use" and block.name == tool_name:
-            return block.input
-    raise RuntimeError(f"LLM did not return expected tool call '{tool_name}'")

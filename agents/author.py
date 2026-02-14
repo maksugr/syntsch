@@ -6,6 +6,7 @@ import anthropic
 import config
 from models import EventCandidate, ArticleOutput, ResearchContext
 from sources.research import research_event
+from utils import extract_tool_input
 
 logger = logging.getLogger(__name__)
 
@@ -37,9 +38,10 @@ CRITIC_TOOL = {
                     "required": ["type", "severity", "location", "fix"],
                 },
             },
-            "revised_text": {"type": "string", "description": "The full revised essay, complete and publishable"},
+            "title": {"type": "string", "description": "Essay title: short, punchy, same language as the essay. No quotes, no period at the end. Like a Dazed headline."},
+            "revised_text": {"type": "string", "description": "The full revised essay WITHOUT the title, complete and publishable"},
         },
-        "required": ["overall_assessment", "issues", "revised_text"],
+        "required": ["overall_assessment", "issues", "title", "revised_text"],
     },
 }
 
@@ -73,12 +75,7 @@ async def write_article(
     draft = draft_response.content[0].text
 
     logger.info("Sending to critic (draft: %d words)", len(draft.split()))
-    revised_text = _critique_and_revise(client, draft, event, context)
-
-    title = _extract_title(revised_text)
-    revised_text = _strip_title(revised_text)
-    if title == "Untitled":
-        title = _generate_title(client, event, revised_text, language)
+    title, revised_text = _critique_and_revise(client, draft, event, context, language)
     word_count = len(revised_text.split())
 
     if word_count < 400:
@@ -120,7 +117,8 @@ def _critique_and_revise(
     draft: str,
     event: EventCandidate,
     context: ResearchContext,
-) -> str:
+    language: str,
+) -> tuple[str, str]:
     critic_prompt = _load_critic_prompt()
     critic_message = _build_critic_message(draft, event, context)
 
@@ -134,7 +132,7 @@ def _critique_and_revise(
             messages=[{"role": "user", "content": critic_message}],
         )
 
-        tool_input = _extract_tool_input(response, "submit_critique")
+        tool_input = extract_tool_input(response, "submit_critique")
 
         issues = tool_input.get("issues", [])
         critical_count = sum(1 for i in issues if i.get("severity") == "critical")
@@ -145,16 +143,20 @@ def _critique_and_revise(
             critical_count,
         )
 
+        title = tool_input.get("title", "").strip().strip('"').strip("'")
         revised = tool_input["revised_text"]
+
         if len(revised) > 200:
-            return revised
+            if not title:
+                title = _generate_title(client, event, revised, language)
+            return title, revised
 
         logger.warning("Critic returned too-short revised_text (%d chars), using draft", len(revised))
-        return draft
+        return _generate_title(client, event, draft, language), draft
 
     except Exception as e:
         logger.error("Critic failed: %s — using original draft", e)
-        return draft
+        return _generate_title(client, event, draft, language), draft
 
 
 def _build_critic_message(draft: str, event: EventCandidate, context: ResearchContext) -> str:
@@ -329,36 +331,3 @@ def _build_user_message(event: EventCandidate, context: ResearchContext) -> str:
     return "\n".join(parts)
 
 
-def _extract_tool_input(response, tool_name: str) -> dict:
-    for block in response.content:
-        if block.type == "tool_use" and block.name == tool_name:
-            return block.input
-    raise RuntimeError(f"LLM did not return expected tool call '{tool_name}'")
-
-
-def _extract_title(text: str) -> str:
-    lines = text.strip().split("\n")
-    for line in lines[:5]:
-        stripped = line.strip()
-        if stripped.startswith("#"):
-            return stripped.lstrip("#").strip()
-        if stripped and len(stripped) < 120 and not stripped.endswith("."):
-            return stripped
-    return "Untitled"
-
-
-def _strip_title(text: str) -> str:
-    lines = text.strip().split("\n")
-    for i, line in enumerate(lines[:5]):
-        stripped = line.strip()
-        if stripped.startswith("#"):
-            rest = lines[i + 1 :]
-            return "\n".join(rest).strip()
-        if stripped and len(stripped) < 120 and not stripped.endswith("."):
-            next_line = lines[i + 1].strip() if i + 1 < len(lines) else ""
-            if not next_line:
-                rest = lines[i + 2 :]
-            else:
-                rest = lines[i + 1 :]
-            return "\n".join(rest).strip()
-    return text.strip()

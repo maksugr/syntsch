@@ -63,4 +63,6 @@ If you find more than 3 AI tells in the text, the revised version must aggressiv
 - Is the cultural context real and specific, or generic hand-waving?
 - Would someone who already knows about this artist/event still find the essay worthwhile?
 
-Submit your critique and revised text using the provided tool. Be ruthless. The goal is an essay that a human editor at Dazed would publish without changes.
+Submit your critique, title, and revised text using the provided tool. The title should be short, punchy, in the same language as the essay — think Dazed headline. No quotes around it, no period at the end. Proper nouns stay in Latin script. The revised_text must NOT include the title.
+
+Be ruthless. The goal is an essay that a human editor at Dazed would publish without changes.

@@ -61,7 +61,7 @@ async def cmd_scout(args):
     print(f"\nSaved {new_count} new events to data/events/")
 
 
-def cmd_curate(args):
+async def cmd_curate(args):
     print(f"Curating best event for today...")
 
     storage = _get_storage()
@@ -74,7 +74,7 @@ def cmd_curate(args):
         print("No available events. Run 'scout' first.", file=sys.stderr)
         sys.exit(1)
 
-    result = curate_event(city=args.city)
+    result = await curate_event(city=args.city)
 
     row = storage.get_event(result.chosen_event_id)
 
@@ -124,7 +124,7 @@ async def cmd_author(args):
     languages = args.language
 
     if args.from_curator:
-        result = curate_event(city=config.CITY, languages=languages)
+        result = await curate_event(city=config.CITY, languages=languages)
 
         event_id = result.chosen_event_id
 
@@ -186,7 +186,7 @@ async def cmd_pipeline(args):
 
     print(f"\n=== CURATOR: selecting best event ===")
 
-    curator_result = curate_event(city=args.city, languages=languages)
+    curator_result = await curate_event(city=args.city, languages=languages)
 
     event_id = curator_result.chosen_event_id
 
@@ -241,7 +241,7 @@ def main():
 
     handlers = {
         "scout": lambda a: asyncio.run(cmd_scout(a)),
-        "curate": lambda a: cmd_curate(a),
+        "curate": lambda a: asyncio.run(cmd_curate(a)),
         "author": lambda a: asyncio.run(cmd_author(a)),
         "pipeline": lambda a: asyncio.run(cmd_pipeline(a)),
     }

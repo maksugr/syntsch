@@ -7,6 +7,7 @@ import anthropic
 import config
 from models import CuratorResult
 from storage import EventStorage
+from utils import extract_tool_input
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +59,7 @@ CURATOR_TOOL = {
 }
 
 
-def curate_event(city: str | None = None, languages: list[str] | None = None) -> CuratorResult:
+async def curate_event(city: str | None = None, languages: list[str] | None = None) -> CuratorResult:
     city = city or config.CITY
     storage = EventStorage(config.DATA_DIR)
 
@@ -102,8 +103,8 @@ def curate_event(city: str | None = None, languages: list[str] | None = None) ->
 
     logger.info("Curating from %d available events (recent: %s)", len(available), recent_str)
 
-    client = anthropic.Anthropic(max_retries=3)
-    response = client.messages.create(
+    client = anthropic.AsyncAnthropic(max_retries=3)
+    response = await client.messages.create(
         model=config.CURATOR_MODEL,
         max_tokens=1024,
         tools=[CURATOR_TOOL],
@@ -111,7 +112,7 @@ def curate_event(city: str | None = None, languages: list[str] | None = None) ->
         messages=[{"role": "user", "content": prompt}],
     )
 
-    tool_input = _extract_tool_input(response, "choose_event")
+    tool_input = extract_tool_input(response, "choose_event")
 
     chosen_id = tool_input["chosen_event_id"]
     row = storage.get_event(chosen_id)
@@ -127,8 +128,3 @@ def curate_event(city: str | None = None, languages: list[str] | None = None) ->
     )
 
 
-def _extract_tool_input(response, tool_name: str) -> dict:
-    for block in response.content:
-        if block.type == "tool_use" and block.name == tool_name:
-            return block.input
-    raise RuntimeError(f"LLM did not return expected tool call '{tool_name}'")
