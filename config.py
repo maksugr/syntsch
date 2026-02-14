@@ -28,5 +28,62 @@ CATEGORIES = [
     "club",
 ]
 
+GENERAL_SOURCES = [
+    "tip-berlin.de",
+    "exberliner.com",
+    "zitty.de",
+    "timeout.com",
+    "visitberlin.de",
+]
+
+CATEGORY_SOURCES = {
+    "music": [
+        "residentadvisor.net",
+        "songkick.com",
+        "bandsintown.com",
+        "berliner-philharmoniker.de",
+    ],
+    "cinema": [
+        "berlinale.de",
+        "mubi.com",
+        "yorck.de",
+        "arsenalfilm.de",
+    ],
+    "theater": [
+        "nachtkritik.de",
+        "gorki.de",
+        "schaubuehne.de",
+        "deutschestheater.de",
+    ],
+    "exhibition": [
+        "artforum.com",
+        "monopol-magazin.de",
+        "smb.museum",
+        "kw-berlin.de",
+    ],
+    "lecture": [
+        "hkw.de",
+        "berliner-festspiele.de",
+        "ici-berlin.org",
+    ],
+    "festival": [
+        "berliner-festspiele.de",
+        "transmediale.de",
+        "ctm-festival.de",
+        "berlinerfestspiele.de",
+    ],
+    "performance": [
+        "hau-berlin.de",
+        "sophiensaele.com",
+        "tanzimaugust.de",
+        "radialsystem.de",
+    ],
+    "club": [
+        "residentadvisor.net",
+        "berghain.berlin",
+        "clubcommission.de",
+    ],
+}
+
 DATA_DIR = BASE_DIR / "data"
 PROMPTS_DIR = BASE_DIR / "prompts"

@@ -43,6 +43,11 @@ a political dimension, a generational moment?
 - TIMELINESS: Happening within the next 1-2 weeks. Prefer events that haven't happened yet.
 - NON-OBVIOUSNESS: Skip the most predictable picks.
 
+Source credibility — prefer events found on authoritative cultural platforms \
+(e.g. Resident Advisor for club/music, nachtkritik.de for theater, artforum/monopol-magazin for exhibitions, \
+tip-berlin/exberliner/zitty for general Berlin culture) over generic blogs or aggregators. \
+Events from known venues and institutions carry more weight.
+
 IMPORTANT:
 - If an entry is clearly not a cultural event (news article, restaurant listing), skip it.
 - If you can find fewer than 5 worthy events, return fewer. Never pad with weak picks.
@@ -79,12 +84,16 @@ async def scout_event(
 
     tavily_key = os.environ.get("TAVILY_API_KEY", "")
     source = TavilyEventSource(api_key=tavily_key)
-    candidates = await source.fetch_events(city, days_ahead)
+    storage = EventStorage(config.DATA_DIR)
+
+    pool_categories = [
+        ev.get("category", "") for ev in storage._load_all_events()
+        if ev.get("category")
+    ]
+    candidates = await source.fetch_events(city, days_ahead, pool_categories=pool_categories)
 
     if not candidates:
         raise RuntimeError(f"No events found for {city}")
-
-    storage = EventStorage(config.DATA_DIR)
     filtered = [
         c for c in candidates
         if not storage.is_already_covered(c.name, c.venue, c.start_date)
