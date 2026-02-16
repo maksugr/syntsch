@@ -221,7 +221,7 @@ async def cmd_pipeline(args):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="ptytsch — autonomous cultural digest")
+    parser = argparse.ArgumentParser(description="syntsch — autonomous cultural digest")
     sub = parser.add_subparsers(dest="command", required=True)
 
     p_scout = sub.add_parser("scout", help="Find cultural events")

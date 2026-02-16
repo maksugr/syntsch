@@ -15,17 +15,17 @@ export async function generateMetadata({
 
   return {
     title: "Privacy Policy",
-    description: "Privacy policy for PTYTSCH — how we handle your data.",
+    description: "Privacy policy for SYNTSCH — how we handle your data.",
     openGraph: {
-      title: "Privacy Policy — PTYTSCH",
-      description: "Privacy policy for PTYTSCH — how we handle your data.",
-      url: `https://ptytsch.de/${lang}/privacy/`,
+      title: "Privacy Policy — SYNTSCH",
+      description: "Privacy policy for SYNTSCH — how we handle your data.",
+      url: `https://syntsch.de/${lang}/privacy/`,
     },
     alternates: {
-      canonical: `https://ptytsch.de/${lang}/privacy/`,
+      canonical: `https://syntsch.de/${lang}/privacy/`,
       languages: Object.fromEntries([
-        ...LANGUAGES.map((l) => [l, `https://ptytsch.de/${l}/privacy/`]),
-        ["x-default", "https://ptytsch.de/en/privacy/"],
+        ...LANGUAGES.map((l) => [l, `https://syntsch.de/${l}/privacy/`]),
+        ["x-default", "https://syntsch.de/en/privacy/"],
       ]),
     },
     robots: {

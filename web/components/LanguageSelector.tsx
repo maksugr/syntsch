@@ -62,7 +62,7 @@ export default function LanguageSelector() {
         <>
           <span style={{ color: "#999999" }}>·</span>
           <a
-            href="https://t.me/ptytsch"
+            href="https://t.me/syntsch"
             target="_blank"
             rel="noopener noreferrer"
             className="transition-colors duration-100"

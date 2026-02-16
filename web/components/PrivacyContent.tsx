@@ -6,11 +6,11 @@ import { useLanguage } from "./LanguageProvider";
 const content = {
     en: {
         title: "PRIVACY",
-        intro: "This privacy policy explains how PTYTSCH (ptytsch.de) handles your data.",
+        intro: "This privacy policy explains how SYNTSCH (syntsch.de) handles your data.",
         sections: [
             {
                 heading: "Data controller",
-                text: "Roman Ponomarev, Munich, Germany. Contact: hi@ptytsch.de",
+                text: "Roman Ponomarev, Munich, Germany. Contact: hi@syntsch.de",
             },
             {
                 heading: "Hosting",
@@ -22,7 +22,7 @@ const content = {
             },
             {
                 heading: "Cookies",
-                text: "This website uses a single functional cookie: \"ptytsch_lang\" stores your language preference (en, de, or ru). It expires after 365 days. This cookie is strictly necessary for the website to function in your preferred language and does not require consent under GDPR. No tracking cookies, advertising cookies, or third-party cookies are used.",
+                text: "This website uses a single functional cookie: \"syntsch_lang\" stores your language preference (en, de, or ru). It expires after 365 days. This cookie is strictly necessary for the website to function in your preferred language and does not require consent under GDPR. No tracking cookies, advertising cookies, or third-party cookies are used.",
             },
             {
                 heading: "Data we do not collect",
@@ -30,7 +30,7 @@ const content = {
             },
             {
                 heading: "Your rights",
-                text: "Under GDPR you have the right to: access your data, request correction or deletion, restrict processing, data portability, and object to processing. You also have the right to lodge a complaint with a supervisory authority. Since we do not store personal data beyond what is described above, most of these rights are already fulfilled by design. Contact: hi@ptytsch.de",
+                text: "Under GDPR you have the right to: access your data, request correction or deletion, restrict processing, data portability, and object to processing. You also have the right to lodge a complaint with a supervisory authority. Since we do not store personal data beyond what is described above, most of these rights are already fulfilled by design. Contact: hi@syntsch.de",
             },
             {
                 heading: "AI-generated content",
@@ -40,11 +40,11 @@ const content = {
     },
     de: {
         title: "DATENSCHUTZ",
-        intro: "Diese Datenschutzerklärung erläutert, wie PTYTSCH (ptytsch.de) mit Ihren Daten umgeht.",
+        intro: "Diese Datenschutzerklärung erläutert, wie SYNTSCH (syntsch.de) mit Ihren Daten umgeht.",
         sections: [
             {
                 heading: "Verantwortlicher",
-                text: "Roman Ponomarev, München, Deutschland. Kontakt: hi@ptytsch.de",
+                text: "Roman Ponomarev, München, Deutschland. Kontakt: hi@syntsch.de",
             },
             {
                 heading: "Hosting",
@@ -56,7 +56,7 @@ const content = {
             },
             {
                 heading: "Cookies",
-                text: "Diese Website verwendet einen einzigen funktionalen Cookie: \"ptytsch_lang\" speichert Ihre Sprachpräferenz (en, de oder ru). Er läuft nach 365 Tagen ab. Dieser Cookie ist für die Funktion der Website in Ihrer bevorzugten Sprache unbedingt erforderlich und bedarf gemäß DSGVO keiner Einwilligung. Es werden keine Tracking-Cookies, Werbe-Cookies oder Drittanbieter-Cookies verwendet.",
+                text: "Diese Website verwendet einen einzigen funktionalen Cookie: \"syntsch_lang\" speichert Ihre Sprachpräferenz (en, de oder ru). Er läuft nach 365 Tagen ab. Dieser Cookie ist für die Funktion der Website in Ihrer bevorzugten Sprache unbedingt erforderlich und bedarf gemäß DSGVO keiner Einwilligung. Es werden keine Tracking-Cookies, Werbe-Cookies oder Drittanbieter-Cookies verwendet.",
             },
             {
                 heading: "Daten, die wir nicht erheben",
@@ -64,7 +64,7 @@ const content = {
             },
             {
                 heading: "Ihre Rechte",
-                text: "Nach der DSGVO haben Sie das Recht auf: Auskunft, Berichtigung oder Löschung Ihrer Daten, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch gegen die Verarbeitung. Sie haben außerdem das Recht, Beschwerde bei einer Aufsichtsbehörde einzulegen. Da wir über das oben Beschriebene hinaus keine personenbezogenen Daten speichern, sind die meisten dieser Rechte bereits durch das Design erfüllt. Kontakt: hi@ptytsch.de",
+                text: "Nach der DSGVO haben Sie das Recht auf: Auskunft, Berichtigung oder Löschung Ihrer Daten, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch gegen die Verarbeitung. Sie haben außerdem das Recht, Beschwerde bei einer Aufsichtsbehörde einzulegen. Da wir über das oben Beschriebene hinaus keine personenbezogenen Daten speichern, sind die meisten dieser Rechte bereits durch das Design erfüllt. Kontakt: hi@syntsch.de",
             },
             {
                 heading: "KI-generierte Inhalte",
@@ -74,11 +74,11 @@ const content = {
     },
     ru: {
         title: "КОНФИДЕНЦИАЛЬНОСТЬ",
-        intro: "Эта политика конфиденциальности объясняет, как PTYTSCH (ptytsch.de) обращается с вашими данными.",
+        intro: "Эта политика конфиденциальности объясняет, как SYNTSCH (syntsch.de) обращается с вашими данными.",
         sections: [
             {
                 heading: "Ответственный",
-                text: "Roman Ponomarev, Мюнхен, Германия. Контакт: hi@ptytsch.de",
+                text: "Roman Ponomarev, Мюнхен, Германия. Контакт: hi@syntsch.de",
             },
             {
                 heading: "Хостинг",
@@ -90,7 +90,7 @@ const content = {
             },
             {
                 heading: "Cookies",
-                text: "Этот сайт использует один функциональный cookie: \"ptytsch_lang\" хранит ваш выбор языка (en, de или ru). Срок действия — 365 дней. Этот cookie строго необходим для работы сайта на выбранном языке и не требует согласия по GDPR. Никаких отслеживающих, рекламных или сторонних cookies не используется.",
+                text: "Этот сайт использует один функциональный cookie: \"syntsch_lang\" хранит ваш выбор языка (en, de или ru). Срок действия — 365 дней. Этот cookie строго необходим для работы сайта на выбранном языке и не требует согласия по GDPR. Никаких отслеживающих, рекламных или сторонних cookies не используется.",
             },
             {
                 heading: "Данные, которые мы не собираем",
@@ -98,7 +98,7 @@ const content = {
             },
             {
                 heading: "Ваши права",
-                text: "По GDPR вы имеете право на: доступ к данным, их исправление или удаление, ограничение обработки, переносимость данных и возражение против обработки. Вы также можете подать жалобу в надзорный орган. Поскольку мы не храним персональные данные сверх описанного выше, большинство этих прав уже обеспечены конструктивно. Контакт: hi@ptytsch.de",
+                text: "По GDPR вы имеете право на: доступ к данным, их исправление или удаление, ограничение обработки, переносимость данных и возражение против обработки. Вы также можете подать жалобу в надзорный орган. Поскольку мы не храним персональные данные сверх описанного выше, большинство этих прав уже обеспечены конструктивно. Контакт: hi@syntsch.de",
             },
             {
                 heading: "Контент, созданный ИИ",
@@ -146,7 +146,7 @@ export default function PrivacyContent() {
                     onMouseEnter={(e) => (e.currentTarget.style.color = "#000000")}
                     onMouseLeave={(e) => (e.currentTarget.style.color = "#999999")}
                 >
-                    ← PTYTSCH
+                    ← SYNTSCH
                 </Link>
             </div>
         </div>

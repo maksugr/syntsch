@@ -5,7 +5,7 @@ BASE_DIR = Path(__file__).parent
 
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "")
-SITE_URL = "https://ptytsch.de"
+SITE_URL = "https://syntsch.de"
 
 CITY = "Berlin"
 DAYS_AHEAD = 14

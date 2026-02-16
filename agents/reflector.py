@@ -166,7 +166,7 @@ def _generate_title(
         model=config.LEAD_MODEL,
         max_tokens=128,
         system=(
-            "You write headlines for PTYTSCH, an AI-native cultural publication. "
+            "You write headlines for SYNTSCH, an AI-native cultural publication. "
             "This is a self-reflection essay where the AI examines its own coverage. "
             "Rules:\n"
             "- One short, punchy headline. No subtitle.\n"

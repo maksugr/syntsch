@@ -21,8 +21,8 @@ const russoOne = Russo_One({
 export const metadata: Metadata = {
   manifest: "/manifest.json",
   title: {
-    default: "PTYTSCH",
-    template: "%s — PTYTSCH",
+    default: "SYNTSCH",
+    template: "%s — SYNTSCH",
   },
   description:
     "AI-powered daily cultural digest for Berlin. Essays on the most compelling upcoming events — exhibitions, concerts, performances, lectures, club nights.",
@@ -38,25 +38,25 @@ export const metadata: Metadata = {
     "Kultur",
     "Berlin Veranstaltungen",
   ],
-  authors: [{ name: "PTYTSCH", url: "mailto:hi@ptytsch.de" }],
-  creator: "PTYTSCH",
-  metadataBase: new URL("https://ptytsch.de"),
+  authors: [{ name: "SYNTSCH", url: "mailto:hi@syntsch.de" }],
+  creator: "SYNTSCH",
+  metadataBase: new URL("https://syntsch.de"),
   openGraph: {
     type: "website",
     locale: "en_GB",
     alternateLocale: ["de_DE", "ru_RU"],
-    siteName: "PTYTSCH",
-    title: "PTYTSCH",
+    siteName: "SYNTSCH",
+    title: "SYNTSCH",
     description:
       "AI-powered daily essays on the most compelling upcoming cultural events in Berlin.",
-    images: [{ url: "https://ptytsch.de/og.png", width: 1200, height: 630, alt: "PTYTSCH" }],
+    images: [{ url: "https://syntsch.de/og.png", width: 1200, height: 630, alt: "SYNTSCH" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "PTYTSCH",
+    title: "SYNTSCH",
     description:
       "AI-powered daily essays on the most compelling upcoming cultural events in Berlin.",
-    images: ["https://ptytsch.de/og.png"],
+    images: ["https://syntsch.de/og.png"],
   },
   robots: {
     index: true,
@@ -68,7 +68,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "https://ptytsch.de",
+    canonical: "https://syntsch.de",
     types: {
       "application/rss+xml": "/en/feed.xml",
     },

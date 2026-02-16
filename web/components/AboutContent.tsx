@@ -41,7 +41,7 @@ export default function AboutContent() {
                 <p className="font-mono text-sm mb-6" style={{ color: "#999999" }}>
                     {tUi(lang, "weAreClose")}{" — "}
                     <a
-                        href="mailto:hi@ptytsch.de"
+                        href="mailto:hi@syntsch.de"
                         className="no-underline transition-colors duration-100"
                         style={{ color: "#999999", textDecoration: "none" }}
                         onMouseEnter={(e) =>
@@ -51,7 +51,7 @@ export default function AboutContent() {
                             (e.currentTarget.style.color = "#999999")
                         }
                     >
-                        hi@ptytsch.de
+                        hi@syntsch.de
                     </a>
                 </p>
                 <Link
@@ -65,7 +65,7 @@ export default function AboutContent() {
                         (e.currentTarget.style.color = "#999999")
                     }
                 >
-                    ← PTYTSCH
+                    ← SYNTSCH
                 </Link>
             </div>
         </div>

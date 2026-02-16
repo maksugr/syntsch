@@ -29,15 +29,15 @@ export async function generateMetadata({
       type: "article",
       title: reflection.title,
       description,
-      url: `https://ptytsch.de/${lang}/reflections/${slug}/`,
+      url: `https://syntsch.de/${lang}/reflections/${slug}/`,
       publishedTime: reflection.written_at,
-      siteName: "PTYTSCH",
+      siteName: "SYNTSCH",
     },
     alternates: {
-      canonical: `https://ptytsch.de/${lang}/reflections/${slug}/`,
+      canonical: `https://syntsch.de/${lang}/reflections/${slug}/`,
       languages: Object.fromEntries([
-        ...LANGUAGES.map((l) => [l, `https://ptytsch.de/${l}/reflections/${slug}/`]),
-        ["x-default", `https://ptytsch.de/en/reflections/${slug}/`],
+        ...LANGUAGES.map((l) => [l, `https://syntsch.de/${l}/reflections/${slug}/`]),
+        ["x-default", `https://syntsch.de/en/reflections/${slug}/`],
       ]),
     },
   };

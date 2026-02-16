@@ -4,7 +4,7 @@ export default function RootRedirect() {
       dangerouslySetInnerHTML={{
         __html: `
           (function() {
-            var match = document.cookie.match(/(?:^|; )ptytsch_lang=([^;]*)/);
+            var match = document.cookie.match(/(?:^|; )syntsch_lang=([^;]*)/);
             var lang = match ? decodeURIComponent(match[1]) : "en";
             if (lang !== "en" && lang !== "de" && lang !== "ru") lang = "en";
             window.location.replace("/" + lang + "/");

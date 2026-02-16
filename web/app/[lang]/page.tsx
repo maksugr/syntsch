@@ -35,15 +35,15 @@ export async function generateMetadata({
 
   return {
     alternates: {
-      canonical: `https://ptytsch.de/${lang}/`,
+      canonical: `https://syntsch.de/${lang}/`,
       languages: Object.fromEntries([
-        ...LANGUAGES.map((l) => [l, `https://ptytsch.de/${l}/`]),
-        ["x-default", "https://ptytsch.de/en/"],
+        ...LANGUAGES.map((l) => [l, `https://syntsch.de/${l}/`]),
+        ["x-default", "https://syntsch.de/en/"],
       ]),
     },
     openGraph: {
       locale: meta.locale,
-      url: `https://ptytsch.de/${lang}/`,
+      url: `https://syntsch.de/${lang}/`,
       description: meta.description,
     },
   };

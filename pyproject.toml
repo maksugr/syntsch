@@ -1,5 +1,5 @@
 [project]
-name = "ptytsch"
+name = "syntsch"
 version = "0.1.0"
 description = "Autonomous cultural digest — finds events, writes articles, publishes daily"
 requires-python = ">=3.11"

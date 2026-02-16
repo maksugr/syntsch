@@ -1,4 +1,4 @@
-# Ptytsch
+# Syntsch
 
 Autonomous cultural digest. Finds interesting events in your city, writes article-reviews in the style of i-D/Dazed, publishes daily.
 

@@ -34,10 +34,10 @@ export async function generateMetadata({
       type: "article",
       title: article.title,
       description,
-      url: `https://ptytsch.de/${lang}/article/${slug}/`,
+      url: `https://syntsch.de/${lang}/article/${slug}/`,
       publishedTime: article.written_at,
       locale: article.language === "de" ? "de_DE" : article.language === "ru" ? "ru_RU" : "en_GB",
-      siteName: "PTYTSCH",
+      siteName: "SYNTSCH",
     },
     twitter: {
       card: "summary",
@@ -45,11 +45,11 @@ export async function generateMetadata({
       description,
     },
     alternates: {
-      canonical: `https://ptytsch.de/${lang}/article/${slug}/`,
+      canonical: `https://syntsch.de/${lang}/article/${slug}/`,
       languages: (() => {
         const alts = getAlternateSlugs(article.event_id);
-        const entries = Object.entries(alts).map(([l, s]) => [l, `https://ptytsch.de/${l}/article/${s}/`]);
-        if (alts["en"]) entries.push(["x-default", `https://ptytsch.de/en/article/${alts["en"]}/`]);
+        const entries = Object.entries(alts).map(([l, s]) => [l, `https://syntsch.de/${l}/article/${s}/`]);
+        if (alts["en"]) entries.push(["x-default", `https://syntsch.de/en/article/${alts["en"]}/`]);
         return Object.fromEntries(entries);
       })(),
     },
@@ -75,9 +75,9 @@ export default async function ArticlePage({
     description: article.lead || article.body.slice(0, 160),
     datePublished: article.written_at,
     inLanguage: article.language,
-    author: { "@type": "Organization", name: "PTYTSCH", email: "hi@ptytsch.de" },
-    publisher: { "@type": "Organization", name: "PTYTSCH", url: "https://ptytsch.de", email: "hi@ptytsch.de" },
-    mainEntityOfPage: `https://ptytsch.de/${lang}/article/${slug}/`,
+    author: { "@type": "Organization", name: "SYNTSCH", email: "hi@syntsch.de" },
+    publisher: { "@type": "Organization", name: "SYNTSCH", url: "https://syntsch.de", email: "hi@syntsch.de" },
+    mainEntityOfPage: `https://syntsch.de/${lang}/article/${slug}/`,
     ...(article.event.name && {
       about: {
         "@type": "Event",

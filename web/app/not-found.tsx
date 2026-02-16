@@ -14,7 +14,7 @@ export default function NotFound() {
         className="font-mono text-sm tracking-wide no-underline transition-colors duration-100"
         style={{ color: "#999999", textDecoration: "none" }}
       >
-        ← back to PTYTSCH
+        ← back to SYNTSCH
       </Link>
     </div>
   );

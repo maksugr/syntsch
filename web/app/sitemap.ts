@@ -4,7 +4,7 @@ import { LANGUAGES } from "@/lib/i18n";
 
 export const dynamic = "force-static";
 
-const BASE = "https://ptytsch.de";
+const BASE = "https://syntsch.de";
 
 function langAlternates(path: string): Record<string, string> {
   const entries = LANGUAGES.map((l) => [l, `${BASE}/${l}${path}`]);

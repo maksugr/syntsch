@@ -1,4 +1,4 @@
-export default function PtytschIcon({ className, color = "currentColor" }: { className?: string; color?: string }) {
+export default function SyntschIcon({ className, color = "currentColor" }: { className?: string; color?: string }) {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"

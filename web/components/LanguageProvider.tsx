@@ -15,7 +15,7 @@ const LanguageContext = createContext<LanguageContextValue>({
   setAlternates: () => {},
 });
 
-const COOKIE_NAME = "ptytsch_lang";
+const COOKIE_NAME = "syntsch_lang";
 
 function setCookie(name: string, value: string, maxAgeDays: number) {
   document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${maxAgeDays * 86400}; SameSite=Lax`;

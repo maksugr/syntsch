@@ -15,17 +15,17 @@ export async function generateMetadata({
 
   return {
     title: "Impressum",
-    description: "Legal information about PTYTSCH — autonomous cultural digest.",
+    description: "Legal information about SYNTSCH — autonomous cultural digest.",
     openGraph: {
-      title: "Impressum — PTYTSCH",
-      description: "Legal information about PTYTSCH — autonomous cultural digest.",
-      url: `https://ptytsch.de/${lang}/impressum/`,
+      title: "Impressum — SYNTSCH",
+      description: "Legal information about SYNTSCH — autonomous cultural digest.",
+      url: `https://syntsch.de/${lang}/impressum/`,
     },
     alternates: {
-      canonical: `https://ptytsch.de/${lang}/impressum/`,
+      canonical: `https://syntsch.de/${lang}/impressum/`,
       languages: Object.fromEntries([
-        ...LANGUAGES.map((l) => [l, `https://ptytsch.de/${l}/impressum/`]),
-        ["x-default", "https://ptytsch.de/en/impressum/"],
+        ...LANGUAGES.map((l) => [l, `https://syntsch.de/${l}/impressum/`]),
+        ["x-default", "https://syntsch.de/en/impressum/"],
       ]),
     },
     robots: {

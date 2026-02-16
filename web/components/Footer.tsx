@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useLanguage } from "./LanguageProvider";
 import { tUi } from "@/lib/translations";
-import PtytschIcon from "./PtytschIcon";
+import SyntschIcon from "./SyntschIcon";
 
 export default function Footer() {
   const { lang } = useLanguage();
@@ -29,17 +29,17 @@ export default function Footer() {
             className="flex items-center gap-1.5 text-base md:text-lg tracking-widest uppercase no-underline"
             style={{ fontFamily: "var(--font-bebas, var(--font-display))", color: "#999999", textDecoration: "none" }}
           >
-            <PtytschIcon className="w-4 md:w-5" color="#999999" />
-            PTYTSCH
+            <SyntschIcon className="w-4 md:w-5" color="#999999" />
+            SYNTSCH
           </Link>
           <a
-            href="mailto:hi@ptytsch.de"
+            href="mailto:hi@syntsch.de"
             className="font-mono text-[10px] tracking-wide no-underline transition-colors duration-100"
             style={{ color: "#999999", textDecoration: "none" }}
             onMouseEnter={(e) => (e.currentTarget.style.color = "#000000")}
             onMouseLeave={(e) => (e.currentTarget.style.color = "#999999")}
           >
-            hi@ptytsch.de
+            hi@syntsch.de
           </a>
           <div className="flex gap-2 font-mono text-[10px] tracking-wide">
             <Link

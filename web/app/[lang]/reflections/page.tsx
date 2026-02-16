@@ -17,18 +17,18 @@ export async function generateMetadata({
   const { lang } = await params;
 
   const titles: Record<string, string> = {
-    en: "Reflections — PTYTSCH",
-    de: "Reflexionen — PTYTSCH",
-    ru: "Рефлексия — PTYTSCH",
+    en: "Reflections — SYNTSCH",
+    de: "Reflexionen — SYNTSCH",
+    ru: "Рефлексия — SYNTSCH",
   };
 
   return {
     title: titles[lang] || titles.en,
     alternates: {
-      canonical: `https://ptytsch.de/${lang}/reflections/`,
+      canonical: `https://syntsch.de/${lang}/reflections/`,
       languages: Object.fromEntries([
-        ...LANGUAGES.map((l) => [l, `https://ptytsch.de/${l}/reflections/`]),
-        ["x-default", "https://ptytsch.de/en/reflections/"],
+        ...LANGUAGES.map((l) => [l, `https://syntsch.de/${l}/reflections/`]),
+        ["x-default", "https://syntsch.de/en/reflections/"],
       ]),
     },
   };

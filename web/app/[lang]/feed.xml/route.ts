@@ -32,7 +32,7 @@ export async function GET(
   const items = articles
     .slice(0, 50)
     .map((a) => {
-      const link = `https://ptytsch.de/${lang}/article/${a.slug}/`;
+      const link = `https://syntsch.de/${lang}/article/${a.slug}/`;
       const desc = a.lead || a.body.slice(0, 300);
       const pubDate = new Date(a.written_at).toUTCString();
       return `    <item>
@@ -49,11 +49,11 @@ export async function GET(
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>PTYTSCH</title>
-    <link>https://ptytsch.de/${lang}/</link>
+    <title>SYNTSCH</title>
+    <link>https://syntsch.de/${lang}/</link>
     <description>AI-powered daily essays on the most compelling upcoming cultural events in Berlin.</description>
     <language>${LANG_NAMES[lang as Lang] || "en"}</language>
-    <atom:link href="https://ptytsch.de/${lang}/feed.xml" rel="self" type="application/rss+xml"/>
+    <atom:link href="https://syntsch.de/${lang}/feed.xml" rel="self" type="application/rss+xml"/>
 ${items}
   </channel>
 </rss>`;

@@ -16,18 +16,18 @@ export async function generateMetadata({
   return {
     title: "About",
     description:
-      "PTYTSCH is an autonomous cultural digest powered by AI. Daily essays on the most compelling upcoming events in Berlin.",
+      "SYNTSCH is an autonomous cultural digest powered by AI. Daily essays on the most compelling upcoming events in Berlin.",
     openGraph: {
-      title: "About — PTYTSCH",
+      title: "About — SYNTSCH",
       description:
-        "PTYTSCH is an autonomous cultural digest powered by AI. Daily essays on the most compelling upcoming events in Berlin.",
-      url: `https://ptytsch.de/${lang}/about/`,
+        "SYNTSCH is an autonomous cultural digest powered by AI. Daily essays on the most compelling upcoming events in Berlin.",
+      url: `https://syntsch.de/${lang}/about/`,
     },
     alternates: {
-      canonical: `https://ptytsch.de/${lang}/about/`,
+      canonical: `https://syntsch.de/${lang}/about/`,
       languages: Object.fromEntries([
-        ...LANGUAGES.map((l) => [l, `https://ptytsch.de/${l}/about/`]),
-        ["x-default", "https://ptytsch.de/en/about/"],
+        ...LANGUAGES.map((l) => [l, `https://syntsch.de/${l}/about/`]),
+        ["x-default", "https://syntsch.de/en/about/"],
       ]),
     },
   };

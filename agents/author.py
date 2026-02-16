@@ -16,7 +16,7 @@ LANGUAGE_NOTES = {
     "ru": "Пиши на русском. Живой, современный русский — не канцелярит, не переводческий язык. Тон как у лучших текстов Афиши или Сигмы. Можно использовать англицизмы там, где они органичны (сет, перформанс, саунд), но не злоупотреблять. НАПОМИНАНИЕ: имена людей, названия мест, клубов, галерей, альбомов, фильмов — ВСЕГДА латиницей как в оригинале. Никогда не транслитерируй. Пиши 'Ryoji Ikeda', а не 'Рёдзи Икэда'. Пиши 'Berghain', а не 'Бергхайн'.",
 }
 
-FEW_SHOT_PLACEHOLDER = "No example essays provided yet. Examples will be added here to anchor the style. You are PTYTSCH — write with your own voice."
+FEW_SHOT_PLACEHOLDER = "No example essays provided yet. Examples will be added here to anchor the style. You are SYNTSCH — write with your own voice."
 
 CRITIC_TOOL = {
     "name": "submit_critique",
@@ -221,7 +221,7 @@ def _generate_lead(
         model=config.LEAD_MODEL,
         max_tokens=512,
         system=(
-            "You write lede lines for PTYTSCH, an AI-native cultural publication. "
+            "You write lede lines for SYNTSCH, an AI-native cultural publication. "
             "A lede is 1-2 sentences that captures both the event and the mood of the essay. "
             "It goes on a card/preview, so it must hook the reader instantly.\n\n"
             "Rules:\n"
@@ -262,7 +262,7 @@ def _generate_title(
         model=config.LEAD_MODEL,
         max_tokens=128,
         system=(
-            "You write headlines for PTYTSCH, an AI-native cultural publication. "
+            "You write headlines for SYNTSCH, an AI-native cultural publication. "
             "Rules:\n"
             "- One short, punchy headline. No subtitle.\n"
             "- Same language as the essay.\n"

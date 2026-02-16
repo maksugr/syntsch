@@ -11,7 +11,7 @@ const content = {
         contact: "Contact",
         disclaimer: "Disclaimer",
         disclaimerText:
-            "PTYTSCH is an autonomous AI-generated publication. All articles are written by artificial intelligence without human editorial oversight. The content reflects algorithmic analysis of cultural events and does not constitute professional criticism or journalism. Event details (dates, venues, descriptions) are sourced from publicly available information and may contain inaccuracies. We assume no liability for the accuracy, completeness, or timeliness of the content provided.",
+            "SYNTSCH is an autonomous AI-generated publication. All articles are written by artificial intelligence without human editorial oversight. The content reflects algorithmic analysis of cultural events and does not constitute professional criticism or journalism. Event details (dates, venues, descriptions) are sourced from publicly available information and may contain inaccuracies. We assume no liability for the accuracy, completeness, or timeliness of the content provided.",
         copyright: "Copyright",
         copyrightText:
             "All texts on this website are AI-generated. The website design, code, and brand are the intellectual property of the operator. Reproduction or distribution of these elements requires prior written consent.",
@@ -23,7 +23,7 @@ const content = {
         contact: "Kontakt",
         disclaimer: "Haftungsausschluss",
         disclaimerText:
-            "PTYTSCH ist eine autonome, KI-generierte Publikation. Alle Artikel werden von künstlicher Intelligenz ohne menschliche redaktionelle Aufsicht verfasst. Die Inhalte spiegeln algorithmische Analysen kultureller Veranstaltungen wider und stellen keine professionelle Kritik oder Berichterstattung dar. Veranstaltungsdetails (Daten, Orte, Beschreibungen) stammen aus öffentlich zugänglichen Informationen und können Ungenauigkeiten enthalten. Wir übernehmen keine Haftung für die Richtigkeit, Vollständigkeit oder Aktualität der bereitgestellten Inhalte.",
+            "SYNTSCH ist eine autonome, KI-generierte Publikation. Alle Artikel werden von künstlicher Intelligenz ohne menschliche redaktionelle Aufsicht verfasst. Die Inhalte spiegeln algorithmische Analysen kultureller Veranstaltungen wider und stellen keine professionelle Kritik oder Berichterstattung dar. Veranstaltungsdetails (Daten, Orte, Beschreibungen) stammen aus öffentlich zugänglichen Informationen und können Ungenauigkeiten enthalten. Wir übernehmen keine Haftung für die Richtigkeit, Vollständigkeit oder Aktualität der bereitgestellten Inhalte.",
         copyright: "Urheberrecht",
         copyrightText:
             "Alle Texte auf dieser Website sind KI-generiert. Das Webdesign, der Code und die Marke sind geistiges Eigentum des Betreibers. Die Vervielfältigung oder Verbreitung dieser Elemente bedarf der vorherigen schriftlichen Zustimmung.",
@@ -35,7 +35,7 @@ const content = {
         contact: "Контакт",
         disclaimer: "Отказ от ответственности",
         disclaimerText:
-            "PTYTSCH — автономное издание, созданное искусственным интеллектом. Все статьи написаны ИИ без редакторского контроля. Содержание отражает алгоритмический анализ культурных событий и не является профессиональной критикой или журналистикой. Информация о событиях (даты, площадки, описания) получена из открытых источников и может содержать неточности. Мы не несём ответственности за точность, полноту или актуальность предоставленного контента.",
+            "SYNTSCH — автономное издание, созданное искусственным интеллектом. Все статьи написаны ИИ без редакторского контроля. Содержание отражает алгоритмический анализ культурных событий и не является профессиональной критикой или журналистикой. Информация о событиях (даты, площадки, описания) получена из открытых источников и может содержать неточности. Мы не несём ответственности за точность, полноту или актуальность предоставленного контента.",
         copyright: "Авторское право",
         copyrightText:
             "Все тексты на этом сайте сгенерированы ИИ. Дизайн сайта, код и бренд являются интеллектуальной собственностью оператора. Воспроизведение или распространение этих элементов требует предварительного письменного согласия.",
@@ -72,11 +72,11 @@ export default function ImpressumContent() {
                     </h2>
                     <p className="text-lg md:text-xl">
                         <a
-                            href="mailto:hi@ptytsch.de"
+                            href="mailto:hi@syntsch.de"
                             className="no-underline border-b border-black pb-0.5 transition-colors duration-100"
                             style={{ textDecoration: "none" }}
                         >
-                            hi@ptytsch.de
+                            hi@syntsch.de
                         </a>
                     </p>
                 </section>
@@ -108,7 +108,7 @@ export default function ImpressumContent() {
                     onMouseEnter={(e) => (e.currentTarget.style.color = "#000000")}
                     onMouseLeave={(e) => (e.currentTarget.style.color = "#999999")}
                 >
-                    ← PTYTSCH
+                    ← SYNTSCH
                 </Link>
             </div>
         </div>
