@@ -121,13 +121,13 @@ export default async function ArticlePage({
           <ArticleLead text={article.lead} />
         )}
 
+        {trace && <ProcessTrace trace={trace} />}
+
         <ArticleBody body={article.body} accentColor={catColor} />
 
         <div className="mt-12">
           <CopyLinkButton />
         </div>
-
-        {trace && <ProcessTrace trace={trace} />}
       </article>
 
       <div className="lg:w-[40%] relative" style={{ zIndex: 1 }}>

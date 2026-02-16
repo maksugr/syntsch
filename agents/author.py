@@ -4,7 +4,7 @@ from datetime import datetime
 import anthropic
 
 import config
-from models import EventCandidate, ArticleOutput, ResearchContext
+from models import EventCandidate, ArticleOutput, ResearchContext, PipelineTrace, CritiqueIssue
 from sources.research import research_event
 from utils import extract_tool_input
 
@@ -16,7 +16,7 @@ LANGUAGE_NOTES = {
     "ru": "Пиши на русском. Живой, современный русский — не канцелярит, не переводческий язык. Тон как у лучших текстов Афиши или Сигмы. Можно использовать англицизмы там, где они органичны (сет, перформанс, саунд), но не злоупотреблять. НАПОМИНАНИЕ: имена людей, названия мест, клубов, галерей, альбомов, фильмов — ВСЕГДА латиницей как в оригинале. Никогда не транслитерируй. Пиши 'Ryoji Ikeda', а не 'Рёдзи Икэда'. Пиши 'Berghain', а не 'Бергхайн'.",
 }
 
-FEW_SHOT_PLACEHOLDER = "No example essays provided yet. Examples will be added here to anchor the style. For now, channel your inner Dazed/i-D writer."
+FEW_SHOT_PLACEHOLDER = "No example essays provided yet. Examples will be added here to anchor the style. You are PTYTSCH — write with your own voice."
 
 CRITIC_TOOL = {
     "name": "submit_critique",
@@ -65,6 +65,11 @@ async def write_article(
 
     client = anthropic.Anthropic(max_retries=3)
 
+    trace = PipelineTrace(
+        research_sources_count=len(context.raw_sources),
+        research_context=context,
+    )
+
     logger.info("Writing draft for '%s' [%s]", event.name, language)
     draft_response = client.messages.create(
         model=config.AUTHOR_MODEL,
@@ -73,9 +78,17 @@ async def write_article(
         messages=[{"role": "user", "content": user_message}],
     )
     draft = draft_response.content[0].text
+    trace.draft_text = draft
+    trace.draft_word_count = len(draft.split())
 
-    logger.info("Sending to critic (draft: %d words)", len(draft.split()))
-    title, revised_text = _critique_and_revise(client, draft, event, context, language)
+    logger.info("Sending to critic (draft: %d words)", trace.draft_word_count)
+    title, revised_text, critique_assessment, critique_issues = _critique_and_revise(
+        client, draft, event, context, language
+    )
+    trace.critique_assessment = critique_assessment
+    trace.critique_issues = critique_issues
+    trace.revised_text = revised_text
+    trace.revision_changed = revised_text != draft
     word_count = len(revised_text.split())
 
     if word_count < 400:
@@ -95,6 +108,7 @@ async def write_article(
         )
         revised_text = final_response.content[0].text
         word_count = len(revised_text.split())
+        trace.expanded = True
 
     lead = _generate_lead(client, event, title, revised_text, language)
 
@@ -109,6 +123,7 @@ async def write_article(
         word_count=word_count,
         model_used=config.AUTHOR_MODEL,
         generated_at=datetime.now(),
+        trace=trace,
     )
 
 
@@ -118,7 +133,7 @@ def _critique_and_revise(
     event: EventCandidate,
     context: ResearchContext,
     language: str,
-) -> tuple[str, str]:
+) -> tuple[str, str, str, list[CritiqueIssue]]:
     critic_prompt = _load_critic_prompt()
     critic_message = _build_critic_message(draft, event, context)
 
@@ -134,12 +149,22 @@ def _critique_and_revise(
 
         tool_input = extract_tool_input(response, "submit_critique")
 
-        issues = tool_input.get("issues", [])
-        critical_count = sum(1 for i in issues if i.get("severity") == "critical")
+        raw_issues = tool_input.get("issues", [])
+        critique_issues = [
+            CritiqueIssue(
+                type=i.get("type", ""),
+                severity=i.get("severity", ""),
+                location=i.get("location", ""),
+                fix=i.get("fix", ""),
+            )
+            for i in raw_issues
+        ]
+        assessment = tool_input.get("overall_assessment", "")
+        critical_count = sum(1 for i in critique_issues if i.severity == "critical")
         logger.info(
             "Critic: %s (%d issues, %d critical)",
-            tool_input["overall_assessment"],
-            len(issues),
+            assessment,
+            len(critique_issues),
             critical_count,
         )
 
@@ -149,14 +174,14 @@ def _critique_and_revise(
         if len(revised) > 200:
             if not title:
                 title = _generate_title(client, event, revised, language)
-            return title, revised
+            return title, revised, assessment, critique_issues
 
         logger.warning("Critic returned too-short revised_text (%d chars), using draft", len(revised))
-        return _generate_title(client, event, draft, language), draft
+        return _generate_title(client, event, draft, language), draft, assessment, critique_issues
 
     except Exception as e:
         logger.error("Critic failed: %s — using original draft", e)
-        return _generate_title(client, event, draft, language), draft
+        return _generate_title(client, event, draft, language), draft, "", []
 
 
 def _build_critic_message(draft: str, event: EventCandidate, context: ResearchContext) -> str:
@@ -196,17 +221,14 @@ def _generate_lead(
         model=config.LEAD_MODEL,
         max_tokens=512,
         system=(
-            "You write lede lines for a cultural publication with the voice of Dazed/i-D. "
-            "A lede is 1-2 paragraphs that captures both the event and the mood of the essay. "
+            "You write lede lines for PTYTSCH, an AI-native cultural publication. "
+            "A lede is 1-2 sentences that captures both the event and the mood of the essay. "
             "It goes on a card/preview, so it must hook the reader instantly.\n\n"
             "Rules:\n"
             "- 1-2 sentences.\n"
             "- Same language as the essay.\n"
-            "- Never use: 'vibrant', 'iconic', 'legendary', 'must-see', 'unmissable', "
-            "'breathtaking', 'innovative', 'thought-provoking', 'boundary-pushing', "
-            "'compelling', 'remarkable', 'delve', 'tapestry', 'testament', 'realm'.\n"
+            "- Be specific and sharp. No generic praise.\n"
             "- No exclamation marks.\n"
-            "- No 'Whether you're...' or 'If you're looking for...' patterns.\n"
             "- Proper nouns stay in Latin script, always.\n"
             "- Return ONLY the lede text, nothing else."
         ),
@@ -240,7 +262,7 @@ def _generate_title(
         model=config.LEAD_MODEL,
         max_tokens=128,
         system=(
-            "You write headlines for a cultural publication with the voice of Dazed/i-D. "
+            "You write headlines for PTYTSCH, an AI-native cultural publication. "
             "Rules:\n"
             "- One short, punchy headline. No subtitle.\n"
             "- Same language as the essay.\n"

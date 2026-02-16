@@ -27,7 +27,7 @@ export default function ReflectionsList({ reflections }: { reflections: Reflecti
         <Link
           key={r.id}
           href={`/${lang}/reflections/${r.slug}/`}
-          className="block border-b border-black/10 py-8 no-underline transition-colors duration-100 hover:bg-black/[0.02]"
+          className="block border-b border-black/10 py-8 px-6 -mx-6 no-underline transition-colors duration-100 hover:bg-black/[0.02]"
           style={{ textDecoration: "none" }}
         >
           <h2

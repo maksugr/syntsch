@@ -50,8 +50,8 @@ export default function ConfidenceMarker({
       className="relative inline cursor-help transition-colors duration-150"
       style={{
         backgroundColor: color
-          ? `${color}${open ? "22" : "12"}`
-          : open ? "rgba(0,0,0,0.08)" : "rgba(0,0,0,0.04)",
+          ? `${color}${open ? "33" : "1a"}`
+          : open ? "rgba(0,0,0,0.12)" : "rgba(0,0,0,0.06)",
       }}
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={close}

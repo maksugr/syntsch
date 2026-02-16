@@ -17,13 +17,19 @@ export default async function LangLayout({
 }) {
   const { lang } = await params;
 
+  const fontDisplay = lang === "ru"
+    ? "var(--font-russo), sans-serif"
+    : "var(--font-bebas), sans-serif";
+
   return (
     <LanguageProvider lang={lang as Lang}>
-      <Header />
-      <main className="px-6 md:px-10 lg:px-16 py-10 md:py-14">
-        {children}
-      </main>
-      <Footer />
+      <div style={{ "--font-display": fontDisplay } as React.CSSProperties}>
+        <Header />
+        <main className="px-6 md:px-10 lg:px-16 py-10 md:py-14">
+          {children}
+        </main>
+        <Footer />
+      </div>
     </LanguageProvider>
   );
 }
