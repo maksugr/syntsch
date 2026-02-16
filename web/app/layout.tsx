@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
 import { Bebas_Neue, Russo_One } from "next/font/google";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import { LanguageProvider } from "@/components/LanguageProvider";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
@@ -73,7 +70,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://ptytsch.de",
     types: {
-      "application/rss+xml": "/feed.xml",
+      "application/rss+xml": "/en/feed.xml",
     },
   },
 };
@@ -86,13 +83,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${bebasNeue.variable} ${russoOne.variable}`}>
       <body className="antialiased" suppressHydrationWarning>
-        <LanguageProvider>
-          <Header />
-          <main className="px-6 md:px-10 lg:px-16 py-10 md:py-14">
-            {children}
-          </main>
-          <Footer />
-        </LanguageProvider>
+        {children}
         <Analytics />
         <SpeedInsights />
       </body>

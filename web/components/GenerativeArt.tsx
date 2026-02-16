@@ -85,7 +85,7 @@ export default function GenerativeArt({ seed, color }: { seed: string; color: st
   const rot = n[24] % 360;
   const points = Array.from({ length: sides }, (_, i) => {
     const a = (Math.PI * 2 * i) / sides + (rot * Math.PI) / 180;
-    return `${cx + r * Math.cos(a)},${cy + r * Math.sin(a)}`;
+    return `${+(cx + r * Math.cos(a)).toFixed(4)},${+(cy + r * Math.sin(a)).toFixed(4)}`;
   }).join(" ");
   elements.push(
     <polygon

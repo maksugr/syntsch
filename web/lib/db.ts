@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import type { ArticleWithEvent } from "./types";
+import type { Lang } from "./i18n";
 
 const DATA_DIR = path.resolve(process.cwd(), "../data");
 
@@ -105,4 +106,16 @@ export function getAllArticleSlugs(): string[] {
     .readdirSync(articlesDir)
     .filter((f) => f.endsWith(".json"))
     .map((f) => f.replace(/\.json$/, ""));
+}
+
+export function getArticlesByLanguage(lang: Lang): ArticleWithEvent[] {
+  const articles = readAllArticleFiles();
+  return articles
+    .filter((a) => a.language.toLowerCase() === lang)
+    .sort((a, b) => new Date(b.written_at).getTime() - new Date(a.written_at).getTime());
+}
+
+export function getAllArticleSlugsWithLang(): { lang: string; slug: string }[] {
+  const articles = readAllArticleFiles();
+  return articles.map((a) => ({ lang: a.language.toLowerCase(), slug: a.slug }));
 }

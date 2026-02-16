@@ -1,85 +1,41 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
-import type { Lang } from "@/lib/translations";
+import type { Lang } from "@/lib/i18n";
 
 interface LanguageContextValue {
   lang: Lang;
-  setLang: (lang: Lang) => void;
-  setTempLang: (lang: Lang) => void;
-  restoreLang: () => void;
   alternates: Record<string, string>;
   setAlternates: (alts: Record<string, string>) => void;
-  resetKey: number;
-  triggerReset: () => void;
 }
 
 const LanguageContext = createContext<LanguageContextValue>({
   lang: "en",
-  setLang: () => {},
-  setTempLang: () => {},
-  restoreLang: () => {},
   alternates: {},
   setAlternates: () => {},
-  resetKey: 0,
-  triggerReset: () => {},
 });
 
-function getCookie(name: string): string | undefined {
-  const match = document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]*)"));
-  return match ? decodeURIComponent(match[1]) : undefined;
-}
+const COOKIE_NAME = "ptytsch_lang";
 
 function setCookie(name: string, value: string, maxAgeDays: number) {
   document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${maxAgeDays * 86400}; SameSite=Lax`;
 }
 
-const VALID_LANGS: Lang[] = ["en", "de", "ru"];
-const COOKIE_NAME = "ptytsch_lang";
-
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>("en");
-  const [hydrated, setHydrated] = useState(false);
+export function LanguageProvider({ lang, children }: { lang: Lang; children: ReactNode }) {
   const [alternates, setAlternates] = useState<Record<string, string>>({});
-  const [resetKey, setResetKey] = useState(0);
-  const triggerReset = () => setResetKey((k) => k + 1);
 
   useEffect(() => {
-    const savedLang = getCookie(COOKIE_NAME);
-    if (savedLang && VALID_LANGS.includes(savedLang as Lang)) {
-      setLangState(savedLang as Lang);
-    }
-    requestAnimationFrame(() => setHydrated(true));
-  }, []);
-
-  useEffect(() => {
+    document.documentElement.lang = lang;
     const font = lang === "ru"
       ? "var(--font-russo), sans-serif"
       : "var(--font-bebas), sans-serif";
     document.documentElement.style.setProperty("--font-display", font);
+    setCookie(COOKIE_NAME, lang, 365);
   }, [lang]);
 
-  const setLang = (newLang: Lang) => {
-    setLangState(newLang);
-    setCookie(COOKIE_NAME, newLang, 365);
-  };
-
-  const setTempLang = (newLang: Lang) => {
-    setLangState(newLang);
-  };
-
-  const restoreLang = () => {
-    const saved = getCookie(COOKIE_NAME);
-    if (saved && VALID_LANGS.includes(saved as Lang)) {
-      setLangState(saved as Lang);
-    }
-  };
-
   return (
-    <LanguageContext.Provider value={{ lang, setLang, setTempLang, restoreLang, alternates, setAlternates, resetKey, triggerReset }}>
-      <div style={{ visibility: hydrated ? "visible" : "hidden" }}>
-        {children}
-      </div>
+    <LanguageContext.Provider value={{ lang, alternates, setAlternates }}>
+      {children}
     </LanguageContext.Provider>
   );
 }

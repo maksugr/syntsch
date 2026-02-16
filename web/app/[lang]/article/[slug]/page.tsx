@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getAllArticleSlugs, getArticleBySlug, getAlternateSlugs } from "@/lib/db";
+import { getAllArticleSlugsWithLang, getArticleBySlug, getAlternateSlugs } from "@/lib/db";
+import { LANGUAGES } from "@/lib/i18n";
 import ArticleBody from "@/components/ArticleBody";
 import ArticleLead from "@/components/ArticleLead";
 import ArticleMeta from "@/components/ArticleMeta";
@@ -11,16 +12,15 @@ import ArticleHero from "@/components/ArticleHero";
 import { CATEGORY_COLORS } from "@/lib/types";
 
 export function generateStaticParams() {
-  const slugs = getAllArticleSlugs();
-  return slugs.map((slug) => ({ slug }));
+  return getAllArticleSlugsWithLang();
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ lang: string; slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const { lang, slug } = await params;
   const article = getArticleBySlug(slug);
   if (!article) return {};
 
@@ -33,7 +33,7 @@ export async function generateMetadata({
       type: "article",
       title: article.title,
       description,
-      url: `https://ptytsch.de/article/${slug}`,
+      url: `https://ptytsch.de/${lang}/article/${slug}/`,
       publishedTime: article.written_at,
       locale: article.language === "de" ? "de_DE" : article.language === "ru" ? "ru_RU" : "en_GB",
       siteName: "PTYTSCH",
@@ -44,11 +44,11 @@ export async function generateMetadata({
       description,
     },
     alternates: {
-      canonical: `https://ptytsch.de/article/${slug}`,
+      canonical: `https://ptytsch.de/${lang}/article/${slug}/`,
       languages: (() => {
         const alts = getAlternateSlugs(article.event_id);
-        const entries = Object.entries(alts).map(([lang, s]) => [lang, `https://ptytsch.de/article/${s}`]);
-        if (alts["en"]) entries.push(["x-default", `https://ptytsch.de/article/${alts["en"]}`]);
+        const entries = Object.entries(alts).map(([l, s]) => [l, `https://ptytsch.de/${l}/article/${s}/`]);
+        if (alts["en"]) entries.push(["x-default", `https://ptytsch.de/en/article/${alts["en"]}/`]);
         return Object.fromEntries(entries);
       })(),
     },
@@ -58,9 +58,9 @@ export async function generateMetadata({
 export default async function ArticlePage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ lang: string; slug: string }>;
 }) {
-  const { slug } = await params;
+  const { lang, slug } = await params;
   const article = getArticleBySlug(slug);
 
   if (!article) {
@@ -76,7 +76,7 @@ export default async function ArticlePage({
     inLanguage: article.language,
     author: { "@type": "Organization", name: "PTYTSCH", email: "hi@ptytsch.de" },
     publisher: { "@type": "Organization", name: "PTYTSCH", url: "https://ptytsch.de", email: "hi@ptytsch.de" },
-    mainEntityOfPage: `https://ptytsch.de/article/${slug}`,
+    mainEntityOfPage: `https://ptytsch.de/${lang}/article/${slug}/`,
     ...(article.event.name && {
       about: {
         "@type": "Event",
@@ -100,7 +100,7 @@ export default async function ArticlePage({
   return (
     <div className="relative flex flex-col lg:flex-row gap-12 lg:gap-16">
       <ArticleHero seed={article.event_id + article.title} color={catColor} />
-      <SetAlternates alternates={alternates} articleLang={article.language} />
+      <SetAlternates alternates={alternates} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

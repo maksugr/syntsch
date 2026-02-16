@@ -1,0 +1,10 @@
+{
+  "redirects": [
+    { "source": "/article/:slug", "destination": "/en/article/:slug/", "statusCode": 301 },
+    { "source": "/article/:slug/", "destination": "/en/article/:slug/", "statusCode": 301 },
+    { "source": "/about", "destination": "/en/about/", "statusCode": 301 },
+    { "source": "/privacy", "destination": "/en/privacy/", "statusCode": 301 },
+    { "source": "/impressum", "destination": "/en/impressum/", "statusCode": 301 },
+    { "source": "/feed.xml", "destination": "/en/feed.xml/", "statusCode": 301 }
+  ]
+}

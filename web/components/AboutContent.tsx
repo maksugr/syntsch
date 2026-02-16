@@ -62,7 +62,7 @@ export default function AboutContent() {
                     </a>
                 </p>
                 <Link
-                    href="/"
+                    href={`/${lang}/`}
                     className="font-mono text-sm tracking-wide no-underline transition-colors duration-100"
                     style={{ color: "#999999", textDecoration: "none" }}
                     onMouseEnter={(e) =>

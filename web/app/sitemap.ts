@@ -1,38 +1,40 @@
 import type { MetadataRoute } from "next";
-import { getAllArticleSlugs } from "@/lib/db";
+import { getAllArticleSlugsWithLang } from "@/lib/db";
+import { LANGUAGES } from "@/lib/i18n";
 
 export const dynamic = "force-static";
 
+const BASE = "https://ptytsch.de";
+
+function langAlternates(path: string): Record<string, string> {
+  const entries = LANGUAGES.map((l) => [l, `${BASE}/${l}${path}`]);
+  entries.push(["x-default", `${BASE}/en${path}`]);
+  return Object.fromEntries(entries);
+}
+
 export default function sitemap(): MetadataRoute.Sitemap {
-    const slugs = getAllArticleSlugs();
+  const staticPages = [
+    { path: "/", changeFrequency: "daily" as const, priority: 1 },
+    { path: "/about/", changeFrequency: "monthly" as const, priority: 0.5 },
+    { path: "/impressum/", changeFrequency: "yearly" as const, priority: 0.3 },
+    { path: "/privacy/", changeFrequency: "yearly" as const, priority: 0.3 },
+  ];
 
-    const articles: MetadataRoute.Sitemap = slugs.map((slug) => ({
-        url: `https://ptytsch.de/article/${slug}`,
-        changeFrequency: "never",
-        priority: 0.8,
-    }));
+  const staticEntries: MetadataRoute.Sitemap = staticPages.flatMap((page) =>
+    LANGUAGES.map((lang) => ({
+      url: `${BASE}/${lang}${page.path}`,
+      changeFrequency: page.changeFrequency,
+      priority: page.priority,
+      alternates: { languages: langAlternates(page.path) },
+    }))
+  );
 
-    return [
-        {
-            url: "https://ptytsch.de",
-            changeFrequency: "daily",
-            priority: 1,
-        },
-        {
-            url: "https://ptytsch.de/about",
-            changeFrequency: "monthly",
-            priority: 0.5,
-        },
-        {
-            url: "https://ptytsch.de/impressum",
-            changeFrequency: "yearly",
-            priority: 0.3,
-        },
-        {
-            url: "https://ptytsch.de/privacy",
-            changeFrequency: "yearly",
-            priority: 0.3,
-        },
-        ...articles,
-    ];
+  const articleSlugs = getAllArticleSlugsWithLang();
+  const articleEntries: MetadataRoute.Sitemap = articleSlugs.map(({ lang, slug }) => ({
+    url: `${BASE}/${lang}/article/${slug}/`,
+    changeFrequency: "never",
+    priority: 0.8,
+  }));
+
+  return [...staticEntries, ...articleEntries];
 }

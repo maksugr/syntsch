@@ -16,7 +16,7 @@ export default function ArticleCard({ article, featured }: { article: ArticleWit
   if (featured) {
     return (
       <Link
-        href={`/article/${article.slug}`}
+        href={`/${lang}/article/${article.slug}/`}
         className="article-card block no-underline -mx-6 md:-mx-10 lg:-mx-16 overflow-hidden"
         style={{ '--cat-color': color } as React.CSSProperties}
       >
@@ -67,7 +67,7 @@ export default function ArticleCard({ article, featured }: { article: ArticleWit
 
   return (
     <Link
-      href={`/article/${article.slug}`}
+      href={`/${lang}/article/${article.slug}/`}
       className="article-card block no-underline p-6 md:p-8 -ml-6 md:-ml-8"
       style={{ '--cat-color': color } as React.CSSProperties}
     >

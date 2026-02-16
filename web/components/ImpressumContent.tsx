@@ -102,7 +102,7 @@ export default function ImpressumContent() {
 
             <div className="mt-16 md:mt-24 pt-8 border-t-4 border-black">
                 <Link
-                    href="/"
+                    href={`/${lang}/`}
                     className="font-mono text-sm tracking-wide no-underline transition-colors duration-100"
                     style={{ color: "#999999", textDecoration: "none" }}
                     onMouseEnter={(e) => (e.currentTarget.style.color = "#000000")}

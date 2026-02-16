@@ -1,4 +1,5 @@
-export type Lang = "en" | "de" | "ru";
+import type { Lang } from "./i18n";
+export type { Lang };
 
 const translations: Record<
     Lang,

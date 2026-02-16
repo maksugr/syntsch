@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import type { ArticleWithEvent } from "@/lib/types";
 import { CATEGORY_COLORS } from "@/lib/types";
@@ -11,7 +11,7 @@ import ArticleCard from "./ArticleCard";
 const CATEGORIES = Object.keys(CATEGORY_COLORS);
 
 export default function ArticleFeed({ articles }: { articles: ArticleWithEvent[] }) {
-  const { lang, resetKey } = useLanguage();
+  const { lang } = useLanguage();
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -20,20 +20,12 @@ export default function ArticleFeed({ articles }: { articles: ArticleWithEvent[]
   const [visible, setVisible] = useState(10);
 
   const setCategory = useCallback((cat: string | null) => {
-    const url = cat ? `/?cat=${cat}` : "/";
+    const url = cat ? `/${lang}/?cat=${cat}` : `/${lang}/`;
     router.push(url, { scroll: false });
     setVisible(10);
-  }, [router]);
+  }, [router, lang]);
 
-  useEffect(() => {
-    setVisible(10);
-  }, [resetKey]);
-
-  const filtered = articles.filter((a) => {
-    if (a.language.toLowerCase() !== lang) return false;
-    if (category && a.event.category !== category) return false;
-    return true;
-  });
+  const filtered = category ? articles.filter((a) => a.event.category === category) : articles;
 
   const shown = filtered.slice(0, visible);
   const hasMore = filtered.length > visible;

@@ -1,45 +1,61 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { FaTelegram } from "react-icons/fa";
 import { useLanguage } from "./LanguageProvider";
-import type { Lang } from "@/lib/translations";
+import { LANGUAGES } from "@/lib/i18n";
+import type { Lang } from "@/lib/i18n";
 
-const LANGS: Lang[] = ["en", "de", "ru"];
+function buildLangUrl(pathname: string, currentLang: Lang, targetLang: Lang, alternates: Record<string, string>): string | null {
+  const articleMatch = pathname.match(/^\/[a-z]{2}\/article\/([^/]+)/);
+  if (articleMatch) {
+    const altSlug = alternates[targetLang];
+    if (!altSlug) return null;
+    return `/${targetLang}/article/${altSlug}/`;
+  }
+  return pathname.replace(/^\/[a-z]{2}(\/|$)/, `/${targetLang}$1`);
+}
 
 export default function LanguageSelector() {
-  const { lang, setLang, alternates } = useLanguage();
+  const { lang, alternates } = useLanguage();
   const pathname = usePathname();
-  const router = useRouter();
-
-  const handleLangSwitch = (newLang: Lang) => {
-    setLang(newLang);
-    if (alternates[newLang]) {
-      router.push(`/article/${alternates[newLang]}`);
-    }
-  };
 
   return (
-    <div className="flex items-center gap-3 font-mono text-sm mt-2" style={{ width: "fit-content" }} onClick={(e) => e.stopPropagation()}>
-      {LANGS.map((l) => {
-        const hasAlt = pathname.startsWith("/article/") && !alternates[l] && l !== lang;
+    <div className="flex items-center gap-3 font-mono text-sm mt-2" style={{ width: "fit-content" }}>
+      {LANGUAGES.map((l) => {
+        const url = buildLangUrl(pathname, lang, l, alternates);
+        const disabled = url === null;
+
+        if (disabled || l === lang) {
+          return (
+            <span
+              key={l}
+              className="lowercase tracking-wide"
+              style={{
+                color: disabled ? "#dddddd" : "#000000",
+                fontWeight: l === lang ? 700 : 400,
+                cursor: disabled ? "default" : "default",
+              }}
+            >
+              {l}
+            </span>
+          );
+        }
+
         return (
-          <button
+          <Link
             key={l}
-            onClick={() => handleLangSwitch(l)}
-            disabled={hasAlt}
-            className="lowercase tracking-wide transition-colors duration-100"
+            href={url}
+            className="lowercase tracking-wide transition-colors duration-100 no-underline"
             style={{
-              color: hasAlt ? "#dddddd" : lang === l ? "#000000" : "#999999",
-              fontWeight: lang === l ? 700 : 400,
-              background: "none",
-              border: "none",
-              padding: 0,
-              cursor: hasAlt ? "default" : "pointer",
+              color: "#999999",
+              fontWeight: 400,
+              textDecoration: "none",
             }}
           >
             {l}
-          </button>
+          </Link>
         );
       })}
       {lang === "ru" && (

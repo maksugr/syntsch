@@ -1,18 +1,16 @@
-import type { Metadata } from "next";
-import { Suspense } from "react";
-import { getAllArticlesWithEvents } from "@/lib/db";
-import ArticleFeed from "@/components/ArticleFeed";
-
-export const metadata: Metadata = {
-  alternates: { canonical: "https://ptytsch.de" },
-};
-
-export default function Home() {
-  const articles = getAllArticlesWithEvents();
-
+export default function RootRedirect() {
   return (
-    <Suspense>
-      <ArticleFeed articles={articles} />
-    </Suspense>
+    <script
+      dangerouslySetInnerHTML={{
+        __html: `
+          (function() {
+            var match = document.cookie.match(/(?:^|; )ptytsch_lang=([^;]*)/);
+            var lang = match ? decodeURIComponent(match[1]) : "en";
+            if (lang !== "en" && lang !== "de" && lang !== "ru") lang = "en";
+            window.location.replace("/" + lang + "/");
+          })();
+        `,
+      }}
+    />
   );
 }
