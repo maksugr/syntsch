@@ -49,50 +49,12 @@ aside a {
 }
 
 /* ── Article card hover ── */
-.article-card {
-  transition: background-color 150ms ease;
-}
-
-.article-card .card-title,
-.article-card .card-lead,
-.article-card .card-meta,
-.article-card .card-category {
+.article-card .card-title {
   transition: color 150ms ease;
 }
 
-.article-card .gen-art circle,
-.article-card .gen-art line,
-.article-card .gen-art polygon,
-.article-card .gen-art path {
-  transition: stroke 150ms ease, fill 150ms ease;
-}
-
 @media (hover: hover) {
-  .article-card:hover {
-    background-color: var(--cat-color);
-  }
-
   .article-card:hover .card-title {
-    color: #FFFFFF !important;
-  }
-
-  .article-card:hover .card-category {
-    color: #FFFFFF !important;
-  }
-
-  .article-card:hover .card-lead {
-    color: rgba(255, 255, 255, 0.9) !important;
-  }
-
-  .article-card:hover .card-meta {
-    color: rgba(255, 255, 255, 0.75) !important;
-  }
-
-  .article-card:hover .gen-art circle,
-  .article-card:hover .gen-art line,
-  .article-card:hover .gen-art polygon,
-  .article-card:hover .gen-art path {
-    stroke: #FFFFFF !important;
-    fill: #FFFFFF !important;
+    color: var(--cat-color) !important;
   }
 }
