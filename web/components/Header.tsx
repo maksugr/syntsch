@@ -4,6 +4,7 @@ import Link from "next/link";
 import LanguageSelector from "./LanguageSelector";
 import PtytschIcon from "./PtytschIcon";
 import { useLanguage } from "./LanguageProvider";
+import { tUi } from "@/lib/translations";
 
 export default function Header() {
   const { lang } = useLanguage();
@@ -23,7 +24,16 @@ export default function Header() {
         </h1>
         <PtytschIcon className="w-[6vw] md:w-[5vw] lg:w-[4vw] mb-[0.5vw]" color="#000" />
       </Link>
-      <LanguageSelector />
+      <div className="flex items-center justify-between mt-2">
+        <LanguageSelector />
+        <Link
+          href={`/${lang}/reflections/`}
+          className="font-mono text-sm lowercase tracking-wide transition-colors duration-100 no-underline"
+          style={{ color: "#999999", textDecoration: "none" }}
+        >
+          {tUi(lang, "reflections")}
+        </Link>
+      </div>
     </header>
   );
 }

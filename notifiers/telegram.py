@@ -4,14 +4,23 @@ import config
 
 
 async def send_article_to_telegram(title: str, lead: str, slug: str, language: str = "ru"):
+    url = f"{config.SITE_URL}/{language}/article/{slug}/"
+    text = f'<b>{title}</b>\n\n{lead}\n\n<a href="{url}">Читать →</a>'
+    await _send_telegram_message(text, url)
+
+
+async def send_reflection_to_telegram(title: str, slug: str, language: str = "ru"):
+    url = f"{config.SITE_URL}/{language}/reflections/{slug}/"
+    text = f'🪞 <b>Рефлексия</b>\n\n<b>{title}</b>\n\n<a href="{url}">Читать →</a>'
+    await _send_telegram_message(text, url)
+
+
+async def _send_telegram_message(text: str, preview_url: str):
     token = config.TELEGRAM_BOT_TOKEN
     chat_id = config.TELEGRAM_CHAT_ID
 
     if not token or not chat_id:
         return
-
-    url = f"{config.SITE_URL}/{language}/article/{slug}/"
-    text = f'<b>{title}</b>\n\n{lead}\n\n<a href="{url}">Читать →</a>'
 
     try:
         async with httpx.AsyncClient() as client:
@@ -22,7 +31,7 @@ async def send_article_to_telegram(title: str, lead: str, slug: str, language: s
                     "text": text,
                     "parse_mode": "HTML",
                     "link_preview_options": {
-                        "url": url,
+                        "url": preview_url,
                         "prefer_large_media": True,
                     },
                 },

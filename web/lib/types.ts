@@ -29,6 +29,44 @@ export interface ArticleWithEvent extends Article {
   event: Event;
 }
 
+export interface CritiqueIssue {
+  type: string;
+  severity: string;
+  location: string;
+  fix: string;
+}
+
+export interface PipelineTrace {
+  draft_text: string;
+  draft_word_count: number;
+  critique_assessment: string;
+  critique_issues: CritiqueIssue[];
+  revised_text: string;
+  revision_changed: boolean;
+  research_sources_count: number;
+  expanded: boolean;
+}
+
+export interface Reflection {
+  id: string;
+  title: string;
+  slug: string;
+  body: string;
+  language: string;
+  period_start: string;
+  period_end: string;
+  analysis: {
+    article_count: number;
+    total_words: number;
+    avg_words: number;
+    categories: Record<string, number>;
+    venues: Record<string, number>;
+  };
+  word_count: number | null;
+  model_used: string | null;
+  written_at: string;
+}
+
 export const CATEGORY_COLORS: Record<string, string> = {
   music: "#B91C1C",
   cinema: "#92600A",

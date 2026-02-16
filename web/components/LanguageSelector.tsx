@@ -22,7 +22,7 @@ export default function LanguageSelector() {
   const pathname = usePathname();
 
   return (
-    <div className="flex items-center gap-3 font-mono text-sm mt-2" style={{ width: "fit-content" }}>
+    <div className="flex items-center gap-3 font-mono text-sm" style={{ width: "fit-content" }}>
       {LANGUAGES.map((l) => {
         const url = buildLangUrl(pathname, lang, l, alternates);
         const disabled = url === null;

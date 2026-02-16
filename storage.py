@@ -7,7 +7,7 @@ import uuid
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from models import EventCandidate, ArticleOutput
+from models import EventCandidate, ArticleOutput, ReflectionOutput
 
 
 _CYRILLIC_TRANSLIT = {
@@ -35,8 +35,10 @@ class EventStorage:
         self.data_dir = data_dir
         self.events_dir = data_dir / "events"
         self.articles_dir = data_dir / "articles"
+        self.reflections_dir = data_dir / "reflections"
         self.events_dir.mkdir(parents=True, exist_ok=True)
         self.articles_dir.mkdir(parents=True, exist_ok=True)
+        self.reflections_dir.mkdir(parents=True, exist_ok=True)
 
     def _write_json(self, path: Path, data: dict):
         """Atomic write: temp file + os.replace."""
@@ -126,6 +128,16 @@ class EventStorage:
             "event": event_data,
         }
         self._write_json(self.articles_dir / f"{slug}.json", data)
+
+        if article.trace:
+            trace_data = article.trace.model_dump(mode="json")
+            if trace_data.get("research_context"):
+                trace_data["research_context"] = {
+                    k: v[:500] if isinstance(v, str) else v
+                    for k, v in trace_data["research_context"].items()
+                }
+            self._write_json(self.articles_dir / f"{slug}.trace.json", trace_data)
+
         return article_id, slug
 
     def is_already_covered(self, name: str, venue: str, start_date: str, language: str = "") -> bool:
@@ -209,6 +221,50 @@ class EventStorage:
             source_url=row["source_url"] or "",
             event_url=row["event_url"] or "",
         )
+
+    def get_articles_in_period(self, start: str, end: str, language: str) -> list[dict]:
+        articles = self._load_all_articles()
+        return [
+            a for a in articles
+            if a.get("language") == language
+            and start <= a.get("written_at", "")[:10] <= end
+        ]
+
+    def save_reflection(self, reflection: ReflectionOutput) -> tuple[str, str]:
+        reflection_id = str(uuid.uuid4())
+        slug = self._unique_reflection_slug(generate_slug(reflection.title), reflection_id)
+        data = {
+            "id": reflection_id,
+            "title": reflection.title,
+            "slug": slug,
+            "body": reflection.body,
+            "language": reflection.language,
+            "period_start": reflection.period_start,
+            "period_end": reflection.period_end,
+            "analysis": reflection.analysis,
+            "word_count": reflection.word_count,
+            "model_used": reflection.model_used,
+            "written_at": datetime.now().isoformat(),
+        }
+        self._write_json(self.reflections_dir / f"{slug}.json", data)
+        return reflection_id, slug
+
+    def _load_all_reflections(self) -> list[dict]:
+        results = []
+        for p in self.reflections_dir.glob("*.json"):
+            results.append(json.loads(p.read_text(encoding="utf-8")))
+        return results
+
+    def _unique_reflection_slug(self, base: str, reflection_id: str) -> str:
+        if not base:
+            base = f"reflection-{reflection_id}"
+        existing = {p.stem for p in self.reflections_dir.glob("*.json")}
+        slug = base
+        n = 2
+        while slug in existing:
+            slug = f"{base}-{n}"
+            n += 1
+        return slug
 
     def _unique_slug(self, base: str, article_id: str) -> str:
         """Ensure slug is unique; fall back to id-based slug if base is empty."""

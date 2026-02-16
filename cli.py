@@ -18,10 +18,11 @@ logging.basicConfig(
 import config
 from agents.author import write_article
 from agents.curator import curate_event
+from agents.reflector import write_reflection
 from agents.scout import scout_event
 from models import EventCandidate, ResearchContext
 from sources.research import research_event
-from notifiers.telegram import send_article_to_telegram
+from notifiers.telegram import send_article_to_telegram, send_reflection_to_telegram
 from storage import EventStorage
 
 ALL_LANGUAGES = ["en", "de", "ru"]
@@ -164,6 +165,22 @@ async def cmd_author(args):
         await _write_for_languages(storage, event_id, event, languages, args.skip_research)
 
 
+async def cmd_reflect(args):
+    storage = _get_storage()
+    languages = args.language
+
+    for lang in languages:
+        print(f"Writing reflection for [{lang}] (last {args.days} days)...")
+        try:
+            reflection = await write_reflection(storage, lang, days_back=args.days)
+            reflection_id, slug = storage.save_reflection(reflection)
+            print(f"  [{lang}] \"{reflection.title}\" ({reflection.word_count} words) → {slug}")
+            if lang == "ru" and config.TELEGRAM_BOT_TOKEN:
+                await send_reflection_to_telegram(reflection.title, slug)
+        except ValueError as e:
+            print(f"  [{lang}] Skipped: {e}")
+
+
 async def cmd_pipeline(args):
     storage = _get_storage()
     languages = args.language
@@ -227,6 +244,12 @@ def main():
     )
     p_author.add_argument("--skip-research", action="store_true")
 
+    p_reflect = sub.add_parser("reflect", help="Write a reflection on recent coverage")
+    p_reflect.add_argument("--days", type=int, default=7)
+    p_reflect.add_argument(
+        "--language", nargs="+", default=ALL_LANGUAGES, choices=ALL_LANGUAGES,
+    )
+
     p_pipeline = sub.add_parser(
         "pipeline", help="Full pipeline: scout → curate → author"
     )
@@ -243,6 +266,7 @@ def main():
         "scout": lambda a: asyncio.run(cmd_scout(a)),
         "curate": lambda a: asyncio.run(cmd_curate(a)),
         "author": lambda a: asyncio.run(cmd_author(a)),
+        "reflect": lambda a: asyncio.run(cmd_reflect(a)),
         "pipeline": lambda a: asyncio.run(cmd_pipeline(a)),
     }
 
