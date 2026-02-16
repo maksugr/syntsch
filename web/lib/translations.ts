@@ -238,6 +238,12 @@ export function isDatePast(dateStr: string): boolean {
     return !isNaN(d.getTime()) && d < new Date();
 }
 
+export function isEventPast(startDate: string | null, endDate: string | null): boolean {
+    const effective = endDate || startDate;
+    if (!effective) return false;
+    return isDatePast(effective);
+}
+
 const LOCALE_MAP: Record<Lang, string> = {
     en: "en-GB",
     de: "de-DE",

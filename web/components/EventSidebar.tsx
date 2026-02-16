@@ -1,7 +1,7 @@
 "use client";
 
 import type { Event } from "@/lib/types";
-import { tUi, formatDate, isDatePast } from "@/lib/translations";
+import { tUi, formatDate, isEventPast } from "@/lib/translations";
 import { useLanguage } from "./LanguageProvider";
 import CategoryTag from "./CategoryTag";
 
@@ -27,7 +27,7 @@ export default function EventSidebar({ event }: { event: Event }) {
             <span className="block text-xs uppercase tracking-[0.2em] mb-1" style={{ color: '#666666' }}>
               {tUi(lang, "date")}
             </span>
-            <span style={isDatePast(event.end_date || event.start_date) ? { textDecoration: "line-through" } : undefined}>
+            <span style={isEventPast(event.start_date, event.end_date) ? { textDecoration: "line-through" } : undefined}>
               {formatDate(lang, event.start_date)}
               {event.end_date && event.end_date !== event.start_date && (
                 <> &mdash; {formatDate(lang, event.end_date)}</>

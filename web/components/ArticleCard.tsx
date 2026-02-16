@@ -3,14 +3,19 @@
 import Link from "next/link";
 import type { ArticleWithEvent } from "@/lib/types";
 import { CATEGORY_COLORS } from "@/lib/types";
-import { formatDate, tCategory, isDatePast, readingTime, tUi, typograph } from "@/lib/translations";
+import { formatDate, tCategory, isEventPast, readingTime, tUi, typograph } from "@/lib/translations";
 import { useLanguage } from "./LanguageProvider";
 import GenerativeArt from "./GenerativeArt";
 
 export default function ArticleCard({ article, featured }: { article: ArticleWithEvent; featured?: boolean }) {
   const { lang } = useLanguage();
-  const rawDate = article.event.start_date || article.written_at.split("T")[0];
-  const date = formatDate(lang, rawDate);
+  const startDate = article.event.start_date || article.written_at.split("T")[0];
+  const endDate = article.event.end_date;
+  const hasRange = endDate && endDate !== startDate;
+  const dateStr = hasRange
+    ? `${formatDate(lang, startDate)} — ${formatDate(lang, endDate)}`
+    : formatDate(lang, startDate);
+  const past = isEventPast(startDate, endDate);
   const color = CATEGORY_COLORS[article.event.category || ""] || "#666666";
 
   if (featured) {
@@ -51,7 +56,7 @@ export default function ArticleCard({ article, featured }: { article: ArticleWit
             >
               <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-2">
                 {article.event.venue && <><span>{article.event.venue}</span><span className="hidden md:inline font-normal">/</span></>}
-                {rawDate && <span style={isDatePast(rawDate) ? { textDecoration: "line-through" } : undefined}>{date}</span>}
+                {startDate && <span style={past ? { textDecoration: "line-through" } : undefined}>{dateStr}</span>}
               </div>
               <span className="text-[8px]">{readingTime(article.word_count)} {tUi(lang, "minRead")}</span>
             </div>
@@ -102,7 +107,7 @@ export default function ArticleCard({ article, featured }: { article: ArticleWit
       >
         <div className="flex flex-col md:flex-row md:items-center gap-1">
           {article.event.venue && <><span>{article.event.venue}</span><span className="hidden md:inline font-normal">/</span></>}
-          {rawDate && <span style={isDatePast(rawDate) ? { textDecoration: "line-through" } : undefined}>{date}</span>}
+          {startDate && <span style={past ? { textDecoration: "line-through" } : undefined}>{dateStr}</span>}
         </div>
         <span className="text-[8px]">{readingTime(article.word_count)} {tUi(lang, "minRead")}</span>
       </div>
