@@ -23,6 +23,10 @@ button:focus, a:focus {
   color: #FFFFFF;
 }
 
+html, body {
+  overflow-x: hidden;
+}
+
 body {
   background: #FFFFFF;
   color: #000000;

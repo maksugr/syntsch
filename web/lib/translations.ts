@@ -42,6 +42,8 @@ const translations: Record<
             copied: "copied",
             copyLink: "copy link",
             weAreClose: "We are close",
+            impressum: "Impressum",
+            privacy: "Privacy",
         },
     },
     de: {
@@ -79,6 +81,8 @@ const translations: Record<
             copied: "kopiert",
             copyLink: "Link kopieren",
             weAreClose: "Wir sind nah",
+            impressum: "Impressum",
+            privacy: "Datenschutz",
         },
     },
     ru: {
@@ -116,6 +120,8 @@ const translations: Record<
             copied: "скопировано",
             copyLink: "скопировать ссылку",
             weAreClose: "Мы рядом",
+            impressum: "Impressum",
+            privacy: "Конфиденциальность",
         },
     },
 };

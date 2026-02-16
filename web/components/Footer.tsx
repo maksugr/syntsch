@@ -49,6 +49,27 @@ export default function Footer() {
           >
             hi@ptytsch.de
           </a>
+          <div className="flex gap-2 font-mono text-[10px] tracking-wide">
+            <Link
+              href="/impressum"
+              className="no-underline transition-colors duration-100"
+              style={{ color: "#999999", textDecoration: "none" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#000000")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#999999")}
+            >
+              {tUi(lang, "impressum")}
+            </Link>
+            <span style={{ color: "#cccccc" }}>·</span>
+            <Link
+              href="/privacy"
+              className="no-underline transition-colors duration-100"
+              style={{ color: "#999999", textDecoration: "none" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#000000")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#999999")}
+            >
+              {tUi(lang, "privacy")}
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
