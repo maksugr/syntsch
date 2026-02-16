@@ -36,6 +36,15 @@ a political dimension, a generational moment?
 - TIMELINESS: Happening within the next 1-2 weeks. Prefer events that haven't happened yet.
 - NON-OBVIOUSNESS: Skip the most predictable picks.
 
+Category guidance — "theater" vs "performance":
+- "theater" = a staged production with a script, director, and actors. Plays, opera, musical theater, \
+dramatizations, premieres at venues like Schaubühne, Gorki, Deutsches Theater, Volksbühne, HAU. \
+Even experimental or devised theater is still "theater" if the core is a dramatic work performed for an audience.
+- "performance" = performance art, dance, live art, multimedia installations, happenings, \
+spoken word, body-based work. The distinction: theater tells a story through characters; \
+performance uses the body/space/time as material.
+- When in doubt between the two, prefer "theater".
+
 Source credibility — prefer events found on authoritative cultural platforms \
 (e.g. Resident Advisor for club/music, nachtkritik.de for theater, artforum/monopol-magazin for exhibitions, \
 tip-berlin/exberliner/zitty for general Berlin culture) over generic blogs or aggregators. \

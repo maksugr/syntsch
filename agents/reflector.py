@@ -33,8 +33,10 @@ async def write_reflection(
 
     analysis = _compute_analysis(articles)
 
+    previous = storage.get_latest_reflection(language)
+
     system_prompt = _load_reflector_prompt(language)
-    user_message = _build_user_message(articles, analysis, start_date, end_date, language)
+    user_message = _build_user_message(articles, analysis, start_date, end_date, language, previous)
 
     client = anthropic.Anthropic(max_retries=3)
 
@@ -108,6 +110,7 @@ def _build_user_message(
     start_date: str,
     end_date: str,
     language: str,
+    previous: dict | None = None,
 ) -> str:
     parts = [
         f"Analyze your output for the period {start_date} to {end_date}.",
@@ -143,6 +146,15 @@ def _build_user_message(
             parts.append(f"Lead: {lead}")
         body = a.get("body", "")
         parts.append(f"Opening: {body[:500]}")
+        parts.append("")
+
+    if previous:
+        prev_period = f"{previous.get('period_start', '?')} to {previous.get('period_end', '?')}"
+        parts.append("## Your previous reflection")
+        parts.append(f"Period: {prev_period}")
+        parts.append(f"Title: {previous.get('title', '')}")
+        parts.append("")
+        parts.append(previous.get("body", "")[:2000])
         parts.append("")
 
     return "\n".join(parts)

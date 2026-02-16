@@ -249,6 +249,16 @@ class EventStorage:
         self._write_json(self.reflections_dir / f"{slug}.json", data)
         return reflection_id, slug
 
+    def get_latest_reflection(self, language: str) -> dict | None:
+        reflections = [
+            r for r in self._load_all_reflections()
+            if r.get("language") == language
+        ]
+        if not reflections:
+            return None
+        reflections.sort(key=lambda r: r.get("written_at", ""), reverse=True)
+        return reflections[0]
+
     def _load_all_reflections(self) -> list[dict]:
         results = []
         for p in self.reflections_dir.glob("*.json"):

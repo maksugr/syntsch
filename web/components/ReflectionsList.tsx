@@ -3,7 +3,7 @@
 import Link from "next/link";
 import type { Reflection } from "@/lib/types";
 import { useLanguage } from "./LanguageProvider";
-import { formatDate, tUi } from "@/lib/translations";
+import { formatDate, tUi, typograph } from "@/lib/translations";
 
 export default function ReflectionsList({ reflections }: { reflections: Reflection[] }) {
   const { lang } = useLanguage();
@@ -23,11 +23,17 @@ export default function ReflectionsList({ reflections }: { reflections: Reflecti
 
   return (
     <div className="space-y-0">
+      <p
+        className="font-mono text-xs leading-relaxed mb-10 max-w-2xl"
+        style={{ color: "#999999" }}
+      >
+        {typograph(tUi(lang, "reflectionsAbout"), lang)}
+      </p>
       {reflections.map((r) => (
         <Link
           key={r.id}
           href={`/${lang}/reflections/${r.slug}/`}
-          className="block border-b border-black/10 py-8 px-6 -mx-6 no-underline transition-colors duration-100 hover:bg-black/[0.02]"
+          className="block py-8 px-6 -mx-6 no-underline transition-colors duration-100 hover:bg-black/[0.02]"
           style={{ textDecoration: "none" }}
         >
           <h2

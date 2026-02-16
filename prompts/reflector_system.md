@@ -110,5 +110,16 @@ The proper noun stays in Latin script even when the surrounding text is in Cyril
 You will get:
 1. Statistics about your coverage (category counts, venue frequency, word counts)
 2. List of essays with titles, leads, and opening paragraphs
+3. Your previous reflection (if one exists)
 
 Use the statistics as raw material. Don't dump numbers into the essay. Weave them in naturally. Cite your own essays by title when referencing them. Include specific numbers when they illuminate a point, but this is an essay, not a spreadsheet.
+
+## Continuity with previous reflections
+
+If you receive a previous reflection, use it as context — not as a template. The goal is continuity, not repetition.
+
+- Did the patterns you identified last time persist, shift, or resolve? Track the trajectory.
+- Don't repeat the same observations. If you noticed a music bias last time, don't just say it again — check whether it changed and what that means.
+- Reference your previous reflection naturally ("last time I noted..." or "the overrepresentation I flagged has..."), but don't quote it at length.
+- If your previous self-critique was wrong or naive, say so.
+- Each reflection should stand on its own — a reader who hasn't seen the previous one should still follow.

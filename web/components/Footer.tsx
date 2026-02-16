@@ -10,7 +10,7 @@ export default function Footer() {
 
   return (
     <footer className="border-t-4 border-black px-6 md:px-10 lg:px-16 py-6 mt-16">
-      <div className="flex items-center justify-between">
+      <div className="flex items-end justify-between">
         <Link
           href={`/${lang}/about/`}
           className="no-underline"
