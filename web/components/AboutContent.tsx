@@ -28,16 +28,9 @@ export default function AboutContent() {
                     {tUi(lang, "aboutText2")}
                 </p>
 
-                <div className="text-xl md:text-2xl lg:text-3xl leading-relaxed space-y-2">
-                    {tUi(lang, "aboutText3")
-                        .split(". ")
-                        .map((sentence, i, arr) => (
-                            <p key={i}>
-                                {sentence}
-                                {i < arr.length - 1 ? "." : ""}
-                            </p>
-                        ))}
-                </div>
+                <p className="text-xl md:text-2xl lg:text-3xl leading-relaxed">
+                    {tUi(lang, "aboutText3")}
+                </p>
 
                 <p className="text-xl md:text-2xl lg:text-3xl leading-relaxed">
                     {tUi(lang, "aboutText4")}
