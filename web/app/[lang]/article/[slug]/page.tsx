@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getAllArticleSlugsWithLang, getArticleBySlug, getAlternateSlugs } from "@/lib/db";
+import { getAllArticleSlugsWithLang, getArticleBySlug, getAlternateSlugs, getTraceBySlug } from "@/lib/db";
 import { LANGUAGES } from "@/lib/i18n";
 import ArticleBody from "@/components/ArticleBody";
 import ArticleLead from "@/components/ArticleLead";
 import ArticleMeta from "@/components/ArticleMeta";
 import CopyLinkButton from "@/components/CopyLinkButton";
 import EventSidebar from "@/components/EventSidebar";
+import ProcessTrace from "@/components/ProcessTrace";
 import SetAlternates from "@/components/SetAlternates";
 import ArticleHero from "@/components/ArticleHero";
 import { CATEGORY_COLORS } from "@/lib/types";
@@ -95,6 +96,7 @@ export default async function ArticlePage({
   };
 
   const alternates = getAlternateSlugs(article.event_id);
+  const trace = getTraceBySlug(slug);
   const catColor = CATEGORY_COLORS[article.event.category || ""] || "#666666";
 
   return (
@@ -119,11 +121,13 @@ export default async function ArticlePage({
           <ArticleLead text={article.lead} />
         )}
 
-        <ArticleBody body={article.body} />
+        <ArticleBody body={article.body} accentColor={catColor} />
 
         <div className="mt-12">
           <CopyLinkButton />
         </div>
+
+        {trace && <ProcessTrace trace={trace} />}
       </article>
 
       <div className="lg:w-[40%] relative" style={{ zIndex: 1 }}>

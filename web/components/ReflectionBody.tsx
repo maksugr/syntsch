@@ -1,7 +1,7 @@
 "use client";
 
 import { useLanguage } from "./LanguageProvider";
-import { typograph } from "@/lib/translations";
+import { parseConfidenceMarkers } from "@/lib/markers";
 
 export default function ReflectionBody({ body }: { body: string }) {
   const { lang } = useLanguage();
@@ -26,7 +26,7 @@ export default function ReflectionBody({ body }: { body: string }) {
             }`}
             style={{ fontFamily: "var(--font-body)" }}
           >
-            {typograph(p, lang)}
+            {parseConfidenceMarkers(p, lang)}
           </p>
         );
       })}
