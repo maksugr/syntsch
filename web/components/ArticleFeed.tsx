@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, Fragment } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import type { ArticleWithEvent } from "@/lib/types";
 import { CATEGORY_COLORS } from "@/lib/types";
 import { tCategory, tUi } from "@/lib/translations";
 import { useLanguage } from "./LanguageProvider";
 import ArticleCard from "./ArticleCard";
+import SubscribeCard from "./SubscribeCard";
 
 const CATEGORIES = Object.keys(CATEGORY_COLORS);
 
@@ -80,8 +81,10 @@ export default function ArticleFeed({ articles }: { articles: ArticleWithEvent[]
           </div>
           {shown.length > 1 && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-0 mt-4">
-              {shown.slice(1).map((article) => (
-                <ArticleCard key={article.id} article={article} />
+              {shown.slice(1).map((article, i) => (
+                i === 1
+                  ? <Fragment key={article.id}><SubscribeCard /><ArticleCard article={article} /></Fragment>
+                  : <ArticleCard key={article.id} article={article} />
               ))}
             </div>
           )}

@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import { LANGUAGES } from "@/lib/i18n";
 import type { Lang } from "@/lib/i18n";
 import { LanguageProvider } from "@/components/LanguageProvider";
@@ -16,6 +17,10 @@ export default async function LangLayout({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
+
+  if (!LANGUAGES.includes(lang as Lang)) {
+    notFound();
+  }
 
   const fontDisplay = lang === "ru"
     ? "var(--font-russo), sans-serif"

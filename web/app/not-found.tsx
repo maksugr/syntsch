@@ -1,21 +1,42 @@
-import Link from "next/link";
+import { cookies, headers } from "next/headers";
+import type { Lang } from "@/lib/i18n";
+import { LANGUAGES } from "@/lib/i18n";
+import { LanguageProvider } from "@/components/LanguageProvider";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import NotFoundContent from "@/components/NotFoundContent";
 
-export default function NotFound() {
+function detectLang(cookieLang: string | undefined, acceptLang: string | null): Lang {
+  if (cookieLang && LANGUAGES.includes(cookieLang as Lang)) return cookieLang as Lang;
+  if (acceptLang) {
+    for (const l of LANGUAGES) {
+      if (acceptLang.includes(l)) return l;
+    }
+  }
+  return "en";
+}
+
+export default async function NotFound() {
+  const cookieStore = await cookies();
+  const headerStore = await headers();
+  const lang = detectLang(
+    cookieStore.get("syntsch_lang")?.value,
+    headerStore.get("accept-language"),
+  );
+
+  const fontDisplay = lang === "ru"
+    ? "var(--font-russo), sans-serif"
+    : "var(--font-bebas), sans-serif";
+
   return (
-    <div className="py-24 text-center px-6 md:px-10 lg:px-16">
-      <h1
-        className="text-6xl md:text-8xl lg:text-[10rem] leading-[0.85] mb-12"
-        style={{ fontFamily: "var(--font-display)" }}
-      >
-        NOTHING HERE
-      </h1>
-      <Link
-        href="/en/"
-        className="font-mono text-sm tracking-wide no-underline transition-colors duration-100"
-        style={{ color: "#999999", textDecoration: "none" }}
-      >
-        ← back to SYNTSCH
-      </Link>
-    </div>
+    <LanguageProvider lang={lang}>
+      <div style={{ "--font-display": fontDisplay } as React.CSSProperties}>
+        <Header />
+        <main className="px-6 md:px-10 lg:px-16 py-10 md:py-14">
+          <NotFoundContent />
+        </main>
+        <Footer />
+      </div>
+    </LanguageProvider>
   );
 }

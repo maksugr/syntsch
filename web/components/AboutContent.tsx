@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useLanguage } from "./LanguageProvider";
 import { tUi } from "@/lib/translations";
+import SubscribeForm from "./SubscribeForm";
 
 export default function AboutContent() {
     const { lang } = useLanguage();
@@ -37,7 +38,20 @@ export default function AboutContent() {
                 </p>
             </div>
 
-            <div className="mt-16 md:mt-24 pt-8 border-t-4 border-black">
+            <div className="mt-10 md:mt-14 py-8 border-t border-b border-[#cccccc]">
+                <h2
+                    className="text-4xl md:text-6xl leading-[0.85] mb-4"
+                    style={{ fontFamily: "var(--font-display)" }}
+                >
+                    {tUi(lang, "subscribeTitle")}
+                </h2>
+                <p className="text-lg md:text-xl leading-relaxed mb-6" style={{ color: "#666666" }}>
+                    {tUi(lang, "subscribeText")}
+                </p>
+                <SubscribeForm />
+            </div>
+
+            <div className="mt-8">
                 <p className="font-mono text-sm mb-6" style={{ color: "#999999" }}>
                     {tUi(lang, "weAreClose")}{" — "}
                     <a
