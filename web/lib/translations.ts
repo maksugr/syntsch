@@ -73,6 +73,8 @@ const translations: Record<
             subscribePlaceholder: "your@email.com",
             subscribeButton: "SUBSCRIBE",
             subscribeSuccess: "YOU'RE IN",
+            subscribeError: "Something went wrong",
+            subscribeInvalidEmail: "Please enter a valid email",
         },
     },
     de: {
@@ -140,6 +142,8 @@ const translations: Record<
             subscribePlaceholder: "deine@email.com",
             subscribeButton: "ABONNIEREN",
             subscribeSuccess: "DU BIST DABEI",
+            subscribeError: "Etwas ist schiefgelaufen",
+            subscribeInvalidEmail: "Bitte gib eine gültige E-Mail ein",
         },
     },
     ru: {
@@ -207,6 +211,8 @@ const translations: Record<
             subscribePlaceholder: "твой@email.com",
             subscribeButton: "ПОДПИСАТЬСЯ",
             subscribeSuccess: "ГОТОВО",
+            subscribeError: "Что-то пошло не так",
+            subscribeInvalidEmail: "Введи корректный email",
         },
     },
 };

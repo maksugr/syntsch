@@ -22,7 +22,7 @@ from agents.reflector import write_reflection
 from agents.scout import scout_event
 from models import EventCandidate, ResearchContext
 from sources.research import research_event
-from notifiers.telegram import send_article_to_telegram, send_reflection_to_telegram
+from notifiers.telegram import send_article_to_telegram
 from storage import EventStorage
 
 ALL_LANGUAGES = ["en", "de", "ru"]
@@ -175,8 +175,6 @@ async def cmd_reflect(args):
             reflection = await write_reflection(storage, lang, days_back=args.days)
             reflection_id, slug = storage.save_reflection(reflection)
             print(f"  [{lang}] \"{reflection.title}\" ({reflection.word_count} words) → {slug}")
-            if lang == "ru" and config.TELEGRAM_BOT_TOKEN:
-                await send_reflection_to_telegram(reflection.title, slug)
         except ValueError as e:
             print(f"  [{lang}] Skipped: {e}")
 

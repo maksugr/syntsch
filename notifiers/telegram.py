@@ -9,11 +9,6 @@ async def send_article_to_telegram(title: str, lead: str, slug: str, language: s
     await _send_telegram_message(text, url)
 
 
-async def send_reflection_to_telegram(title: str, slug: str, language: str = "ru"):
-    url = f"{config.SITE_URL}/{language}/reflections/{slug}/"
-    text = f'🪞 <b>Рефлексия</b>\n\n<b>{title}</b>\n\n<a href="{url}">Читать →</a>'
-    await _send_telegram_message(text, url)
-
 
 async def _send_telegram_message(text: str, preview_url: str):
     token = config.TELEGRAM_BOT_TOKEN
