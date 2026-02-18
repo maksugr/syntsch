@@ -276,6 +276,12 @@ class EventStorage:
             n += 1
         return slug
 
+    def get_trace(self, slug: str) -> dict | None:
+        trace_path = self.articles_dir / f"{slug}.trace.json"
+        if not trace_path.exists():
+            return None
+        return json.loads(trace_path.read_text(encoding="utf-8"))
+
     def _unique_slug(self, base: str, article_id: str) -> str:
         """Ensure slug is unique; fall back to id-based slug if base is empty."""
         if not base:

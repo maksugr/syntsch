@@ -206,3 +206,14 @@ export function getAllReflectionSlugsWithLang(): { lang: string; slug: string }[
   const reflections = readAllReflectionFiles();
   return reflections.map((r) => ({ lang: r.language.toLowerCase(), slug: r.slug }));
 }
+
+export function getReflectionAlternates(periodStart: string, periodEnd: string): Record<string, string> {
+  const reflections = readAllReflectionFiles();
+  const result: Record<string, string> = {};
+  for (const r of reflections) {
+    if (r.period_start === periodStart && r.period_end === periodEnd) {
+      result[r.language.toLowerCase()] = r.slug;
+    }
+  }
+  return result;
+}

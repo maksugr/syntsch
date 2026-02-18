@@ -14,6 +14,12 @@ function buildLangUrl(pathname: string, currentLang: Lang, targetLang: Lang, alt
     if (!altSlug) return null;
     return `/${targetLang}/article/${altSlug}/`;
   }
+  const reflectionMatch = pathname.match(/^\/[a-z]{2}\/reflections\/([^/]+)/);
+  if (reflectionMatch) {
+    const altSlug = alternates[targetLang];
+    if (!altSlug) return null;
+    return `/${targetLang}/reflections/${altSlug}/`;
+  }
   return pathname.replace(/^\/[a-z]{2}(\/|$)/, `/${targetLang}$1`);
 }
 

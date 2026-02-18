@@ -1,5 +1,6 @@
 import logging
 import re
+import statistics
 from collections import Counter
 from datetime import datetime, timedelta
 
@@ -31,9 +32,9 @@ async def write_reflection(
     if not articles:
         raise ValueError(f"No articles found for {language} in period {start_date} — {end_date}")
 
-    analysis = _compute_analysis(articles)
-
     previous = storage.get_latest_reflection(language)
+
+    analysis = _compute_analysis(articles, storage, start_date, end_date, previous)
 
     system_prompt = _load_reflector_prompt(language)
     user_message = _build_user_message(articles, analysis, start_date, end_date, language, previous)
@@ -67,10 +68,17 @@ async def write_reflection(
     )
 
 
-def _compute_analysis(articles: list[dict]) -> dict:
+def _compute_analysis(
+    articles: list[dict],
+    storage: EventStorage,
+    start_date: str,
+    end_date: str,
+    previous: dict | None = None,
+) -> dict:
     categories = Counter()
     venues = Counter()
     total_words = 0
+    word_counts: list[int] = []
 
     for a in articles:
         event = a.get("event", {})
@@ -79,14 +87,139 @@ def _compute_analysis(articles: list[dict]) -> dict:
         venue = event.get("venue", "")
         if venue:
             venues[venue] += 1
-        total_words += a.get("word_count", 0) or 0
+        wc = a.get("word_count", 0) or 0
+        total_words += wc
+        word_counts.append(wc)
 
-    return {
-        "article_count": len(articles),
+    n = len(articles)
+    avg_words = round(total_words / n) if n else 0
+
+    days_in_period = max(1, (datetime.strptime(end_date, "%Y-%m-%d") - datetime.strptime(start_date, "%Y-%m-%d")).days)
+    words_per_day = round(total_words / days_in_period, 1)
+
+    median_words = int(statistics.median(word_counts)) if word_counts else 0
+
+    sorted_by_wc = sorted(articles, key=lambda a: a.get("word_count", 0) or 0)
+    longest = sorted_by_wc[-1] if sorted_by_wc else None
+    shortest = sorted_by_wc[0] if sorted_by_wc else None
+
+    longest_article = None
+    if longest:
+        longest_article = {
+            "title": longest.get("title", ""),
+            "slug": longest.get("slug", ""),
+            "word_count": longest.get("word_count", 0) or 0,
+        }
+
+    shortest_article = None
+    if shortest:
+        shortest_article = {
+            "title": shortest.get("title", ""),
+            "slug": shortest.get("slug", ""),
+            "word_count": shortest.get("word_count", 0) or 0,
+        }
+
+    dominant_category = None
+    if categories:
+        top_cat, top_count = categories.most_common(1)[0]
+        dominant_category = {
+            "name": top_cat,
+            "count": top_count,
+            "pct": round(top_count / n * 100) if n else 0,
+        }
+
+    missing_categories = [c for c in config.CATEGORIES if c not in categories]
+
+    unique_venues_count = len(venues)
+    venue_concentration = None
+    if venues:
+        top_venue, top_venue_count = venues.most_common(1)[0]
+        venue_concentration = {
+            "name": top_venue,
+            "count": top_venue_count,
+            "pct": round(top_venue_count / n * 100) if n else 0,
+        }
+
+    previous_comparison = None
+    if previous and previous.get("analysis"):
+        prev_a = previous["analysis"]
+        prev_venues = set(prev_a.get("venues", {}).keys())
+        curr_venues = set(venues.keys())
+        prev_cats = prev_a.get("categories", {})
+        category_shifts = {}
+        all_cats = set(list(categories.keys()) + list(prev_cats.keys()))
+        for cat in all_cats:
+            delta = categories.get(cat, 0) - prev_cats.get(cat, 0)
+            if delta != 0:
+                category_shifts[cat] = delta
+        previous_comparison = {
+            "articles_delta": n - prev_a.get("article_count", 0),
+            "words_delta": total_words - prev_a.get("total_words", 0),
+            "new_venues": sorted(curr_venues - prev_venues),
+            "lost_venues": sorted(prev_venues - curr_venues),
+            "category_shifts": category_shifts,
+        }
+
+    process_stats = _compute_process_stats(articles, storage)
+
+    result = {
+        "article_count": n,
         "total_words": total_words,
-        "avg_words": round(total_words / len(articles)) if articles else 0,
+        "avg_words": avg_words,
         "categories": dict(categories.most_common()),
         "venues": dict(venues.most_common(10)),
+        "longest_article": longest_article,
+        "shortest_article": shortest_article,
+        "words_per_day": words_per_day,
+        "median_words": median_words,
+        "dominant_category": dominant_category,
+        "missing_categories": missing_categories,
+        "unique_venues_count": unique_venues_count,
+        "venue_concentration": venue_concentration,
+    }
+
+    if previous_comparison:
+        result["previous_comparison"] = previous_comparison
+    if process_stats:
+        result["process_stats"] = process_stats
+
+    return result
+
+
+def _compute_process_stats(articles: list[dict], storage: EventStorage) -> dict | None:
+    issues_counts = []
+    expanded_count = 0
+    word_growths = []
+    total_sources = 0
+    traced = 0
+
+    for a in articles:
+        slug = a.get("slug", "")
+        if not slug:
+            continue
+        trace = storage.get_trace(slug)
+        if not trace:
+            continue
+        traced += 1
+        critique_issues = trace.get("critique_issues", [])
+        issues_counts.append(len(critique_issues))
+        if trace.get("expanded"):
+            expanded_count += 1
+        draft_wc = trace.get("draft_word_count", 0)
+        final_wc = a.get("word_count", 0) or 0
+        if draft_wc and final_wc:
+            word_growths.append(round((final_wc - draft_wc) / draft_wc * 100, 1))
+        total_sources += trace.get("research_sources_count", 0)
+
+    if not traced:
+        return None
+
+    return {
+        "avg_critique_issues": round(statistics.mean(issues_counts), 1) if issues_counts else 0,
+        "expanded_pct": round(expanded_count / traced * 100) if traced else 0,
+        "avg_word_growth_pct": round(statistics.mean(word_growths), 1) if word_growths else 0,
+        "total_research_sources": total_sources,
+        "articles_with_traces": traced,
     }
 
 

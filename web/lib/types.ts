@@ -61,6 +61,28 @@ export interface Reflection {
     avg_words: number;
     categories: Record<string, number>;
     venues: Record<string, number>;
+    longest_article?: { title: string; slug: string; word_count: number };
+    shortest_article?: { title: string; slug: string; word_count: number };
+    words_per_day?: number;
+    median_words?: number;
+    dominant_category?: { name: string; count: number; pct: number };
+    missing_categories?: string[];
+    unique_venues_count?: number;
+    venue_concentration?: { name: string; count: number; pct: number };
+    previous_comparison?: {
+      articles_delta: number;
+      words_delta: number;
+      new_venues: string[];
+      lost_venues: string[];
+      category_shifts: Record<string, number>;
+    };
+    process_stats?: {
+      avg_critique_issues: number;
+      expanded_pct: number;
+      avg_word_growth_pct: number;
+      total_research_sources: number;
+      articles_with_traces: number;
+    };
   };
   word_count: number | null;
   model_used: string | null;
