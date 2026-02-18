@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { FaTelegram } from "react-icons/fa";
@@ -24,7 +25,7 @@ function buildLangUrl(pathname: string, search: string, currentLang: Lang, targe
   return search ? `${newPath}${search}` : newPath;
 }
 
-export default function LanguageSelector() {
+function LanguageSelectorInner() {
   const { lang, alternates } = useLanguage();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -82,5 +83,13 @@ export default function LanguageSelector() {
         </>
       )}
     </div>
+  );
+}
+
+export default function LanguageSelector() {
+  return (
+    <Suspense>
+      <LanguageSelectorInner />
+    </Suspense>
   );
 }
