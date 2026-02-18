@@ -7,6 +7,11 @@ TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "")
 SITE_URL = "https://syntsch.de"
 
+RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
+RESEND_SEGMENT_EN = os.environ.get("RESEND_SEGMENT_EN", "")
+RESEND_SEGMENT_DE = os.environ.get("RESEND_SEGMENT_DE", "")
+RESEND_SEGMENT_RU = os.environ.get("RESEND_SEGMENT_RU", "")
+
 CITY = "Berlin"
 DAYS_AHEAD = 14
 ARTICLE_LANGUAGE = "en"

@@ -23,6 +23,7 @@ from agents.scout import scout_event
 from models import EventCandidate, ResearchContext
 from sources.research import research_event
 from notifiers.telegram import send_article_to_telegram
+from notifiers.email import send_article_email
 from storage import EventStorage
 
 ALL_LANGUAGES = ["en", "de", "ru"]
@@ -118,6 +119,17 @@ async def _write_for_languages(
 
         if lang == "ru" and config.TELEGRAM_BOT_TOKEN:
             await send_article_to_telegram(article.title, article.lead, slug)
+
+        if config.RESEND_API_KEY:
+            await send_article_email(
+                title=article.title,
+                lead=article.lead,
+                slug=slug,
+                language=lang,
+                category=event.category,
+                venue=event.venue,
+                start_date=event.start_date,
+            )
 
 
 async def cmd_author(args):
