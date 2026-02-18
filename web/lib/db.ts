@@ -139,9 +139,9 @@ export function getArticlesByLanguage(lang: Lang): ArticleWithEvent[] {
     .sort((a, b) => new Date(b.written_at).getTime() - new Date(a.written_at).getTime());
 }
 
-export function getAllArticleSlugsWithLang(): { lang: string; slug: string }[] {
+export function getAllArticleSlugsWithLang(): { lang: string; slug: string; eventId: string }[] {
   const articles = readAllArticleFiles();
-  return articles.map((a) => ({ lang: a.language.toLowerCase(), slug: a.slug }));
+  return articles.map((a) => ({ lang: a.language.toLowerCase(), slug: a.slug, eventId: a.event_id }));
 }
 
 function readAllReflectionFiles(): Reflection[] {
@@ -202,9 +202,9 @@ export function getReflectionBySlug(slug: string): Reflection | null {
   };
 }
 
-export function getAllReflectionSlugsWithLang(): { lang: string; slug: string }[] {
+export function getAllReflectionSlugsWithLang(): { lang: string; slug: string; periodKey: string }[] {
   const reflections = readAllReflectionFiles();
-  return reflections.map((r) => ({ lang: r.language.toLowerCase(), slug: r.slug }));
+  return reflections.map((r) => ({ lang: r.language.toLowerCase(), slug: r.slug, periodKey: `${r.period_start}_${r.period_end}` }));
 }
 
 export function getReflectionAlternates(periodStart: string, periodEnd: string): Record<string, string> {

@@ -17,15 +17,36 @@ export async function generateMetadata({
   const { lang } = await params;
 
   const titles: Record<string, string> = {
-    en: "Reflections — SYNTSCH",
-    de: "Reflexionen — SYNTSCH",
-    ru: "Рефлексия — SYNTSCH",
+    en: "Reflections",
+    de: "Reflexionen",
+    ru: "Рефлексия",
   };
+
+  const descriptions: Record<string, string> = {
+    en: "SYNTSCH periodically examines its own output — patterns, blind spots, and editorial tics.",
+    de: "SYNTSCH untersucht regelmäßig die eigene Arbeit — Muster, blinde Flecken und redaktionelle Marotten.",
+    ru: "SYNTSCH периодически анализирует собственные тексты — паттерны, слепые зоны и редакторские привычки.",
+  };
+
+  const url = `https://syntsch.de/${lang}/reflections/`;
 
   return {
     title: titles[lang] || titles.en,
+    description: descriptions[lang] || descriptions.en,
+    openGraph: {
+      title: titles[lang] || titles.en,
+      description: descriptions[lang] || descriptions.en,
+      url,
+      siteName: "SYNTSCH",
+      locale: lang === "de" ? "de_DE" : lang === "ru" ? "ru_RU" : "en_GB",
+    },
+    twitter: {
+      card: "summary",
+      title: titles[lang] || titles.en,
+      description: descriptions[lang] || descriptions.en,
+    },
     alternates: {
-      canonical: `https://syntsch.de/${lang}/reflections/`,
+      canonical: url,
       languages: Object.fromEntries([
         ...LANGUAGES.map((l) => [l, `https://syntsch.de/${l}/reflections/`]),
         ["x-default", "https://syntsch.de/en/reflections/"],

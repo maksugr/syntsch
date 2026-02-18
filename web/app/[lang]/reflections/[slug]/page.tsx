@@ -33,7 +33,13 @@ export async function generateMetadata({
       description,
       url: `https://syntsch.de/${lang}/reflections/${slug}/`,
       publishedTime: reflection.written_at,
+      locale: lang === "de" ? "de_DE" : lang === "ru" ? "ru_RU" : "en_GB",
       siteName: "SYNTSCH",
+    },
+    twitter: {
+      card: "summary",
+      title: reflection.title,
+      description,
     },
     alternates: {
       canonical: `https://syntsch.de/${lang}/reflections/${slug}/`,

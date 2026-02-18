@@ -1,5 +1,6 @@
 {
   "redirects": [
+    { "source": "/:path*", "has": [{ "type": "host", "value": "www.syntsch.de" }], "destination": "https://syntsch.de/:path*", "statusCode": 301 },
     { "source": "/article/:slug", "destination": "/en/article/:slug/", "statusCode": 301 },
     { "source": "/article/:slug/", "destination": "/en/article/:slug/", "statusCode": 301 },
     { "source": "/about", "destination": "/en/about/", "statusCode": 301 },
