@@ -4,7 +4,13 @@ from datetime import datetime
 import anthropic
 
 import config
-from models import EventCandidate, ArticleOutput, ResearchContext, PipelineTrace, CritiqueIssue
+from models import (
+    EventCandidate,
+    ArticleOutput,
+    ResearchContext,
+    PipelineTrace,
+    CritiqueIssue,
+)
 from sources.research import research_event
 from utils import extract_tool_input
 
@@ -24,22 +30,43 @@ CRITIC_TOOL = {
     "input_schema": {
         "type": "object",
         "properties": {
-            "overall_assessment": {"type": "string", "description": "One sentence: publishable, needs rework, or broken?"},
+            "overall_assessment": {
+                "type": "string",
+                "description": "One sentence: publishable, needs rework, or broken?",
+            },
             "issues": {
                 "type": "array",
                 "items": {
                     "type": "object",
                     "properties": {
-                        "type": {"type": "string", "enum": ["factual", "voice", "structure", "language", "depth"]},
-                        "severity": {"type": "string", "enum": ["minor", "major", "critical"]},
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "factual",
+                                "voice",
+                                "structure",
+                                "language",
+                                "depth",
+                            ],
+                        },
+                        "severity": {
+                            "type": "string",
+                            "enum": ["minor", "major", "critical"],
+                        },
                         "location": {"type": "string"},
                         "fix": {"type": "string"},
                     },
                     "required": ["type", "severity", "location", "fix"],
                 },
             },
-            "title": {"type": "string", "description": "Essay title: short, punchy, same language as the essay. No quotes, no period at the end. Like a Dazed headline."},
-            "revised_text": {"type": "string", "description": "The full revised essay WITHOUT the title, complete and publishable"},
+            "title": {
+                "type": "string",
+                "description": "Essay title: short, punchy, same language as the essay. No quotes, no period at the end. Like a Dazed headline.",
+            },
+            "revised_text": {
+                "type": "string",
+                "description": "The full revised essay WITHOUT the title, complete and publishable",
+            },
         },
         "required": ["overall_assessment", "issues", "title", "revised_text"],
     },
@@ -176,15 +203,25 @@ def _critique_and_revise(
                 title = _generate_title(client, event, revised, language)
             return title, revised, assessment, critique_issues
 
-        logger.warning("Critic returned too-short revised_text (%d chars), using draft", len(revised))
-        return _generate_title(client, event, draft, language), draft, assessment, critique_issues
+        logger.warning(
+            "Critic returned too-short revised_text (%d chars), using draft",
+            len(revised),
+        )
+        return (
+            _generate_title(client, event, draft, language),
+            draft,
+            assessment,
+            critique_issues,
+        )
 
     except Exception as e:
         logger.error("Critic failed: %s — using original draft", e)
         return _generate_title(client, event, draft, language), draft, "", []
 
 
-def _build_critic_message(draft: str, event: EventCandidate, context: ResearchContext) -> str:
+def _build_critic_message(
+    draft: str, event: EventCandidate, context: ResearchContext
+) -> str:
     parts = [
         "## Essay draft to review\n",
         draft,
@@ -318,12 +355,14 @@ def _build_user_message(event: EventCandidate, context: ResearchContext) -> str:
     if event.end_date and event.end_date != event.start_date:
         parts.append(f"Ends: {event.end_date}")
 
-    parts.extend([
-        f"Venue: {event.venue}",
-        f"City: {event.city}",
-        f"Category: {event.category}",
-        f"Description: {event.description}",
-    ])
+    parts.extend(
+        [
+            f"Venue: {event.venue}",
+            f"City: {event.city}",
+            f"Category: {event.category}",
+            f"Description: {event.description}",
+        ]
+    )
 
     if any(
         [
@@ -351,5 +390,3 @@ def _build_user_message(event: EventCandidate, context: ResearchContext) -> str:
             parts.append(f"\n### Related works and press\n{context.related_works}")
 
     return "\n".join(parts)
-
-

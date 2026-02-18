@@ -25,13 +25,31 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python cli.py author --from-curator
 
-      - name: Commit new articles
+      - name: Commit and push new articles
+        id: push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/articles/
-          git diff --staged --quiet || (git commit -m "author: add new articles" && git pull --rebase && git push)
+          if git diff --staged --quiet; then
+            echo "new_slugs=" >> "$GITHUB_OUTPUT"
+          else
+            NEW_SLUGS=$(git diff --staged --name-only -- 'data/articles/*.json' | grep -v '.trace.json' | sed 's|data/articles/||;s|\.json||' | tr '\n' ' ')
+            git commit -m "author: add new articles"
+            git pull --rebase
+            git push
+            echo "new_slugs=$NEW_SLUGS" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Send notifications
+        if: steps.push.outputs.new_slugs != ''
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_SEGMENT_EN: ${{ secrets.RESEND_SEGMENT_EN }}
+          RESEND_SEGMENT_DE: ${{ secrets.RESEND_SEGMENT_DE }}
+          RESEND_SEGMENT_RU: ${{ secrets.RESEND_SEGMENT_RU }}
+        run: python cli.py notify --wait ${{ steps.push.outputs.new_slugs }}

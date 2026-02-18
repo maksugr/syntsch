@@ -1,13 +1,18 @@
+import logging
+
 import httpx
 
 import config
 
+logger = logging.getLogger(__name__)
 
-async def send_article_to_telegram(title: str, lead: str, slug: str, language: str = "ru"):
+
+async def send_article_to_telegram(
+    title: str, lead: str, slug: str, language: str = "ru"
+):
     url = f"{config.SITE_URL}/{language}/article/{slug}/"
     text = f'<b>{title}</b>\n\n{lead}\n\n<a href="{url}">Читать →</a>'
     await _send_telegram_message(text, url)
-
 
 
 async def _send_telegram_message(text: str, preview_url: str):
@@ -33,4 +38,4 @@ async def _send_telegram_message(text: str, preview_url: str):
             )
             resp.raise_for_status()
     except Exception as e:
-        print(f"Warning: Telegram notification failed: {e}")
+        logger.warning("Telegram notification failed: %s", e)

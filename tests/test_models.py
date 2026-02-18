@@ -1,12 +1,20 @@
 import pytest
 from datetime import datetime
 
-from models import EventCandidate, ScoutResult, CuratorResult, ResearchContext, ArticleOutput
+from models import (
+    EventCandidate,
+    ScoutResult,
+    CuratorResult,
+    ResearchContext,
+    ArticleOutput,
+)
 
 
 class TestEventCandidate:
     def test_minimal(self):
-        e = EventCandidate(name="Test", venue="Club", category="music", description="Desc")
+        e = EventCandidate(
+            name="Test", venue="Club", category="music", description="Desc"
+        )
         assert e.name == "Test"
         assert e.city == "Berlin"
         assert e.start_date == ""
@@ -29,7 +37,9 @@ class TestEventCandidate:
         assert e.raw_snippet == "Some raw content"
 
     def test_empty_venue_allowed(self):
-        e = EventCandidate(name="Festival", venue="", category="festival", description="City-wide")
+        e = EventCandidate(
+            name="Festival", venue="", category="festival", description="City-wide"
+        )
         assert e.venue == ""
 
     def test_missing_required_raises(self):
@@ -49,7 +59,11 @@ class TestScoutResult:
 
 class TestCuratorResult:
     def test_creation(self):
-        r = CuratorResult(chosen_event_id="abc-123", why_chosen="Best event", curated_at=datetime.now())
+        r = CuratorResult(
+            chosen_event_id="abc-123",
+            why_chosen="Best event",
+            curated_at=datetime.now(),
+        )
         assert r.chosen_event_id == "abc-123"
 
 

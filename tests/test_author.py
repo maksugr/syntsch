@@ -64,7 +64,9 @@ class TestBuildUserMessage:
 
 class TestBuildCriticMessage:
     def test_contains_draft(self, event):
-        msg = _build_critic_message("This is the draft essay.", event, ResearchContext())
+        msg = _build_critic_message(
+            "This is the draft essay.", event, ResearchContext()
+        )
         assert "This is the draft essay." in msg
 
     def test_contains_event_for_fact_checking(self, event, context):
@@ -93,7 +95,12 @@ class TestLanguageNotes:
         assert "ru" in LANGUAGE_NOTES
 
     def test_russian_has_latin_script_reminder(self):
-        assert "латиницей" in LANGUAGE_NOTES["ru"] or "латиниц" in LANGUAGE_NOTES["ru"].lower()
+        assert (
+            "латиницей" in LANGUAGE_NOTES["ru"]
+            or "латиниц" in LANGUAGE_NOTES["ru"].lower()
+        )
 
     def test_german_has_proper_noun_reminder(self):
-        assert "Eigennamen" in LANGUAGE_NOTES["de"] or "Original" in LANGUAGE_NOTES["de"]
+        assert (
+            "Eigennamen" in LANGUAGE_NOTES["de"] or "Original" in LANGUAGE_NOTES["de"]
+        )

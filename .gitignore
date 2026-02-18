@@ -1,8 +1,10 @@
 .env
 __pycache__/
 *.pyc
+.pytest_cache/
 .venv/
 *.egg-info/
 logs/
 .claude/
 .DS_Store
+web/.DS_Store

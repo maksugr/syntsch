@@ -36,7 +36,9 @@ class TavilyEventSource(EventSource):
     def __init__(self, api_key: str):
         self.client = AsyncTavilyClient(api_key=api_key)
 
-    async def _search_one(self, query: str, include_domains: list[str] | None = None) -> list[dict]:
+    async def _search_one(
+        self, query: str, include_domains: list[str] | None = None
+    ) -> list[dict]:
         kwargs = dict(
             query=query,
             max_results=7,
@@ -53,7 +55,12 @@ class TavilyEventSource(EventSource):
                 logger.debug("Query '%s': %d results", query[:80], len(results))
                 return results
             except Exception as e:
-                logger.warning("Tavily attempt %d/3 failed for '%s': %s", attempt + 1, query[:80], e)
+                logger.warning(
+                    "Tavily attempt %d/3 failed for '%s': %s",
+                    attempt + 1,
+                    query[:80],
+                    e,
+                )
                 if attempt < 2:
                     await asyncio.sleep(1.0 * (attempt + 1))
 
@@ -69,7 +76,7 @@ class TavilyEventSource(EventSource):
         tomorrow = datetime.now() + timedelta(days=1)
         end_date = tomorrow + timedelta(days=days_ahead)
         date_range = f"{tomorrow.strftime('%B %d')} to {end_date.strftime('%B %d %Y')}"
-        month_year = tomorrow.strftime('%B %Y')
+        month_year = tomorrow.strftime("%B %Y")
 
         core_queries = [
             f"{city} cultural events {date_range} concerts exhibitions theater",
@@ -78,25 +85,82 @@ class TavilyEventSource(EventSource):
         ]
 
         extra_queries = [
-            {"query": f"{city} Veranstaltungen Konzerte Ausstellung Theater {month_year}", "cats": ["music", "theater", "exhibition"]},
-            {"query": f"{city} Kulturprogramm Lesung Performance Clubnacht {date_range}", "cats": ["lecture", "performance", "club"]},
-            {"query": f"{city} underground alternative events {date_range} club night festival", "cats": ["club", "festival"]},
-            {"query": f"{city} DIY punk queer party warehouse rave {date_range}", "cats": ["club", "music"]},
-            {"query": f"{city} experimental noise ambient drone live {date_range}", "cats": ["music", "performance"]},
-            {"query": f"{city} new gallery openings performances {date_range}", "cats": ["exhibition", "performance"]},
-            {"query": f"{city} art exhibition opening reception {month_year}", "cats": ["exhibition"]},
-            {"query": f"{city} contemporary art installation vernissage {date_range}", "cats": ["exhibition"]},
-            {"query": f"{city} photography exhibition museum show {month_year}", "cats": ["exhibition"]},
-            {"query": f"{city} live music DJ sets club events {date_range}", "cats": ["music", "club"]},
-            {"query": f"{city} jazz electronic techno concert {date_range}", "cats": ["music", "club"]},
-            {"query": f"{city} indie band tour gig venue {month_year}", "cats": ["music"]},
-            {"query": f"{city} independent film screening premiere cinema {date_range}", "cats": ["cinema"]},
-            {"query": f"{city} theater dance performance spoken word {date_range}", "cats": ["theater", "performance"]},
-            {"query": f"{city} documentary film festival short film {month_year}", "cats": ["cinema", "festival"]},
-            {"query": f"{city} fashion pop-up design market {date_range}", "cats": ["festival"]},
-            {"query": f"{city} book launch reading poetry zine fair {date_range}", "cats": ["lecture"]},
-            {"query": f"{city} sound art media art digital culture {month_year}", "cats": ["performance", "exhibition"]},
-            {"query": f"{city} события культура концерты выставки {month_year}", "cats": ["music", "exhibition"]},
+            {
+                "query": f"{city} Veranstaltungen Konzerte Ausstellung Theater {month_year}",
+                "cats": ["music", "theater", "exhibition"],
+            },
+            {
+                "query": f"{city} Kulturprogramm Lesung Performance Clubnacht {date_range}",
+                "cats": ["lecture", "performance", "club"],
+            },
+            {
+                "query": f"{city} underground alternative events {date_range} club night festival",
+                "cats": ["club", "festival"],
+            },
+            {
+                "query": f"{city} DIY punk queer party warehouse rave {date_range}",
+                "cats": ["club", "music"],
+            },
+            {
+                "query": f"{city} experimental noise ambient drone live {date_range}",
+                "cats": ["music", "performance"],
+            },
+            {
+                "query": f"{city} new gallery openings performances {date_range}",
+                "cats": ["exhibition", "performance"],
+            },
+            {
+                "query": f"{city} art exhibition opening reception {month_year}",
+                "cats": ["exhibition"],
+            },
+            {
+                "query": f"{city} contemporary art installation vernissage {date_range}",
+                "cats": ["exhibition"],
+            },
+            {
+                "query": f"{city} photography exhibition museum show {month_year}",
+                "cats": ["exhibition"],
+            },
+            {
+                "query": f"{city} live music DJ sets club events {date_range}",
+                "cats": ["music", "club"],
+            },
+            {
+                "query": f"{city} jazz electronic techno concert {date_range}",
+                "cats": ["music", "club"],
+            },
+            {
+                "query": f"{city} indie band tour gig venue {month_year}",
+                "cats": ["music"],
+            },
+            {
+                "query": f"{city} independent film screening premiere cinema {date_range}",
+                "cats": ["cinema"],
+            },
+            {
+                "query": f"{city} theater dance performance spoken word {date_range}",
+                "cats": ["theater", "performance"],
+            },
+            {
+                "query": f"{city} documentary film festival short film {month_year}",
+                "cats": ["cinema", "festival"],
+            },
+            {
+                "query": f"{city} fashion pop-up design market {date_range}",
+                "cats": ["festival"],
+            },
+            {
+                "query": f"{city} book launch reading poetry zine fair {date_range}",
+                "cats": ["lecture"],
+            },
+            {
+                "query": f"{city} sound art media art digital culture {month_year}",
+                "cats": ["performance", "exhibition"],
+            },
+            {
+                "query": f"{city} события культура концерты выставки {month_year}",
+                "cats": ["music", "exhibition"],
+            },
         ]
 
         cat_counts = Counter(pool_categories or [])
@@ -141,7 +205,9 @@ class TavilyEventSource(EventSource):
                         category="",
                         description=snippet[:500],
                         source_url=url,
-                        raw_snippet=(raw_content[:3000] if raw_content else snippet[:1000]),
+                        raw_snippet=(
+                            raw_content[:3000] if raw_content else snippet[:1000]
+                        ),
                     )
                 )
 

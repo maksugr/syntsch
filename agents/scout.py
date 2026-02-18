@@ -74,19 +74,51 @@ SCOUT_TOOL = {
                     "type": "object",
                     "properties": {
                         "name": {"type": "string"},
-                        "start_date": {"type": "string", "description": "YYYY-MM-DD or approximate"},
-                        "end_date": {"type": "string", "description": "YYYY-MM-DD, same as start for single-day, empty if unknown"},
-                        "venue": {"type": "string", "description": "Empty string if non-specific"},
+                        "start_date": {
+                            "type": "string",
+                            "description": "YYYY-MM-DD or approximate",
+                        },
+                        "end_date": {
+                            "type": "string",
+                            "description": "YYYY-MM-DD, same as start for single-day, empty if unknown",
+                        },
+                        "venue": {
+                            "type": "string",
+                            "description": "Empty string if non-specific",
+                        },
                         "city": {"type": "string"},
                         "category": {
                             "type": "string",
-                            "enum": ["music", "cinema", "theater", "exhibition", "lecture", "festival", "performance", "club"],
+                            "enum": [
+                                "music",
+                                "cinema",
+                                "theater",
+                                "exhibition",
+                                "lecture",
+                                "festival",
+                                "performance",
+                                "club",
+                            ],
                         },
-                        "description": {"type": "string", "description": "2-3 sentence description"},
+                        "description": {
+                            "type": "string",
+                            "description": "2-3 sentence description",
+                        },
                         "source_url": {"type": "string"},
-                        "event_url": {"type": "string", "description": "Official event page, empty if not found"},
+                        "event_url": {
+                            "type": "string",
+                            "description": "Official event page, empty if not found",
+                        },
                     },
-                    "required": ["name", "start_date", "venue", "city", "category", "description", "source_url"],
+                    "required": [
+                        "name",
+                        "start_date",
+                        "venue",
+                        "city",
+                        "category",
+                        "description",
+                        "source_url",
+                    ],
                 },
             }
         },
@@ -107,22 +139,28 @@ async def scout_event(
     storage = EventStorage(config.DATA_DIR)
 
     pool_categories = [
-        ev.get("category", "") for ev in storage._load_all_events()
+        ev.get("category", "")
+        for ev in storage._load_all_events()
         if ev.get("category")
     ]
-    candidates = await source.fetch_events(city, days_ahead, pool_categories=pool_categories)
+    candidates = await source.fetch_events(
+        city, days_ahead, pool_categories=pool_categories
+    )
 
     if not candidates:
         raise RuntimeError(f"No events found for {city}")
 
     filtered = [
-        c for c in candidates
+        c
+        for c in candidates
         if not storage.is_already_covered(c.name, c.venue, c.start_date)
         and not storage.event_exists(c.name)
     ]
 
     if not filtered:
-        logger.warning("All %d candidates already in pool, sending unfiltered", len(candidates))
+        logger.warning(
+            "All %d candidates already in pool, sending unfiltered", len(candidates)
+        )
         filtered = candidates
 
     existing_names = storage.get_all_event_names()
@@ -167,5 +205,3 @@ async def scout_event(
         events=events,
         searched_at=datetime.now(),
     )
-
-

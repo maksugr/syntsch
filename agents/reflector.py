@@ -30,18 +30,28 @@ async def write_reflection(
     articles = storage.get_articles_in_period(start_date, end_date, language)
 
     if not articles:
-        raise ValueError(f"No articles found for {language} in period {start_date} — {end_date}")
+        raise ValueError(
+            f"No articles found for {language} in period {start_date} — {end_date}"
+        )
 
     previous = storage.get_latest_reflection(language)
 
     analysis = _compute_analysis(articles, storage, start_date, end_date, previous)
 
     system_prompt = _load_reflector_prompt(language)
-    user_message = _build_user_message(articles, analysis, start_date, end_date, language, previous)
+    user_message = _build_user_message(
+        articles, analysis, start_date, end_date, language, previous
+    )
 
     client = anthropic.Anthropic(max_retries=3)
 
-    logger.info("Writing reflection for %s (%d articles, %s — %s)", language, len(articles), start_date, end_date)
+    logger.info(
+        "Writing reflection for %s (%d articles, %s — %s)",
+        language,
+        len(articles),
+        start_date,
+        end_date,
+    )
     body_response = client.messages.create(
         model=config.AUTHOR_MODEL,
         max_tokens=4096,
@@ -94,7 +104,13 @@ def _compute_analysis(
     n = len(articles)
     avg_words = round(total_words / n) if n else 0
 
-    days_in_period = max(1, (datetime.strptime(end_date, "%Y-%m-%d") - datetime.strptime(start_date, "%Y-%m-%d")).days)
+    days_in_period = max(
+        1,
+        (
+            datetime.strptime(end_date, "%Y-%m-%d")
+            - datetime.strptime(start_date, "%Y-%m-%d")
+        ).days,
+    )
     words_per_day = round(total_words / days_in_period, 1)
 
     median_words = int(statistics.median(word_counts)) if word_counts else 0
@@ -215,9 +231,13 @@ def _compute_process_stats(articles: list[dict], storage: EventStorage) -> dict 
         return None
 
     return {
-        "avg_critique_issues": round(statistics.mean(issues_counts), 1) if issues_counts else 0,
+        "avg_critique_issues": round(statistics.mean(issues_counts), 1)
+        if issues_counts
+        else 0,
         "expanded_pct": round(expanded_count / traced * 100) if traced else 0,
-        "avg_word_growth_pct": round(statistics.mean(word_growths), 1) if word_growths else 0,
+        "avg_word_growth_pct": round(statistics.mean(word_growths), 1)
+        if word_growths
+        else 0,
         "total_research_sources": total_sources,
         "articles_with_traces": traced,
     }
@@ -231,9 +251,8 @@ def _load_reflector_prompt(language: str) -> str:
     lang_names = {"en": "English", "de": "German", "ru": "Russian"}
     lang_name = lang_names.get(language, "English")
 
-    return (
-        template.replace("{language}", lang_name)
-        .replace("{language_specific_notes}", lang_notes)
+    return template.replace("{language}", lang_name).replace(
+        "{language_specific_notes}", lang_notes
     )
 
 
@@ -282,7 +301,9 @@ def _build_user_message(
         parts.append("")
 
     if previous:
-        prev_period = f"{previous.get('period_start', '?')} to {previous.get('period_end', '?')}"
+        prev_period = (
+            f"{previous.get('period_start', '?')} to {previous.get('period_end', '?')}"
+        )
         parts.append("## Your previous reflection")
         parts.append(f"Period: {prev_period}")
         parts.append(f"Title: {previous.get('title', '')}")

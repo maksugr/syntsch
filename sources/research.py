@@ -24,7 +24,9 @@ async def _search_one(client: AsyncTavilyClient, field: str, query: str) -> dict
             logger.debug("Research '%s': %d results", field, len(results))
             return {"text": "\n\n".join(snippets[:3]), "urls": urls}
         except Exception as e:
-            logger.warning("Research attempt %d/3 failed for '%s': %s", attempt + 1, field, e)
+            logger.warning(
+                "Research attempt %d/3 failed for '%s': %s", attempt + 1, field, e
+            )
             if attempt < 2:
                 await asyncio.sleep(1.0 * (attempt + 1))
 

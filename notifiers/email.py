@@ -1,6 +1,10 @@
+import logging
+
 import httpx
 
 import config
+
+logger = logging.getLogger(__name__)
 
 CATEGORY_COLORS = {
     "music": "#B91C1C",
@@ -43,19 +47,34 @@ LABEL_UNSUBSCRIBE = {"en": "Unsubscribe", "de": "Abmelden", "ru": "Отписа�
 
 CATEGORY_NAMES = {
     "en": {
-        "music": "music", "cinema": "cinema", "theater": "theater",
-        "exhibition": "exhibition", "lecture": "lecture", "festival": "festival",
-        "performance": "performance", "club": "club",
+        "music": "music",
+        "cinema": "cinema",
+        "theater": "theater",
+        "exhibition": "exhibition",
+        "lecture": "lecture",
+        "festival": "festival",
+        "performance": "performance",
+        "club": "club",
     },
     "de": {
-        "music": "Musik", "cinema": "Kino", "theater": "Theater",
-        "exhibition": "Ausstellung", "lecture": "Vortrag", "festival": "Festival",
-        "performance": "Performance", "club": "Club",
+        "music": "Musik",
+        "cinema": "Kino",
+        "theater": "Theater",
+        "exhibition": "Ausstellung",
+        "lecture": "Vortrag",
+        "festival": "Festival",
+        "performance": "Performance",
+        "club": "Club",
     },
     "ru": {
-        "music": "музыка", "cinema": "кино", "theater": "театр",
-        "exhibition": "выставка", "lecture": "лекция", "festival": "фестиваль",
-        "performance": "перформанс", "club": "клуб",
+        "music": "музыка",
+        "cinema": "кино",
+        "theater": "театр",
+        "exhibition": "выставка",
+        "lecture": "лекция",
+        "festival": "фестиваль",
+        "performance": "перформанс",
+        "club": "клуб",
     },
 }
 
@@ -64,7 +83,9 @@ def _translate_category(category: str, language: str) -> str:
     return CATEGORY_NAMES.get(language, CATEGORY_NAMES["en"]).get(category, category)
 
 
-def _build_event_block(venue: str, start_date: str, category: str, color: str, language: str) -> str:
+def _build_event_block(
+    venue: str, start_date: str, category: str, color: str, language: str
+) -> str:
     if not venue and not start_date:
         return ""
 
@@ -74,9 +95,13 @@ def _build_event_block(venue: str, start_date: str, category: str, color: str, l
 
     meta_parts = []
     if start_date:
-        meta_parts.append(f"<span style='color:#666666;text-transform:uppercase;font-size:10px;letter-spacing:2px;'>{lbl_date}</span>&nbsp; {start_date}")
+        meta_parts.append(
+            f"<span style='color:#666666;text-transform:uppercase;font-size:10px;letter-spacing:2px;'>{lbl_date}</span>&nbsp; {start_date}"
+        )
     if venue:
-        meta_parts.append(f"<span style='color:#666666;text-transform:uppercase;font-size:10px;letter-spacing:2px;'>{lbl_venue}</span>&nbsp; {venue}")
+        meta_parts.append(
+            f"<span style='color:#666666;text-transform:uppercase;font-size:10px;letter-spacing:2px;'>{lbl_venue}</span>&nbsp; {venue}"
+        )
 
     return f"""<div style="margin-bottom:28px;font-family:'Courier New',monospace;font-size:13px;color:#000000;">
 <div style="margin-bottom:12px;"><span style="font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#ffffff;background:{color};padding:3px 8px;font-size:12px;">{cat_label}</span></div>
@@ -84,7 +109,15 @@ def _build_event_block(venue: str, start_date: str, category: str, color: str, l
 </div>"""
 
 
-def _build_html(title: str, lead: str, url: str, language: str, category: str, venue: str, start_date: str) -> str:
+def _build_html(
+    title: str,
+    lead: str,
+    url: str,
+    language: str,
+    category: str,
+    venue: str,
+    start_date: str,
+) -> str:
     color = CATEGORY_COLORS.get(category, "#2D2D2D")
     cta = CTA_TEXT.get(language, CTA_TEXT["en"])
     tagline = TAGLINE.get(language, TAGLINE["en"])
@@ -193,4 +226,4 @@ async def send_article_email(
                 },
             )
     except Exception as e:
-        print(f"Warning: Email notification failed for [{language}]: {e}")
+        logger.warning("Email notification failed for [%s]: %s", language, e)

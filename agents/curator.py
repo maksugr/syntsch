@@ -51,15 +51,23 @@ CURATOR_TOOL = {
     "input_schema": {
         "type": "object",
         "properties": {
-            "chosen_event_id": {"type": "string", "description": "The UUID of the chosen event"},
-            "why_chosen": {"type": "string", "description": "2-3 sentences explaining the choice"},
+            "chosen_event_id": {
+                "type": "string",
+                "description": "The UUID of the chosen event",
+            },
+            "why_chosen": {
+                "type": "string",
+                "description": "2-3 sentences explaining the choice",
+            },
         },
         "required": ["chosen_event_id", "why_chosen"],
     },
 }
 
 
-async def curate_event(city: str | None = None, languages: list[str] | None = None) -> CuratorResult:
+async def curate_event(
+    city: str | None = None, languages: list[str] | None = None
+) -> CuratorResult:
     city = city or config.CITY
     storage = EventStorage(config.DATA_DIR)
 
@@ -81,16 +89,18 @@ async def curate_event(city: str | None = None, languages: list[str] | None = No
 
     events_for_prompt = []
     for row in available:
-        events_for_prompt.append({
-            "id": row["id"],
-            "name": row["name"],
-            "start_date": row["start_date"],
-            "end_date": row["end_date"],
-            "venue": row["venue"],
-            "city": row["city"],
-            "category": row["category"],
-            "description": row["description"],
-        })
+        events_for_prompt.append(
+            {
+                "id": row["id"],
+                "name": row["name"],
+                "start_date": row["start_date"],
+                "end_date": row["end_date"],
+                "venue": row["venue"],
+                "city": row["city"],
+                "category": row["category"],
+                "description": row["description"],
+            }
+        )
 
     events_json = json.dumps(events_for_prompt, indent=2, ensure_ascii=False)
 
@@ -101,7 +111,9 @@ async def curate_event(city: str | None = None, languages: list[str] | None = No
         events_json=events_json,
     )
 
-    logger.info("Curating from %d available events (recent: %s)", len(available), recent_str)
+    logger.info(
+        "Curating from %d available events (recent: %s)", len(available), recent_str
+    )
 
     client = anthropic.AsyncAnthropic(max_retries=3)
     response = await client.messages.create(
@@ -117,7 +129,9 @@ async def curate_event(city: str | None = None, languages: list[str] | None = No
     chosen_id = tool_input["chosen_event_id"]
     row = storage.get_event(chosen_id)
     if not row:
-        raise RuntimeError(f"Curator chose event #{chosen_id} but it doesn't exist in storage")
+        raise RuntimeError(
+            f"Curator chose event #{chosen_id} but it doesn't exist in storage"
+        )
 
     logger.info("Curator chose: %s (%s)", row["name"], row["category"])
 
@@ -126,5 +140,3 @@ async def curate_event(city: str | None = None, languages: list[str] | None = No
         why_chosen=tool_input["why_chosen"],
         curated_at=datetime.now(),
     )
-
-

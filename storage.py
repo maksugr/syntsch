@@ -11,11 +11,39 @@ from models import EventCandidate, ArticleOutput, ReflectionOutput
 
 
 _CYRILLIC_TRANSLIT = {
-    "а": "a", "б": "b", "в": "v", "г": "g", "д": "d", "е": "e", "ё": "yo",
-    "ж": "zh", "з": "z", "и": "i", "й": "y", "к": "k", "л": "l", "м": "m",
-    "н": "n", "о": "o", "п": "p", "р": "r", "с": "s", "т": "t", "у": "u",
-    "ф": "f", "х": "kh", "ц": "ts", "ч": "ch", "ш": "sh", "щ": "shch",
-    "ъ": "", "ы": "y", "ь": "", "э": "e", "ю": "yu", "я": "ya",
+    "а": "a",
+    "б": "b",
+    "в": "v",
+    "г": "g",
+    "д": "d",
+    "е": "e",
+    "ё": "yo",
+    "ж": "zh",
+    "з": "z",
+    "и": "i",
+    "й": "y",
+    "к": "k",
+    "л": "l",
+    "м": "m",
+    "н": "n",
+    "о": "o",
+    "п": "p",
+    "р": "r",
+    "с": "s",
+    "т": "t",
+    "у": "u",
+    "ф": "f",
+    "х": "kh",
+    "ц": "ts",
+    "ч": "ch",
+    "ш": "sh",
+    "щ": "shch",
+    "ъ": "",
+    "ы": "y",
+    "ь": "",
+    "э": "e",
+    "ю": "yu",
+    "я": "ya",
 }
 
 
@@ -68,7 +96,12 @@ class EventStorage:
         for ev in self._load_all_events():
             if ev.get("name", "").strip().lower() == name_norm:
                 return ev["id"]
-            if venue_norm and start_date and ev.get("venue", "").strip().lower() == venue_norm and ev.get("start_date") == start_date:
+            if (
+                venue_norm
+                and start_date
+                and ev.get("venue", "").strip().lower() == venue_norm
+                and ev.get("start_date") == start_date
+            ):
                 return ev["id"]
         return None
 
@@ -83,7 +116,9 @@ class EventStorage:
         return [ev.get("name", "") for ev in self._load_all_events() if ev.get("name")]
 
     def save_event(self, event: EventCandidate) -> str:
-        existing_id = self.find_existing_event(event.name, event.venue, event.start_date)
+        existing_id = self.find_existing_event(
+            event.name, event.venue, event.start_date
+        )
         if existing_id:
             return existing_id
 
@@ -134,7 +169,9 @@ class EventStorage:
 
         return article_id, slug
 
-    def is_already_covered(self, name: str, venue: str, start_date: str, language: str = "") -> bool:
+    def is_already_covered(
+        self, name: str, venue: str, start_date: str, language: str = ""
+    ) -> bool:
         for article in self._load_all_articles():
             if language and article.get("language") != language:
                 continue
@@ -150,11 +187,16 @@ class EventStorage:
 
     def has_article_in_language(self, event_id: str, language: str) -> bool:
         for article in self._load_all_articles():
-            if article.get("event_id") == event_id and article.get("language") == language:
+            if (
+                article.get("event_id") == event_id
+                and article.get("language") == language
+            ):
                 return True
         return False
 
-    def get_available_events(self, today: str | None = None, language: str = "") -> list[dict]:
+    def get_available_events(
+        self, today: str | None = None, language: str = ""
+    ) -> list[dict]:
         today = today or datetime.now().strftime("%Y-%m-%d")
         all_events = self._load_all_events()
         all_articles = self._load_all_articles()
@@ -184,10 +226,7 @@ class EventStorage:
     def get_recent_categories(self, days: int = 7) -> list[str]:
         cutoff = (datetime.now() - timedelta(days=days)).isoformat()
         articles = self._load_all_articles()
-        recent = [
-            a for a in articles
-            if a.get("written_at", "") > cutoff
-        ]
+        recent = [a for a in articles if a.get("written_at", "") > cutoff]
         recent.sort(key=lambda a: a.get("written_at", ""), reverse=True)
         categories = []
         for a in recent:
@@ -218,14 +257,17 @@ class EventStorage:
     def get_articles_in_period(self, start: str, end: str, language: str) -> list[dict]:
         articles = self._load_all_articles()
         return [
-            a for a in articles
+            a
+            for a in articles
             if a.get("language") == language
             and start <= a.get("written_at", "")[:10] <= end
         ]
 
     def save_reflection(self, reflection: ReflectionOutput) -> tuple[str, str]:
         reflection_id = str(uuid.uuid4())
-        slug = self._unique_reflection_slug(generate_slug(reflection.title), reflection_id)
+        slug = self._unique_reflection_slug(
+            generate_slug(reflection.title), reflection_id
+        )
         data = {
             "id": reflection_id,
             "title": reflection.title,
@@ -244,8 +286,7 @@ class EventStorage:
 
     def get_latest_reflection(self, language: str) -> dict | None:
         reflections = [
-            r for r in self._load_all_reflections()
-            if r.get("language") == language
+            r for r in self._load_all_reflections() if r.get("language") == language
         ]
         if not reflections:
             return None

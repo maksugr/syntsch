@@ -15,16 +15,16 @@ logging.basicConfig(
     datefmt="%H:%M:%S",
 )
 
-import config
-from agents.author import write_article
-from agents.curator import curate_event
-from agents.reflector import write_reflection
-from agents.scout import scout_event
-from models import EventCandidate, ResearchContext
-from sources.research import research_event
-from notifiers.telegram import send_article_to_telegram
-from notifiers.email import send_article_email
-from storage import EventStorage
+import config  # noqa: E402
+from agents.author import write_article  # noqa: E402
+from agents.curator import curate_event  # noqa: E402
+from agents.reflector import write_reflection  # noqa: E402
+from agents.scout import scout_event  # noqa: E402
+from models import EventCandidate, ResearchContext  # noqa: E402
+from sources.research import research_event  # noqa: E402
+from notifiers.telegram import send_article_to_telegram  # noqa: E402
+from notifiers.email import send_article_email  # noqa: E402
+from storage import EventStorage  # noqa: E402
 
 ALL_LANGUAGES = ["en", "de", "ru"]
 
@@ -52,7 +52,9 @@ async def cmd_scout(args):
         if existed is None:
             new_count += 1
 
-    print(f"\nFound {len(result.events)} events ({new_count} new, {len(result.events) - new_count} already in pool):")
+    print(
+        f"\nFound {len(result.events)} events ({new_count} new, {len(result.events) - new_count} already in pool):"
+    )
 
     for (eid, was_existing), event in zip(event_ids, result.events):
         tag = " (existing)" if was_existing else ""
@@ -64,7 +66,7 @@ async def cmd_scout(args):
 
 
 async def cmd_curate(args):
-    print(f"Curating best event for today...")
+    print("Curating best event for today...")
 
     storage = _get_storage()
 
@@ -114,7 +116,9 @@ async def _write_for_languages(
             context=context,
         )
         article_id, slug = storage.save_article(event_id, article)
-        print(f"  [{lang}] \"{article.title}\" ({article.word_count} words) → #{article_id}")
+        print(
+            f'  [{lang}] "{article.title}" ({article.word_count} words) → #{article_id}'
+        )
 
         if lang == "ru" and config.TELEGRAM_BOT_TOKEN:
             await send_article_to_telegram(article.title, article.lead, slug)
@@ -147,7 +151,9 @@ async def cmd_author(args):
         print(f"Why: {result.why_chosen}")
         print(f"Languages: {', '.join(languages)}\n")
 
-        await _write_for_languages(storage, event_id, event, languages, args.skip_research)
+        await _write_for_languages(
+            storage, event_id, event, languages, args.skip_research
+        )
 
     elif args.event_id:
         event_id = args.event_id
@@ -162,7 +168,9 @@ async def cmd_author(args):
         print(f"Event: {event.name}")
         print(f"Languages: {', '.join(languages)}\n")
 
-        await _write_for_languages(storage, event_id, event, languages, args.skip_research)
+        await _write_for_languages(
+            storage, event_id, event, languages, args.skip_research
+        )
 
     else:
         data = json.loads(Path(args.event).read_text(encoding="utf-8"))
@@ -173,7 +181,9 @@ async def cmd_author(args):
         print(f"Event: {event.name} (saved as #{event_id})")
         print(f"Languages: {', '.join(languages)}\n")
 
-        await _write_for_languages(storage, event_id, event, languages, args.skip_research)
+        await _write_for_languages(
+            storage, event_id, event, languages, args.skip_research
+        )
 
 
 async def cmd_reflect(args):
@@ -185,9 +195,68 @@ async def cmd_reflect(args):
         try:
             reflection = await write_reflection(storage, lang, days_back=args.days)
             reflection_id, slug = storage.save_reflection(reflection)
-            print(f"  [{lang}] \"{reflection.title}\" ({reflection.word_count} words) → {slug}")
+            print(
+                f'  [{lang}] "{reflection.title}" ({reflection.word_count} words) → {slug}'
+            )
         except ValueError as e:
             print(f"  [{lang}] Skipped: {e}")
+
+
+async def cmd_notify(args):
+    import httpx
+
+    storage = _get_storage()
+    slugs = args.slugs
+
+    articles = []
+    for slug in slugs:
+        path = storage.articles_dir / f"{slug}.json"
+        if not path.exists():
+            print(f"Article not found: {slug}", file=sys.stderr)
+            continue
+        articles.append(json.loads(path.read_text(encoding="utf-8")))
+
+    if not articles:
+        print("No articles to notify about.", file=sys.stderr)
+        sys.exit(1)
+
+    if args.wait:
+        print(f"Waiting for deploy (polling URLs, timeout {args.timeout}s)...")
+        url = f"{config.SITE_URL}/{articles[0]['language']}/article/{articles[0]['slug']}/"
+        async with httpx.AsyncClient() as client:
+            for i in range(args.timeout // 5):
+                try:
+                    resp = await client.get(url, follow_redirects=True)
+                    if resp.status_code == 200:
+                        print(f"  Deploy live after ~{i * 5}s")
+                        break
+                except httpx.RequestError:
+                    pass
+                await asyncio.sleep(5)
+            else:
+                print(f"  Timeout after {args.timeout}s, sending anyway")
+
+    for article in articles:
+        lang = article["language"]
+        event = article.get("event", {})
+
+        if lang == "ru" and config.TELEGRAM_BOT_TOKEN:
+            await send_article_to_telegram(
+                article["title"], article["lead"], article["slug"]
+            )
+            print(f"  [{lang}] Telegram sent")
+
+        if config.RESEND_API_KEY:
+            await send_article_email(
+                title=article["title"],
+                lead=article["lead"],
+                slug=article["slug"],
+                language=lang,
+                category=event.get("category", ""),
+                venue=event.get("venue", ""),
+                start_date=event.get("start_date", ""),
+            )
+            print(f"  [{lang}] Email sent")
 
 
 async def cmd_pipeline(args):
@@ -210,7 +279,7 @@ async def cmd_pipeline(args):
 
     print(f"Scouted {len(scout_result.events)} events ({new_count} new)")
 
-    print(f"\n=== CURATOR: selecting best event ===")
+    print("\n=== CURATOR: selecting best event ===")
 
     curator_result = await curate_event(city=args.city, languages=languages)
 
@@ -226,7 +295,7 @@ async def cmd_pipeline(args):
 
     await _write_for_languages(storage, event_id, event, languages)
 
-    print(f"\nDone.")
+    print("\nDone.")
 
 
 def main():
@@ -248,7 +317,10 @@ def main():
     source.add_argument("--event-id", help="Event ID")
     source.add_argument("--event", type=str, help="Path to event JSON file")
     p_author.add_argument(
-        "--language", nargs="+", default=ALL_LANGUAGES, choices=ALL_LANGUAGES,
+        "--language",
+        nargs="+",
+        default=ALL_LANGUAGES,
+        choices=ALL_LANGUAGES,
         help="Languages to write (default: all)",
     )
     p_author.add_argument("--skip-research", action="store_true")
@@ -256,7 +328,21 @@ def main():
     p_reflect = sub.add_parser("reflect", help="Write a reflection on recent coverage")
     p_reflect.add_argument("--days", type=int, default=7)
     p_reflect.add_argument(
-        "--language", nargs="+", default=ALL_LANGUAGES, choices=ALL_LANGUAGES,
+        "--language",
+        nargs="+",
+        default=ALL_LANGUAGES,
+        choices=ALL_LANGUAGES,
+    )
+
+    p_notify = sub.add_parser(
+        "notify", help="Send notifications for published articles"
+    )
+    p_notify.add_argument("slugs", nargs="+", help="Article slugs to notify about")
+    p_notify.add_argument(
+        "--wait", action="store_true", help="Poll URL until deploy is live"
+    )
+    p_notify.add_argument(
+        "--timeout", type=int, default=300, help="Max seconds to wait for deploy"
     )
 
     p_pipeline = sub.add_parser(
@@ -265,7 +351,10 @@ def main():
     p_pipeline.add_argument("--city", default=config.CITY)
     p_pipeline.add_argument("--days", type=int, default=config.DAYS_AHEAD)
     p_pipeline.add_argument(
-        "--language", nargs="+", default=ALL_LANGUAGES, choices=ALL_LANGUAGES,
+        "--language",
+        nargs="+",
+        default=ALL_LANGUAGES,
+        choices=ALL_LANGUAGES,
         help="Languages to write (default: all)",
     )
 
@@ -276,6 +365,7 @@ def main():
         "curate": lambda a: asyncio.run(cmd_curate(a)),
         "author": lambda a: asyncio.run(cmd_author(a)),
         "reflect": lambda a: asyncio.run(cmd_reflect(a)),
+        "notify": lambda a: asyncio.run(cmd_notify(a)),
         "pipeline": lambda a: asyncio.run(cmd_pipeline(a)),
     }
 

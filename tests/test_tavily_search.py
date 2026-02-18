@@ -1,4 +1,3 @@
-import pytest
 from collections import Counter
 
 from sources.tavily_search import _weighted_sample, TavilyEventSource
@@ -49,7 +48,9 @@ class TestBuildTargetedQueries:
     def test_returns_two_queries(self):
         source = TavilyEventSource.__new__(TavilyEventSource)
         cat_counts = Counter({"music": 10, "cinema": 8, "theater": 0, "exhibition": 0})
-        result = source._build_targeted_queries("Berlin", "Feb 15 to Feb 28 2026", cat_counts)
+        result = source._build_targeted_queries(
+            "Berlin", "Feb 15 to Feb 28 2026", cat_counts
+        )
         assert len(result) == 2
         for query, domains in result:
             assert "Berlin" in query
@@ -57,7 +58,11 @@ class TestBuildTargetedQueries:
 
     def test_underrepresented_categories_selected(self):
         source = TavilyEventSource.__new__(TavilyEventSource)
-        cat_counts = Counter({"music": 100, "cinema": 100, "theater": 0, "exhibition": 1, "club": 0})
-        result = source._build_targeted_queries("Berlin", "Feb 15 to Feb 28 2026", cat_counts)
+        cat_counts = Counter(
+            {"music": 100, "cinema": 100, "theater": 0, "exhibition": 1, "club": 0}
+        )
+        result = source._build_targeted_queries(
+            "Berlin", "Feb 15 to Feb 28 2026", cat_counts
+        )
         cats_in_queries = [q.split("Berlin ")[1].split(" events")[0] for q, _ in result]
         assert "theater" in cats_in_queries or "club" in cats_in_queries

@@ -32,7 +32,9 @@ class TestExtractToolInput:
 
     def test_multiple_blocks_finds_correct(self):
         text_block = SimpleNamespace(type="text", text="Thinking...")
-        tool_block = SimpleNamespace(type="tool_use", name="choose_event", input={"id": "123"})
+        tool_block = SimpleNamespace(
+            type="tool_use", name="choose_event", input={"id": "123"}
+        )
         resp = SimpleNamespace(content=[text_block, tool_block])
         result = extract_tool_input(resp, "choose_event")
         assert result == {"id": "123"}

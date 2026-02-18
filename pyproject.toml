@@ -1,7 +1,8 @@
 [project]
 name = "syntsch"
 version = "0.1.0"
-description = "Autonomous cultural digest — finds events, writes articles, publishes daily"
+description = "Autonomous AI-powered cultural digest for Berlin. Finds events, writes editorial essays, publishes daily."
+license = "MIT"
 requires-python = ">=3.11"
 dependencies = [
     "anthropic>=0.40.0",
@@ -14,6 +15,10 @@ dependencies = [
 [tool.setuptools]
 py-modules = ["cli", "config", "models", "storage"]
 packages = ["agents", "sources", "notifiers"]
+
+[project.urls]
+Homepage = "https://syntsch.de"
+Repository = "https://github.com/maksugr/syntsch"
 
 [project.optional-dependencies]
 dev = [

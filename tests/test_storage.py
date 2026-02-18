@@ -1,6 +1,5 @@
 import pytest
 from datetime import datetime
-from pathlib import Path
 
 from models import EventCandidate, ArticleOutput
 from storage import EventStorage, generate_slug
@@ -35,7 +34,9 @@ class TestGenerateSlug:
         assert slug.isascii()
 
     def test_special_chars(self):
-        assert generate_slug("Ryoji Ikeda: data-verse 3.0") == "ryoji-ikeda-data-verse-3-0"
+        assert (
+            generate_slug("Ryoji Ikeda: data-verse 3.0") == "ryoji-ikeda-data-verse-3-0"
+        )
 
     def test_empty_string(self):
         assert generate_slug("") == ""
@@ -83,8 +84,12 @@ class TestEventStorage:
         assert not tmp_storage.event_exists("Nonexistent Event")
 
     def test_get_all_event_names(self, tmp_storage):
-        e1 = EventCandidate(name="Event A", venue="V1", category="music", description="D1")
-        e2 = EventCandidate(name="Event B", venue="V2", category="cinema", description="D2")
+        e1 = EventCandidate(
+            name="Event A", venue="V1", category="music", description="D1"
+        )
+        e2 = EventCandidate(
+            name="Event B", venue="V2", category="cinema", description="D2"
+        )
         tmp_storage.save_event(e1)
         tmp_storage.save_event(e2)
         names = tmp_storage.get_all_event_names()
@@ -92,7 +97,9 @@ class TestEventStorage:
 
     def test_find_existing_event_by_venue_date(self, tmp_storage, sample_event):
         eid = tmp_storage.save_event(sample_event)
-        found = tmp_storage.find_existing_event("Different Name", "Martin-Gropius-Bau", "2026-03-01")
+        found = tmp_storage.find_existing_event(
+            "Different Name", "Martin-Gropius-Bau", "2026-03-01"
+        )
         assert found == eid
 
     def test_find_existing_event_not_found(self, tmp_storage, sample_event):
@@ -141,7 +148,9 @@ class TestEventStorage:
 
     def test_is_already_covered(self, tmp_storage, sample_event):
         eid = tmp_storage.save_event(sample_event)
-        assert not tmp_storage.is_already_covered(sample_event.name, sample_event.venue, sample_event.start_date)
+        assert not tmp_storage.is_already_covered(
+            sample_event.name, sample_event.venue, sample_event.start_date
+        )
 
         article = ArticleOutput(
             title="T",
@@ -153,13 +162,37 @@ class TestEventStorage:
             generated_at=datetime.now(),
         )
         tmp_storage.save_article(eid, article)
-        assert tmp_storage.is_already_covered(sample_event.name, sample_event.venue, sample_event.start_date)
-        assert tmp_storage.is_already_covered(sample_event.name, sample_event.venue, sample_event.start_date, language="en")
-        assert not tmp_storage.is_already_covered(sample_event.name, sample_event.venue, sample_event.start_date, language="de")
+        assert tmp_storage.is_already_covered(
+            sample_event.name, sample_event.venue, sample_event.start_date
+        )
+        assert tmp_storage.is_already_covered(
+            sample_event.name,
+            sample_event.venue,
+            sample_event.start_date,
+            language="en",
+        )
+        assert not tmp_storage.is_already_covered(
+            sample_event.name,
+            sample_event.venue,
+            sample_event.start_date,
+            language="de",
+        )
 
     def test_get_available_events(self, tmp_storage):
-        future = EventCandidate(name="Future", start_date="2099-01-01", venue="V", category="music", description="D")
-        past = EventCandidate(name="Past", start_date="2020-01-01", venue="V", category="music", description="D")
+        future = EventCandidate(
+            name="Future",
+            start_date="2099-01-01",
+            venue="V",
+            category="music",
+            description="D",
+        )
+        past = EventCandidate(
+            name="Past",
+            start_date="2020-01-01",
+            venue="V",
+            category="music",
+            description="D",
+        )
         tmp_storage.save_event(future)
         tmp_storage.save_event(past)
 
@@ -200,12 +233,22 @@ class TestEventStorage:
     def test_unique_slug_collision(self, tmp_storage, sample_event):
         eid = tmp_storage.save_event(sample_event)
         a1 = ArticleOutput(
-            title="Same Title", body="B1", event=sample_event,
-            language="en", word_count=1, model_used="test", generated_at=datetime.now(),
+            title="Same Title",
+            body="B1",
+            event=sample_event,
+            language="en",
+            word_count=1,
+            model_used="test",
+            generated_at=datetime.now(),
         )
         a2 = ArticleOutput(
-            title="Same Title", body="B2", event=sample_event,
-            language="de", word_count=1, model_used="test", generated_at=datetime.now(),
+            title="Same Title",
+            body="B2",
+            event=sample_event,
+            language="de",
+            word_count=1,
+            model_used="test",
+            generated_at=datetime.now(),
         )
         _, slug1 = tmp_storage.save_article(eid, a1)
         _, slug2 = tmp_storage.save_article(eid, a2)
@@ -215,8 +258,13 @@ class TestEventStorage:
     def test_get_recent_categories(self, tmp_storage, sample_event):
         eid = tmp_storage.save_event(sample_event)
         article = ArticleOutput(
-            title="T", body="B", event=sample_event,
-            language="en", word_count=1, model_used="test", generated_at=datetime.now(),
+            title="T",
+            body="B",
+            event=sample_event,
+            language="en",
+            word_count=1,
+            model_used="test",
+            generated_at=datetime.now(),
         )
         tmp_storage.save_article(eid, article)
         cats = tmp_storage.get_recent_categories(days=7)
