@@ -18,23 +18,14 @@ Five agents, each with a distinct role:
 | **Notifiers** | Sends the published article via Email (Resend, per-language segments) and Telegram |
 
 ```
-                          daily                                    weekly
-                            │                                        │
-                            ▼                                        ▼
-┌─────────┐  candidates  ┌──────────┐  one event  ┌────────┐    ┌───────────┐
-│  Scout  │ ──────────── │ Curator  │ ──────────── │ Author │    │ Reflector │
-│ 9 query │              │ diversity│              │ draft  │    │ self-     │
-│ Tavily  │              │  -aware  │              │critique│    │ analysis  │
-└─────────┘              └──────────┘              │revision│    └─────┬─────┘
-                                                   └───┬────┘          │
-                                                       │               │
-                                            articles   │    reflection │
-                                            en/de/ru   │               │
-                                                       ▼               ▼
-                                                  ┌─────────┐   ┌─────────────┐
-                                                  │Notifiers│   │    data/     │
-                                                  │Email + TG│   │reflections/ │
-                                                  └─────────┘   └─────────────┘
+SCOUT -------> CURATOR -------> AUTHOR -------> NOTIFIERS
+9 queries      best event       draft           Email (Resend)
+Tavily         diversity-aware  critique        Telegram
+                                revision
+                                en/de/ru
+
+                        weekly: REFLECTOR --> data/reflections/
+                                self-analysis of coverage
 ```
 
 All LLM outputs use Anthropic tool use (`tool_choice`) for structured responses. Retry with backoff on all external calls.
