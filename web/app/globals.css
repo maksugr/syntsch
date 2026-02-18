@@ -33,7 +33,6 @@ body {
   font-family: var(--font-body);
 }
 
-/* Underlines only in article body and sidebar — NOT on card links */
 article a,
 aside a {
   text-decoration: underline;
@@ -48,7 +47,6 @@ aside a {
   }
 }
 
-/* ── Article card hover ── */
 .article-card .card-title {
   transition: color 150ms ease;
 }

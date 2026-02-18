@@ -294,7 +294,6 @@ export function tCategory(lang: Lang, category: string): string {
 
 const NBSP = "\u00A0";
 
-// short words that shouldn't end a line (prepositions, conjunctions, articles)
 const SHORT_WORDS: Record<Lang, string[]> = {
     ru: ["в", "на", "к", "с", "и", "о", "у", "а", "не", "ни", "из", "за", "по", "до", "от", "ко", "со", "но", "же", "ли", "бы", "то", "ее", "её"],
     en: ["a", "an", "the", "in", "on", "at", "to", "of", "by", "is", "it", "or", "and", "but", "no", "if"],
@@ -304,15 +303,12 @@ const SHORT_WORDS: Record<Lang, string[]> = {
 export function typograph(text: string, lang: Lang): string {
     const words = SHORT_WORDS[lang] || [];
     let result = text;
-    // nbsp after short words
     for (const w of words) {
         result = result.replace(new RegExp(`(?<=\\s|^)(${w}) `, "gi"), `$1${NBSP}`);
     }
-    // nbsp around em dash — keep it glued to both sides
     result = result.replace(/ — /g, `${NBSP}—${NBSP}`);
     result = result.replace(/ —/g, `${NBSP}—`);
     result = result.replace(/— /g, `—${NBSP}`);
-    // nbsp after « and before »
     result = result.replace(/« /g, `«${NBSP}`);
     result = result.replace(/ »/g, `${NBSP}»`);
     return result;

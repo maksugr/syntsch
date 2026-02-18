@@ -21,7 +21,6 @@ export default function GenerativeArt({ seed, color }: { seed: string; color: st
   const n = hash(seed);
   const elements: React.ReactNode[] = [];
 
-  // large bold circle
   elements.push(
     <circle
       key="c1"
@@ -35,7 +34,6 @@ export default function GenerativeArt({ seed, color }: { seed: string; color: st
     />
   );
 
-  // big filled shape
   elements.push(
     <circle
       key="c2"
@@ -47,7 +45,6 @@ export default function GenerativeArt({ seed, color }: { seed: string; color: st
     />
   );
 
-  // second filled circle
   elements.push(
     <circle
       key="c3"
@@ -59,7 +56,6 @@ export default function GenerativeArt({ seed, color }: { seed: string; color: st
     />
   );
 
-  // bold diagonal lines
   const lineCount = n[7] % 4 + 3;
   for (let i = 0; i < lineCount; i++) {
     const idx = 8 + i * 3;
@@ -77,7 +73,6 @@ export default function GenerativeArt({ seed, color }: { seed: string; color: st
     );
   }
 
-  // bold polygon
   const sides = n[20] % 3 + 3;
   const cx = n[21] % 200 + 100;
   const cy = n[22] % 200 + 100;
@@ -99,7 +94,6 @@ export default function GenerativeArt({ seed, color }: { seed: string; color: st
     />
   );
 
-  // bold arc
   const ax = n[25] % 300 + 50;
   const ay = n[26] % 300 + 50;
   const ar = n[27] % 120 + 50;
@@ -114,7 +108,6 @@ export default function GenerativeArt({ seed, color }: { seed: string; color: st
     />
   );
 
-  // second arc
   const ax2 = n[41] % 300 + 50;
   const ay2 = n[42] % 300 + 50;
   const ar2 = n[43] % 80 + 40;
@@ -129,7 +122,6 @@ export default function GenerativeArt({ seed, color }: { seed: string; color: st
     />
   );
 
-  // dots cluster
   const dotCount = n[29] % 10 + 6;
   for (let i = 0; i < dotCount; i++) {
     const idx = 30 + i;

@@ -20,8 +20,6 @@ _CYRILLIC_TRANSLIT = {
 
 
 def generate_slug(text: str) -> str:
-    """Classic web slug: lowercase, ASCII Latin only, hyphens for spaces.
-    Transliterates Cyrillic before stripping to ASCII."""
     text = text.lower()
     text = "".join(_CYRILLIC_TRANSLIT.get(ch, ch) for ch in text)
     text = unicodedata.normalize("NFKD", text)
@@ -41,7 +39,6 @@ class EventStorage:
         self.reflections_dir.mkdir(parents=True, exist_ok=True)
 
     def _write_json(self, path: Path, data: dict):
-        """Atomic write: temp file + os.replace."""
         content = json.dumps(data, indent=2, ensure_ascii=False, default=str)
         fd, tmp = tempfile.mkstemp(dir=path.parent, suffix=".tmp")
         try:
@@ -66,7 +63,6 @@ class EventStorage:
         return results
 
     def find_existing_event(self, name: str, venue: str, start_date: str) -> str | None:
-        """Return event_id of a matching event, or None."""
         name_norm = name.strip().lower()
         venue_norm = venue.strip().lower()
         for ev in self._load_all_events():
@@ -77,7 +73,6 @@ class EventStorage:
         return None
 
     def event_exists(self, name: str) -> bool:
-        """Check if an event with this name already exists in the pool."""
         name_norm = name.strip().lower()
         for ev in self._load_all_events():
             if ev.get("name", "").strip().lower() == name_norm:
@@ -85,7 +80,6 @@ class EventStorage:
         return False
 
     def get_all_event_names(self) -> list[str]:
-        """Return names of all events in the pool."""
         return [ev.get("name", "") for ev in self._load_all_events() if ev.get("name")]
 
     def save_event(self, event: EventCandidate) -> str:
@@ -165,7 +159,6 @@ class EventStorage:
         all_events = self._load_all_events()
         all_articles = self._load_all_articles()
 
-        # Build set of event_ids that already have articles (in given language)
         covered_ids = set()
         for article in all_articles:
             if language and article.get("language") != language:
@@ -283,7 +276,6 @@ class EventStorage:
         return json.loads(trace_path.read_text(encoding="utf-8"))
 
     def _unique_slug(self, base: str, article_id: str) -> str:
-        """Ensure slug is unique; fall back to id-based slug if base is empty."""
         if not base:
             base = f"article-{article_id}"
         existing = {p.stem for p in self.articles_dir.glob("*.json")}

@@ -96,7 +96,6 @@ async def _write_for_languages(
     languages: list[str],
     skip_research: bool = False,
 ):
-    """Research once, then write articles for each language that doesn't exist yet."""
     if skip_research:
         context = ResearchContext()
     else:
