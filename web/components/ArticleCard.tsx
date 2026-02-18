@@ -26,7 +26,7 @@ export default function ArticleCard({ article, featured }: { article: ArticleWit
         style={{ '--cat-color': color } as React.CSSProperties}
       >
         <div className="flex flex-col lg:flex-row">
-          <div className="p-6 md:p-12 lg:px-16 lg:w-[60%]">
+          <div className="px-6 pb-6 md:px-12 md:pb-12 lg:px-16 lg:w-[60%]">
             <span
               className="card-category text-sm font-mono font-bold uppercase tracking-[0.2em]"
               style={{ color }}

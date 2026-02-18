@@ -7,12 +7,16 @@ interface LanguageContextValue {
   lang: Lang;
   alternates: Record<string, string>;
   setAlternates: (alts: Record<string, string>) => void;
+  articleCategory: string | null;
+  setArticleCategory: (cat: string | null) => void;
 }
 
 const LanguageContext = createContext<LanguageContextValue>({
   lang: "en",
   alternates: {},
   setAlternates: () => {},
+  articleCategory: null,
+  setArticleCategory: () => {},
 });
 
 const COOKIE_NAME = "syntsch_lang";
@@ -23,6 +27,7 @@ function setCookie(name: string, value: string, maxAgeDays: number) {
 
 export function LanguageProvider({ lang, children }: { lang: Lang; children: ReactNode }) {
   const [alternates, setAlternates] = useState<Record<string, string>>({});
+  const [articleCategory, setArticleCategory] = useState<string | null>(null);
 
   useEffect(() => {
     document.documentElement.lang = lang;
@@ -34,7 +39,7 @@ export function LanguageProvider({ lang, children }: { lang: Lang; children: Rea
   }, [lang]);
 
   return (
-    <LanguageContext.Provider value={{ lang, alternates, setAlternates }}>
+    <LanguageContext.Provider value={{ lang, alternates, setAlternates, articleCategory, setArticleCategory }}>
       {children}
     </LanguageContext.Provider>
   );

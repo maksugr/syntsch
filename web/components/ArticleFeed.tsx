@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useCallback, Fragment } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useState, Fragment } from "react";
+import { useSearchParams } from "next/navigation";
 import type { ArticleWithEvent } from "@/lib/types";
 import { CATEGORY_COLORS } from "@/lib/types";
-import { tCategory, tUi } from "@/lib/translations";
+import { tUi } from "@/lib/translations";
 import { useLanguage } from "./LanguageProvider";
 import ArticleCard from "./ArticleCard";
 import SubscribeCard from "./SubscribeCard";
@@ -14,17 +14,10 @@ const CATEGORIES = Object.keys(CATEGORY_COLORS);
 export default function ArticleFeed({ articles }: { articles: ArticleWithEvent[] }) {
   const { lang } = useLanguage();
   const searchParams = useSearchParams();
-  const router = useRouter();
 
   const categoryFromUrl = searchParams.get("cat");
   const category = categoryFromUrl && CATEGORIES.includes(categoryFromUrl) ? categoryFromUrl : null;
   const [visible, setVisible] = useState(10);
-
-  const setCategory = useCallback((cat: string | null) => {
-    const url = cat ? `/${lang}/?cat=${cat}` : `/${lang}/`;
-    router.push(url, { scroll: false });
-    setVisible(10);
-  }, [router, lang]);
 
   const filtered = category ? articles.filter((a) => a.event.category === category) : articles;
 
@@ -33,38 +26,6 @@ export default function ArticleFeed({ articles }: { articles: ArticleWithEvent[]
 
   return (
     <div>
-      <div className="pb-6 mb-0">
-        <div className="flex flex-wrap gap-2">
-          {CATEGORIES.map((c) => {
-            const color = CATEGORY_COLORS[c];
-            const active = category === c;
-            return (
-              <button
-                key={c}
-                onClick={() => setCategory(active ? null : c)}
-                className="pr-5 text-2xl md:text-3xl uppercase leading-none tracking-tight transition-all duration-100 cursor-pointer"
-                style={{
-                  fontFamily: 'var(--font-display)',
-                  background: "none",
-                  border: "none",
-                  padding: 0,
-                  paddingRight: "1.25rem",
-                  color: active ? "#000000" : color,
-                  opacity: active ? 1 : 0.6,
-                  textDecorationLine: active ? "underline" : "none",
-                  textDecorationStyle: "solid",
-                  textUnderlineOffset: "6px",
-                  textDecorationThickness: "4px",
-                  textDecorationColor: color,
-                }}
-              >
-                {tCategory(lang, c)}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
       {filtered.length === 0 ? (
         <div className="py-24 text-center">
           <p
@@ -76,9 +37,7 @@ export default function ArticleFeed({ articles }: { articles: ArticleWithEvent[]
         </div>
       ) : (
         <div>
-          <div className="pt-8">
-            <ArticleCard article={shown[0]} featured />
-          </div>
+          <ArticleCard article={shown[0]} featured />
           {shown.length > 1 && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-0 mt-4">
               {shown.slice(1).map((article, i) => (

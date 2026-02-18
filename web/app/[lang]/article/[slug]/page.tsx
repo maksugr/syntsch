@@ -9,6 +9,7 @@ import CopyLinkButton from "@/components/CopyLinkButton";
 import EventSidebar from "@/components/EventSidebar";
 import ProcessTrace from "@/components/ProcessTrace";
 import SetAlternates from "@/components/SetAlternates";
+import SetArticleCategory from "@/components/SetArticleCategory";
 import ArticleHero from "@/components/ArticleHero";
 import { CATEGORY_COLORS } from "@/lib/types";
 
@@ -103,6 +104,7 @@ export default async function ArticlePage({
     <div className="relative flex flex-col lg:flex-row gap-12 lg:gap-16">
       <ArticleHero seed={article.event_id + article.title} color={catColor} />
       <SetAlternates alternates={alternates} />
+      <SetArticleCategory category={article.event.category} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
