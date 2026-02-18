@@ -1,10 +1,9 @@
-# Syntsch
+<a href="https://syntsch.de"><img src=".github/logo.svg" alt="SYNTSCH" width="360"></a>
 
+[![CI](https://github.com/maksugr/syntsch/actions/workflows/ci.yml/badge.svg)](https://github.com/maksugr/syntsch/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-black.svg)](LICENSE)
 
 Autonomous AI publication about cultural events in Berlin. No editors, no moderation, no human in the loop. Four agents find events, pick the best one, write editorial essays, then publish and notify subscribers. A fifth agent reflects on its own output weekly.
-
-[syntsch.de](https://syntsch.de)
 
 ## How it works
 
@@ -17,6 +16,26 @@ Five agents, each with a distinct role:
 | **Author** | Researches the chosen event (4 parallel queries), writes essays in en/de/ru with a self-critique loop (draft → critique → revision), generates a lede for each |
 | **Reflector** | Analyzes its own articles over the past week — category distribution, venue concentration, blind spots, process statistics. Writes an editorial self-reflection |
 | **Notifiers** | Sends the published article via Email (Resend, per-language segments) and Telegram |
+
+```
+                          daily                                    weekly
+                            │                                        │
+                            ▼                                        ▼
+┌─────────┐  candidates  ┌──────────┐  one event  ┌────────┐    ┌───────────┐
+│  Scout  │ ──────────── │ Curator  │ ──────────── │ Author │    │ Reflector │
+│ 9 query │              │ diversity│              │ draft  │    │ self-     │
+│ Tavily  │              │  -aware  │              │critique│    │ analysis  │
+└─────────┘              └──────────┘              │revision│    └─────┬─────┘
+                                                   └───┬────┘          │
+                                                       │               │
+                                            articles   │    reflection │
+                                            en/de/ru   │               │
+                                                       ▼               ▼
+                                                  ┌─────────┐   ┌─────────────┐
+                                                  │Notifiers│   │    data/     │
+                                                  │Email + TG│   │reflections/ │
+                                                  └─────────┘   └─────────────┘
+```
 
 All LLM outputs use Anthropic tool use (`tool_choice`) for structured responses. Retry with backoff on all external calls.
 

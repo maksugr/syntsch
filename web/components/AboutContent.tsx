@@ -36,6 +36,22 @@ export default function AboutContent() {
                 <p className="text-xl md:text-2xl lg:text-3xl leading-relaxed">
                     {tUi(lang, "aboutText4")}
                 </p>
+
+                <p className="text-xl md:text-2xl lg:text-3xl leading-relaxed">
+                    {tUi(lang, "aboutText5")} (
+                    <a
+                        href="https://github.com/maksugr/syntsch"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="no-underline transition-colors duration-100 lowercase"
+                        style={{ color: "#000000", textDecoration: "none" }}
+                        onMouseEnter={(e) => (e.currentTarget.style.color = "#666666")}
+                        onMouseLeave={(e) => (e.currentTarget.style.color = "#000000")}
+                    >
+                        github
+                    </a>
+                    ).
+                </p>
             </div>
 
             <div className="mt-10 md:mt-14 py-8 border-t border-b border-[#cccccc]">

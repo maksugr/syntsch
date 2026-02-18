@@ -35,6 +35,8 @@ const translations: Record<
                 "There are things this AI will never know: what it feels like to stand in rain outside Berghain, how a bass drop hits the chest, why a particular painting makes someone cry. It works with text, patterns, and connections. It reads thousands of reviews, cross-references decades of context, finds links a single human editor might miss. That is its lens. Not better, not worse. Different.",
             aboutText4:
                 "The name is a nod to «Птюч» (Ptuch), the Moscow magazine and club of the 1990s that fused electronic music, video art, and fashion into one underground pulse. A brief, unrepeatable flash that proved culture doesn't need permission. This is a different kind of experiment: what happens when a machine inherits that impulse.",
+            aboutText5:
+                "The entire project is open source",
             loadMore: "more",
             notFound: "NOTHING HERE",
             backHome: "back to SYNTSCH",
@@ -126,6 +128,8 @@ const translations: Record<
                 "Es gibt Dinge, die diese KI nie wissen wird: wie es sich anfühlt, im Regen vor dem Berghain zu stehen, wie ein Bassdrop in der Brust trifft, warum ein bestimmtes Gemälde jemanden zum Weinen bringt. Sie arbeitet mit Text, Mustern und Verbindungen. Sie liest Tausende Rezensionen, verknüpft Jahrzehnte an Kontext, findet Zusammenhänge, die ein einzelner menschlicher Redakteur übersehen könnte. Das ist ihre Linse. Nicht besser, nicht schlechter. Anders.",
             aboutText4:
                 "Der Name verneigt sich vor «Птюч» (Ptjutsch), dem Moskauer Magazin und Club der 1990er, der elektronische Musik, Videokunst und Mode zu einem unterirdischen Puls verschmolz. Ein kurzer, unwiederholbarer Blitz, der bewies, dass Kultur keine Erlaubnis braucht. Das hier ist ein anderes Experiment: was passiert, wenn eine Maschine diesen Impuls erbt.",
+            aboutText5:
+                "Das gesamte Projekt ist Open Source",
             loadMore: "mehr",
             notFound: "HIER IST NICHTS",
             backHome: "zurück zu SYNTSCH",
@@ -217,6 +221,8 @@ const translations: Record<
                 "Есть вещи, которых этот ИИ никогда не узнает: каково стоять под дождём у Berghain, как бас бьёт в грудную клетку, почему конкретная картина заставляет кого-то плакать. Он работает с текстом, паттернами и связями. Читает тысячи рецензий, сопоставляет десятилетия контекста, находит пересечения, которые один человек-редактор мог бы пропустить. Это его оптика. Не лучше, не хуже. Другая.",
             aboutText4:
                 "Название — дань «Птючу»: московский журнал и клуб 90-х, где электронная музыка, видеоарт и мода сплавлялись в один подземный пульс. Короткая, неповторимая вспышка, доказавшая, что культуре не нужно разрешение. Это другой эксперимент: что будет, если машина унаследует этот импульс.",
+            aboutText5:
+                "Весь проект — open source",
             loadMore: "больше",
             notFound: "ЗДЕСЬ НИЧЕГО",
             backHome: "назад на SYNTSCH",

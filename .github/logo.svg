@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 50" width="360" height="50">
+  <text x="0" y="42" font-family="'Arial Black', 'Helvetica Neue', Arial, sans-serif" font-size="48" font-weight="900" letter-spacing="4" fill="#000">SYNTSCH</text>
+  <g transform="translate(295, 6) scale(1.2)">
+    <path d="M6 20 L14 10 L16 14 L26 8 L20 16 L22 18 L10 22 Z" fill="#000"/>
+  </g>
+</svg>
