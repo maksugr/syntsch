@@ -154,16 +154,14 @@ def _build_html(
 
 <tr><td style="padding:24px 32px;border-top:1px solid #e0e0e0;">
   <table width="100%" cellpadding="0" cellspacing="0"><tr>
-    <td style="font-size:11px;color:#aaaaaa;vertical-align:middle;">
+    <td style="font-size:11px;color:#aaaaaa;vertical-align:top;">
       <a href="{{{{{{RESEND_UNSUBSCRIBE_URL}}}}}}" style="color:#aaaaaa;text-decoration:underline;">{unsub}</a>
     </td>
-    <td align="right" style="vertical-align:middle;">
-      <table cellpadding="0" cellspacing="0"><tr>
-        <td style="vertical-align:middle;padding-right:6px;">
-          <img src="https://syntsch.de/icon-gray.png" width="16" height="16" alt="" style="display:block;">
-        </td>
-        <td style="vertical-align:middle;"><a href="{config.SITE_URL}/{language}/" style="font-family:'Arial Black',Arial,sans-serif;font-size:13px;font-weight:900;letter-spacing:1px;color:#aaaaaa;text-decoration:none;">SYNTSCH</a></td>
-      </tr></table>
+    <td align="right" style="vertical-align:top;">
+      <a href="{config.SITE_URL}/{language}/" style="text-decoration:none;display:inline-block;">
+        <span style="font-family:'Arial Black',Arial,sans-serif;font-size:13px;font-weight:900;letter-spacing:1px;color:#aaaaaa;">SYNTSCH</span><!--
+        --><img src="https://syntsch.de/icon-gray.png" width="14" height="14" alt="" style="display:inline-block;vertical-align:bottom;margin-left:1px;margin-bottom:1px;">
+      </a>
       <div style="font-family:'Courier New',monospace;font-size:10px;text-align:right;margin-top:2px;"><a href="mailto:hi@syntsch.de" style="color:#aaaaaa;text-decoration:none;">hi@syntsch.de</a></div>
     </td>
   </tr></table>
