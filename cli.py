@@ -236,7 +236,7 @@ async def cmd_notify(args):
             else:
                 print(f"  Timeout after {args.timeout}s, sending anyway")
 
-    for article in articles:
+    for i, article in enumerate(articles):
         lang = article["language"]
         event = article.get("event", {})
 
@@ -247,6 +247,8 @@ async def cmd_notify(args):
             print(f"  [{lang}] Telegram sent")
 
         if config.RESEND_API_KEY:
+            if i > 0:
+                await asyncio.sleep(10)
             await send_article_email(
                 title=article["title"],
                 lead=article["lead"],
