@@ -85,13 +85,11 @@ export default async function ArticlePage({
         name: article.event.name,
         ...(article.event.start_date && { startDate: article.event.start_date }),
         ...(article.event.end_date && { endDate: article.event.end_date }),
-        ...(article.event.venue && {
-          location: {
-            "@type": "Place",
-            name: article.event.venue,
-            ...(article.event.city && { address: { "@type": "PostalAddress", addressLocality: article.event.city } }),
-          },
-        }),
+        location: {
+          "@type": "Place",
+          ...(article.event.venue && { name: article.event.venue }),
+          address: { "@type": "PostalAddress", addressLocality: article.event.city || "Berlin" },
+        },
       },
     }),
   };
