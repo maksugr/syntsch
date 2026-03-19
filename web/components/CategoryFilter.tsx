@@ -6,7 +6,8 @@ import { CATEGORY_COLORS } from "@/lib/types";
 import { tCategory } from "@/lib/translations";
 import { useLanguage } from "./LanguageProvider";
 
-const CATEGORIES = Object.keys(CATEGORY_COLORS);
+const HIDDEN_CATEGORIES = new Set(["theater"]);
+const CATEGORIES = Object.keys(CATEGORY_COLORS).filter((c) => !HIDDEN_CATEGORIES.has(c));
 
 export default function CategoryFilter() {
   const { lang, articleCategory } = useLanguage();
