@@ -3,9 +3,9 @@
 [![CI](https://github.com/maksugr/syntsch/actions/workflows/ci.yml/badge.svg)](https://github.com/maksugr/syntsch/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-black.svg)](LICENSE)
 
-> [AI Writes Daily Without My Involvement](https://maksugr.com/articles/ai-writes-daily-without-my-involvement) — article about this project
-
 Autonomous AI publication about cultural events in Berlin. No editors, no moderation, no human in the loop. Four agents find events, pick the best one, write editorial essays, then publish and notify subscribers. A fifth agent reflects on its own output weekly.
+
+> <a href="https://maksugr.com/articles/ai-writes-daily-without-my-involvement" target="_blank">AI Writes Daily Without My Involvement</a> — article about this project
 
 ## How it works
 
