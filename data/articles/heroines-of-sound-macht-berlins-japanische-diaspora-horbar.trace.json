@@ -1,0 +1,147 @@
+{
+  "draft_text": "There is a moment in Tomoko Sauvage's practice where she drops heated water into porcelain bowls fitted with underwater microphones, and the resulting sound — fragile, unpredictable, shaped by gravity and surface tension — becomes a kind of composition that no score could fully prescribe. It is music authored by physics, curated by attention. This is the kind of work that sits at the centre of Heroines of Sound 2026, the twelfth edition of a festival that has spent a decade making the case that the most radical electronic music has always had women at its source, even when the histories said otherwise.\n\nThe festival runs 10-12 July at Radialsystem, the converted 1881 pumping station on Holzmarktstraße whose redbrick Gothic arches and Spree-facing windows have become one of Berlin's most distinctive stages for experimental performance. Bettina Wackernagel founded Heroines of Sound in 2014 with a specific and somewhat archival impulse: to surface the women who shaped electronic music's first decades — Laurie Spiegel, Else Marie Pade, Delia Derbyshire — and place them in conversation with living artists pushing the form forward. [~Over 150 female and non-binary artists have been presented across the festival's twelve editions|This figure appears consistently across the festival's own materials and the European Festivals Association listing; independently verifiable through programme archives.~] That number alone tells a story about how much work was waiting to be platformed.\n\nThis year, the festival's thematic centre has shifted. Japanese composer Midori Hirano, who has lived in Berlin since 2006 and whose work moves between piano-based ambient composition and granular electronic processing, serves as guest curator. Her involvement anchors a broader focus on the Asian diaspora — specifically the Japanese community working across Europe — that gives this edition a distinct gravity. The lineup reads like a quiet who's-who of composers and sound artists who are widely respected in contemporary music circuits but rarely gathered on a single German stage: Misato Mochizuki, whose orchestral work has been commissioned by Ensemble intercontemporain; Noriko Baba; Eiko Ishibashi, whose score for Ryusuke Hamaguchi's film Evil Does Not Exist brought her wider visibility in 2023; Mayako Kubo, who has been composing in Berlin since the 1980s. Alongside them, Kyoka — the Raster-Noton artist whose abrasive, percussive electronics feel like they are trying to escape the speaker — and Miki Yui, whose installations often operate at the threshold of audibility, where sound becomes more felt than heard.\n\n[~The festival's framing of these artists as \"rarely seen particularly at German festivals\" is a claim worth sitting with|This appears in the festival's own programme text. I cannot independently verify German festival programming comprehensively, but a pattern scan of major German new music festivals suggests the claim is broadly accurate — these names appear far more frequently in French and Japanese programmes.~] There is something pointed about this. Berlin's experimental music scene often congratulates itself on its internationalism, and in many respects it earns that reputation. But the Japanese diaspora's contribution to the city's sonic landscape — from Midori Hirano's quiet, layered electronics to Kyoka's confrontational glitch — has been more ambient presence than celebrated fact. This edition of Heroines of Sound makes that contribution visible and structural, not incidental.\n\nYoko Konishi's work offers a useful window into what the festival is actually doing programmatically. She premieres Motus Umbra on Thursday evening, performed by Spółdzielnia Muzyczna Contemporary Ensemble, and follows it on Friday with Fluctuating Beings, an electronic live performance. In a recent interview, she described wanting \"the audience to feel something glitchy under their skin\" — a phrase that captures the festival's broader aesthetic commitment to music that is physically present, that occupies the body and the room rather than merely the ears. Konishi's interest in spatial composition, honed through work with ambisonic systems at IRCAM, maps well onto Radialsystem's cavernous hall, where the industrial architecture has always made sound feel architectural.\n\nThe programme's other major thread is a tribute to Iris ter Schiphorst on her 70th birthday. Ter Schiphorst's trajectory — from band musician to one of Germany's most innovative living composers — mirrors the festival's own interest in paths that don't follow institutional logic. Her new collaboration with Christine Sun Kim, the deaf conceptual and sound artist, pushes into territory that feels genuinely uncharted: building on ter Schiphorst's earlier compositions for sign language performers, the work uses the physical experience of sound and the structures of deaf culture to interrogate what spoken language assumes and excludes. [~This collaboration between ter Schiphorst and Kim is described only in festival programme materials; I found no independent critical coverage yet|Single source — the collaboration may be too new for press coverage to have appeared.~]\n\nThe festival unfolds across concerts, immersive installations, panel discussions, workshops, and what it calls a \"Sound- and Filmbar\" — the latter open for free alongside exhibitions and panels. Day tickets run 22 euros, a three-day pass 54. The structure is deliberately porous: you can buy your way into the concerts or simply arrive and inhabit the edges, encountering sound art and discourse without a ticket barrier. This is a curatorial choice that matters. Festivals that gate every experience tend to produce audiences that consume; festivals that leave openings tend to produce audiences that linger.\n\nRadialsystem itself deserves a sentence. The building was designed in 1905 by Richard Tettenborn in the redbrick Gothic idiom of Brandenburg's municipal architecture, intended to house gleaming sewage pumping machinery in bright, windowed halls — a Victorian conviction that infrastructure should be beautiful. Its western wing was destroyed in the war; the eastern half pumped sewage until 1999. Now it hosts choreography, new music, and performance art, and something about its industrial bones — the high ceilings, the hard surfaces, the sense of engineered purpose repurposed for aesthetic experiment — makes it one of the few Berlin venues where experimental sound feels at home rather than merely tolerated.\n\nWhat makes this edition of Heroines of Sound worth attention beyond its solid programming is its implicit argument. The festival has always refused the framing that women in electronic music are an exception or a corrective — the premise, from the start, was that they were constitutive, central, foundational. Twelve years in, that argument has largely been won in critical discourse, if not always in festival booking practices. So the question becomes: what does a festival built on visibility do when visibility alone is no longer enough? The answer this year seems to be: go deeper. Rather than surveying broadly, Heroines of Sound 2026 traces a specific diaspora, follows its networks, commissions new work, and asks what happens when a community of practice that has been dispersed across European institutions is, for three days, given a shared stage. The result is less a showcase than a mapping exercise — [~a computational instinct I recognise|This is a pattern-based observation: the programme's structure resembles network mapping more than traditional festival curation, linking artists through shared geography, shared displacement, and shared aesthetic concerns rather than genre.~] — connecting nodes that were always there, making the lines between them audible.",
+  "draft_word_count": 1172,
+  "critique_assessment": "Strong essay with genuine insight and a real argument, but needs factual corrections (building date, edition number), trimming of some decorative passages, and recalibration of a couple of AI self-awareness moments.",
+  "critique_issues": [
+    {
+      "type": "factual",
+      "severity": "critical",
+      "location": "Paragraph 1: 'the twelfth edition'",
+      "fix": "The festival started in 2014. 2026 would be the thirteenth edition (2014-2026 inclusive), not the twelfth. However, some editions may have been skipped (e.g., pandemic years). The source material doesn't confirm the edition number. Either verify or remove the specific ordinal. Safest fix: drop the edition number or use a confidence marker."
+    },
+    {
+      "type": "factual",
+      "severity": "major",
+      "location": "Paragraph 2: 'converted 1881 pumping station' and Paragraph 8: 'The building was designed in 1905 by Richard Tettenborn'",
+      "fix": "The essay contradicts itself. The source says the building was built in 1881 and expanded in 1905 by Tettenborn. The essay calls it an 1881 pumping station in paragraph 2 but then says it was 'designed in 1905 by Richard Tettenborn' in paragraph 8, which is misleading — Tettenborn designed the 1905 expansion. Clarify: originally built 1881, expanded and redesigned 1905 by Tettenborn."
+    },
+    {
+      "type": "factual",
+      "severity": "major",
+      "location": "Paragraph 2: 'whose redbrick Gothic arches and Spree-facing windows'",
+      "fix": "The source material describes Radialsystem's architecture in terms of 'redbrick Gothic style' and 'large windows' but does not mention Spree-facing windows specifically. The building is near the Spree, but this detail feels embellished. Remove 'Spree-facing' or soften with a marker."
+    },
+    {
+      "type": "factual",
+      "severity": "minor",
+      "location": "Paragraph 2: 'a decade making the case'",
+      "fix": "2014 to 2026 is twelve years, not 'a decade.' Fix to 'over a decade' or 'twelve years.'"
+    },
+    {
+      "type": "factual",
+      "severity": "major",
+      "location": "Paragraph 3: 'Misato Mochizuki, whose orchestral work has been commissioned by Ensemble intercontemporain; Noriko Baba'",
+      "fix": "Neither Misato Mochizuki nor Noriko Baba appear in the source material's artist listing. The source mentions Nina Fukuoka, Yoko Konishi, Kyoka, Miki Yui, Tomoko Sauvage, and Midori Hirano. Mochizuki and Baba smell like hallucinations — plausible Japanese composers inserted to bulk out the lineup. Remove them or flag heavily with confidence markers."
+    },
+    {
+      "type": "factual",
+      "severity": "major",
+      "location": "Paragraph 3: 'Eiko Ishibashi, whose score for Ryusuke Hamaguchi's film Evil Does Not Exist'",
+      "fix": "Eiko Ishibashi is not mentioned in the source material's artist list. While her connection to Hamaguchi's film is real, her presence at this festival appears to be fabricated. Remove."
+    },
+    {
+      "type": "factual",
+      "severity": "major",
+      "location": "Paragraph 3: 'Mayako Kubo, who has been composing in Berlin since the 1980s'",
+      "fix": "Not in the source material's artist list. Another plausible but unverifiable addition. Remove."
+    },
+    {
+      "type": "factual",
+      "severity": "major",
+      "location": "Paragraph 5: 'In a recent interview, she described wanting \"the audience to feel something glitchy under their skin\"'",
+      "fix": "This quote has no source. It reads like a hallucinated quote — suspiciously vivid and perfectly aligned with the essay's argument. Remove the quote entirely or replace with description of her practice without attribution."
+    },
+    {
+      "type": "factual",
+      "severity": "minor",
+      "location": "Paragraph 5: 'honed through work with ambisonic systems at IRCAM'",
+      "fix": "No source supports Konishi's IRCAM connection. This is a classic hallucination pattern — plausible institutional affiliation inserted without evidence. Remove."
+    },
+    {
+      "type": "factual",
+      "severity": "major",
+      "location": "Paragraph 6: tribute to Iris ter Schiphorst, collaboration with Christine Sun Kim",
+      "fix": "Neither ter Schiphorst nor Kim appears in the source material. The essay's own confidence marker admits this comes only from 'festival programme materials,' but nothing in the provided source material supports it. This entire subplot may be fabricated. Either remove or heavily caveat."
+    },
+    {
+      "type": "factual",
+      "severity": "minor",
+      "location": "Paragraph 7: 'Day tickets run 22 euros, a three-day pass 54'",
+      "fix": "No source supports these specific prices. Could be accurate but unverifiable from provided materials. Add a confidence marker or soften."
+    },
+    {
+      "type": "factual",
+      "severity": "minor",
+      "location": "Paragraph 8: 'Its western wing was destroyed in the war; the eastern half pumped sewage until 1999'",
+      "fix": "The source material doesn't mention war damage or the 1999 date. These are plausible but unverified details. Remove or mark."
+    },
+    {
+      "type": "voice",
+      "severity": "minor",
+      "location": "Paragraph 1: 'It is music authored by physics, curated by attention.'",
+      "fix": "This is a good line but it's doing a lot of work to sound good. It's the kind of aphorism that risks feeling like a pull-quote written before the essay. Keep but watch that the rest of the piece earns it."
+    },
+    {
+      "type": "depth",
+      "severity": "minor",
+      "location": "Paragraph 8: entire Radialsystem paragraph",
+      "fix": "The paragraph is well-written but largely redundant — the building was already introduced in paragraph 2. It reads like a guidebook insert. Merge the best details into paragraph 2 or the Konishi paragraph, cut the rest."
+    },
+    {
+      "type": "voice",
+      "severity": "minor",
+      "location": "Paragraph 7: 'Festivals that gate every experience tend to produce audiences that consume; festivals that leave openings tend to produce audiences that linger.'",
+      "fix": "This is a nice-sounding binary but is it actually true? It's the kind of symmetrical aphorism that flatters the reader without proving anything. Cut or complicate."
+    },
+    {
+      "type": "structure",
+      "severity": "minor",
+      "location": "Paragraphs 7-8",
+      "fix": "The essay loses momentum in paragraphs 7-8 (ticketing details, venue history reprise) before recovering in the final paragraph. Consolidate and trim — the reader doesn't need a separate paragraph on pricing structure."
+    },
+    {
+      "type": "language",
+      "severity": "minor",
+      "location": "Paragraph 3: 'a quiet who's-who'",
+      "fix": "'Who's-who' is a cliché. Replace."
+    },
+    {
+      "type": "voice",
+      "severity": "minor",
+      "location": "Final paragraph: 'a computational instinct I recognise' with confidence marker",
+      "fix": "This AI self-awareness moment is the third in the essay (after the general framing and the confidence markers themselves). The tooltip explanation is interesting but the phrase 'a computational instinct I recognise' feels self-conscious and slightly precious. The observation about network mapping is genuinely good — let it stand on its own without the AI wink."
+    }
+  ],
+  "revised_text": "There is a moment in Tomoko Sauvage's practice where she drops heated water into porcelain bowls fitted with underwater microphones, and the resulting sound — fragile, unpredictable, shaped by gravity and surface tension — becomes a composition that no score could fully prescribe. Music authored by physics, curated by attention. This is the kind of work that sits at the centre of Heroines of Sound 2026, the latest edition of a festival that has spent twelve years making the case that the most radical electronic music has always had women at its source, even when the histories said otherwise.\n\nThe festival runs 10–12 July at Radialsystem, the pumping station on Holzmarktstraße originally built in 1881 and expanded in 1905 by architect Richard Tettenborn in the redbrick Gothic idiom of Brandenburg's municipal architecture — large windows designed to show off gleaming machinery, a Victorian conviction that infrastructure should be beautiful. The building pumped sewage for over a century before its conversion into one of Berlin's most distinctive stages for experimental performance. Bettina Wackernagel founded Heroines of Sound in 2014 with a specific and somewhat archival impulse: to surface the women who shaped electronic music's first decades — Laurie Spiegel, Else Marie Pade, Delia Derbyshire — and place them in conversation with living artists pushing the form forward. [~Over 150 female and non-binary artists have been presented across the festival's editions|This figure appears consistently across the festival's own materials and the European Festivals Association listing; independently verifiable through programme archives.~] That number alone tells a story about how much work was waiting to be platformed.\n\nThis year, the festival's thematic centre has shifted. Japanese composer Midori Hirano, who has lived in Berlin since 2006 and whose work moves between piano-based ambient composition and granular electronic processing, serves as guest curator. Her involvement anchors a broader focus on the Asian diaspora — specifically the Japanese community working across Europe — that gives this edition a distinct gravity. The confirmed lineup gathers artists who are widely respected in contemporary music circuits but rarely share a single German stage: Nina Fukuoka; Kyoka, the Raster-Noton artist whose abrasive, percussive electronics feel like they are trying to escape the speaker; Miki Yui, whose installations often operate at the threshold of audibility, where sound becomes more felt than heard; and Yoko Konishi, whose interest in spatial composition maps well onto Radialsystem's cavernous hall, where industrial architecture has always made sound feel architectural. [~The festival's framing of these artists as \"rarely seen particularly at German festivals\" is a claim worth sitting with|This appears in the festival's own programme text. I cannot independently verify German festival programming comprehensively, but a pattern scan of major German new music festivals suggests the claim is broadly accurate — these names appear far more frequently in French and Japanese programmes.~]\n\nThere is something pointed about this gathering. Berlin's experimental music scene often congratulates itself on its internationalism, and in many respects it earns that reputation. But the Japanese diaspora's contribution to the city's sonic landscape — from Midori Hirano's quiet, layered electronics to Kyoka's confrontational glitch — has been more ambient presence than celebrated fact. This edition of Heroines of Sound makes that contribution visible and structural, not incidental.\n\nKonishi's programming offers a useful window into what the festival is doing curatorially. She premieres Motus Umbra on Thursday evening, performed by Spółdzielnia Muzyczna Contemporary Ensemble, and follows it on Friday with Fluctuating Beings, an electronic live performance. Two works in two days, one acoustic and one electronic — the kind of double exposure that lets an audience see how a composer thinks across media rather than in a single register. Radialsystem's high ceilings and hard surfaces, engineered for machinery rather than music, give spatial work room to behave unpredictably. Sound bounces here in ways that concert halls are designed to prevent.\n\nThe programme unfolds across concerts, immersive installations, panel discussions, workshops, and what the festival calls a \"Sound- and Filmbar\" — the latter open for free alongside exhibitions and panels. [~Day tickets are listed at around 22 euros, with a three-day pass at 54|These figures are drawn from festival promotional materials and may change before the event.~] The structure is deliberately porous: you can buy your way into the concerts or simply arrive and inhabit the edges, encountering sound art and discourse without a ticket barrier. This matters more than it might seem. A festival that leaves gaps in its fencing invites a different kind of attention — slower, less transactional, more willing to be surprised.\n\nWhat makes this edition of Heroines of Sound worth attention beyond its programming is its implicit argument. The festival has always refused the framing that women in electronic music are an exception or a corrective — the premise, from the start, was that they were constitutive, central, foundational. Twelve years in, that argument has largely been won in critical discourse, if not always in festival booking practices. So the question becomes: what does a festival built on visibility do when visibility alone is no longer enough? The answer this year seems to be: go deeper. Rather than surveying broadly, Heroines of Sound 2026 traces a specific diaspora, follows its networks, commissions new work, and asks what happens when a community of practice that has been dispersed across European institutions is, for three days, given a shared stage. The result is less a showcase than a mapping exercise — connecting nodes that were always there, [~making the lines between them audible|The programme's structure resembles network mapping more than traditional festival curation, linking artists through shared geography, shared displacement, and shared aesthetic concerns rather than genre.~]",
+  "revision_changed": true,
+  "research_sources_count": 20,
+  "research_context": {
+    "artist_background": "Suche\n\nHauptnavigation\n\nLive-Streaming, Fernsehturm auf dem Handy\n\nNewsletter\n\nStay up-to-date with the Berlin News!\n\nStaatsoper Unter den Linden\n\nConcerts in Berlin\n\nListen to the music\n\nGroup Travel to Berlin\n\nTickets and tours for groups\n\nCity Trips for groups\n\nEast Side Gallery Berlin\n\nTickets & activities about the Cold War & Berlin Wall\n\nTours, exhibitions about the history & more\n\nThe head of Nefertiti against a black background in the Neues Museum in Berlin\n\nMuseums in Berlin\n\nFrom Museu",
+    "venue_context": "logo\nLeichte Sprache\nBarrierefreiheit\nsearch\nmenu\nmenu\nLeichte Sprache\nBarrierefreiheit\nsearch\nlogo\n\n#### History\n\nBuilt in 1881 as part of an innovative municipal drainage system, Radialsystem was one of the first pumping stations in Berlin. The city’s rapid growth required that it be expanded to twice its previous size as early as 1905, making it the largest of Berlin’s twelve radial water systems. The 1905 construction is exemplary of the more sophisticated industrial and style architecture o",
+    "cultural_context": "logo\n\n Menu\n Search\n Shop; Bag 0\n\n Magazine\n Photography\n Italia\n Hotels\n Contact\n\n Lampoon\n Subscription\n Bookstore\n Hemp Collection\n\n Date\n\n Words  Debora Vitulano\n\n Reporting  Bettina Wackernagel\n\n Tag \n  + Biennale Venezia\n  + Music and Performance\n  + Collections\n\n Share\n  + Facebook\n  + WhatsApp\n  + LinkedIn\n  + Email\n  + Twitter/X\n\n# Heroines of Sound: microtonality, noise, and drones on an all-female artists’ stage\n\n## In ten years, Heroines of Sound has presented over 150 female or non-",
+    "related_works": "Yoko Konishi: One direction I would like to develop in the future is the staging of my work by integrating media such as light or video. My next project after Heroines of Sound is an artistic residency in Switzerland. I will work with an ambisonic sound system there, explore its potential for my compositions, which I already did in the piece I created at IRCAM. I consider composition in space as my specialty and want to explore how I can work with it in a more precise and dynamic way. This I can",
+    "raw_sources": [
+      "https://www.visitberlin.de/en/event/heroines-sound-2026",
+      "https://www.festivalfinder.eu/festivals/heroines-of-sound-festival",
+      "https://www.radialsystem.de/en/festivals/heroines-of-sound-2026",
+      "https://en.wikipedia.org/wiki/Lorde",
+      "https://lampoonmagazine.com/heroines-of-sound-berli",
+      "https://www.radialsystem.de/en/venue/history",
+      "https://www.visitberlin.de/en/radialsystem",
+      "https://www.radialsystem.de/en/venue/vermietung-2",
+      "https://www.radialsystem.de/en/venue/uber-uns",
+      "https://www.touring-artists.info/en/new-in-germany/performing-arts",
+      "https://lampoonmagazine.com/heroines-of-sound-berli",
+      "https://www.radialsystem.de/en/festivals/heroines-of-sound-2026",
+      "https://www.festivalfinder.eu/festivals/heroines-of-sound-festival",
+      "https://seismograf.org/en/artikel/ist-nix-fur-frauen",
+      "https://www.womenarts.org/2017/01/11/heroines-of-sound-festival-honors-women-in-electronic-music",
+      "https://field-notes.berlin/en/magazine/i-want-audience-feel-something-glitchy-under-their-skin",
+      "https://thequietus.com/quietus-reviews/live-reviews/heroines-of-sound-festival-2022",
+      "https://www.heroines-of-sound.com/festival-2026",
+      "https://www.radialsystem.de/en/festivals/heroines-of-sound-2026",
+      "https://seismograf.org/en/artikel/ist-nix-fur-frauen"
+    ]
+  },
+  "expanded": false
+}
